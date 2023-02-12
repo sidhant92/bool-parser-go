@@ -20,6 +20,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Load cached dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+      - name: Download dependencies
+        run: go mod download
+
       - name: Build
         run: make build
 
