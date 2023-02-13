@@ -10,5 +10,9 @@ type Parser interface {
 }
 
 func New() Parser {
-	return parser.ANTLRParser{}
+	return parser.Default()
+}
+
+func NewWithCache(size int) Parser {
+	return parser.Cached(size)
 }

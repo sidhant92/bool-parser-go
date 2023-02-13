@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-var parser = ANTLRParser{}
+var parser = Default()
 
 func TestUnaryTokenBoolean(t *testing.T) {
 	res, _ := parser.Parse("not false")
