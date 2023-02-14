@@ -1,6 +1,6 @@
 package service
 
-import "bool-parser-go/pkg/constant"
+import "github.com/sidhant92/bool-parser-go/pkg/constant"
 
 var Operators = map[string]constant.Operator{
 	"=":  constant.EQUALS,

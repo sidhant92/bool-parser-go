@@ -1,4 +1,4 @@
-module bool-parser-go
+module github.com/sidhant92/bool-parser-go
 
 go 1.20
 

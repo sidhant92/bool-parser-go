@@ -1,11 +1,11 @@
 package parser
 
 import (
-	"bool-parser-go/internal/parser/antlr/lib"
-	"bool-parser-go/pkg/domain"
 	"errors"
 	"github.com/antlr/antlr4/runtime/Go/antlr/v4"
 	lru "github.com/hashicorp/golang-lru/v2"
+	"github.com/sidhant92/bool-parser-go/internal/parser/antlr/lib"
+	"github.com/sidhant92/bool-parser-go/pkg/domain"
 	"log"
 )
 

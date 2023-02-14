@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"bool-parser-go/pkg/domain"
+	"github.com/sidhant92/bool-parser-go/pkg/domain"
 	"testing"
 )
 
