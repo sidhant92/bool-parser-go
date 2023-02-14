@@ -1,12 +1,12 @@
 package parser
 
 import (
-	"bool-parser-go/internal/parser/antlr/lib"
-	"bool-parser-go/internal/service"
-	"bool-parser-go/internal/util"
-	"bool-parser-go/pkg/constant"
-	"bool-parser-go/pkg/domain"
 	"github.com/antlr/antlr4/runtime/Go/antlr/v4"
+	"github.com/sidhant92/bool-parser-go/internal/parser/antlr/lib"
+	"github.com/sidhant92/bool-parser-go/internal/service"
+	"github.com/sidhant92/bool-parser-go/internal/util"
+	"github.com/sidhant92/bool-parser-go/pkg/constant"
+	"github.com/sidhant92/bool-parser-go/pkg/domain"
 	"reflect"
 )
 

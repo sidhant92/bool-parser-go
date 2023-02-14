@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"bool-parser-go/pkg/constant"
-	"bool-parser-go/pkg/domain"
+	"github.com/sidhant92/bool-parser-go/pkg/constant"
+	"github.com/sidhant92/bool-parser-go/pkg/domain"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

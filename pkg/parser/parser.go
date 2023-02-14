@@ -1,8 +1,8 @@
 package parser
 
 import (
-	parser "bool-parser-go/internal/parser/antlr"
-	"bool-parser-go/pkg/domain"
+	parser "github.com/sidhant92/bool-parser-go/internal/parser/antlr"
+	"github.com/sidhant92/bool-parser-go/pkg/domain"
 )
 
 type Parser interface {

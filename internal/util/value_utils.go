@@ -1,8 +1,8 @@
 package util
 
 import (
-	"bool-parser-go/pkg/constant"
 	"github.com/hashicorp/go-version"
+	"github.com/sidhant92/bool-parser-go/pkg/constant"
 	"strconv"
 	"strings"
 )

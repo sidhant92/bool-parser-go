@@ -1,6 +1,6 @@
 package domain
 
-import "bool-parser-go/pkg/constant"
+import "github.com/sidhant92/bool-parser-go/pkg/constant"
 
 type ComparisonNode struct {
 	Field    string
