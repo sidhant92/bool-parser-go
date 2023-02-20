@@ -7,31 +7,31 @@ import (
 	"strings"
 )
 
-func ConvertValue(value string, dataType constant.DataType) interface{} {
+func ConvertValue(value string, dataType constant.DataType) (interface{}, error) {
 	switch dataType {
 	case constant.INTEGER:
-		res, _ := strconv.Atoi(value)
-		return res
+		res, err := strconv.Atoi(value)
+		return res, err
 	case constant.LONG:
-		res, _ := strconv.ParseInt(value, 10, 64)
-		return res
+		res, err := strconv.ParseInt(value, 10, 64)
+		return res, err
 	case constant.DECIMAL:
-		res, _ := strconv.ParseFloat(value, 64)
-		return res
+		res, err := strconv.ParseFloat(value, 64)
+		return res, err
 	case constant.BOOLEAN:
-		res, _ := strconv.ParseBool(value)
-		return res
-	case constant.APP_VERSION:
-		res, _ := version.NewVersion(value)
-		return res
+		res, err := strconv.ParseBool(value)
+		return res, err
+	case constant.VERSION:
+		res, err := version.NewVersion(value)
+		return res, err
 	default:
 		if strings.HasPrefix(value, "'") && strings.HasSuffix(value, "'") {
-			return value[1 : len(value)-1]
+			return value[1 : len(value)-1], nil
 		}
 		if strings.HasPrefix(value, "\"") && strings.HasSuffix(value, "\"") {
-			return value[1 : len(value)-1]
+			return value[1 : len(value)-1], nil
 		}
-		return value
+		return value, nil
 	}
 }
 

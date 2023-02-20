@@ -1,20 +1,34 @@
 package service
 
-import "github.com/sidhant92/bool-parser-go/pkg/constant"
+import (
+	op "github.com/sidhant92/bool-parser-go/internal/operator"
+	"github.com/sidhant92/bool-parser-go/pkg/constant"
+)
 
-var Operators = map[string]constant.Operator{
-	"=":  constant.EQUALS,
-	">":  constant.GREATER_THAN,
-	">=": constant.GREATER_THAN_EQUAL,
-	"<":  constant.LESS_THAN,
-	"<=": constant.LESS_THAN_EQUAL,
-	"!=": constant.NOT_EQUAL,
-	"IN": constant.IN,
+type OperatorService struct {
+	symbolMap map[string]constant.Operator
 }
 
-func GetOperatorFromSymbol(symbol string) constant.Operator {
-	if val, ok := Operators[symbol]; ok {
+func (o *OperatorService) GetOperatorFromSymbol(symbol string) constant.Operator {
+	if val, ok := o.symbolMap[symbol]; ok {
 		return val
 	}
 	panic("Unknown Operator " + symbol)
+}
+
+func (o *OperatorService) Evaluate(operator constant.Operator, dataType constant.DataType, leftOperand interface{}, rightOperand ...interface{}) (bool, error) {
+	res, err := op.GetOperator(operator).Evaluate(dataType, leftOperand, rightOperand...)
+	if err != nil {
+		return false, err
+	}
+	return res, nil
+}
+
+func NewOperatorService() *OperatorService {
+	allOperators := op.GetAllValues()
+	symbolMap := map[string]constant.Operator{}
+	for _, op := range allOperators {
+		symbolMap[op.GetSymbol()] = op.GetOperator()
+	}
+	return &OperatorService{symbolMap}
 }
