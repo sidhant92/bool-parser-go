@@ -16,13 +16,16 @@ type myListener struct {
 	LastToken antlr.Token
 
 	Result domain.Node
+
+	OperatorService *service.OperatorService
 }
 
 func New() *myListener {
 	l := myListener{
-		Nodes:     []domain.Node{},
-		LastToken: nil,
-		Result:    nil,
+		Nodes:           []domain.Node{},
+		LastToken:       nil,
+		Result:          nil,
+		OperatorService: service.NewOperatorService(),
 	}
 	return &l
 }
@@ -137,7 +140,7 @@ func (l *myListener) ExitInExpression(c *lib.InExpressionContext) {
 
 	for _, child := range typesContextChildren {
 		dataType := GetDataType(child.(*lib.TypesContext).GetStart())
-		value := util.ConvertValue(child.(*lib.TypesContext).GetText(), dataType)
+		value, _ := util.ConvertValue(child.(*lib.TypesContext).GetText(), dataType)
 		pairs = append(pairs, domain.Pair{
 			DataType: dataType,
 			Value:    value,
@@ -153,9 +156,9 @@ func (l *myListener) ExitInExpression(c *lib.InExpressionContext) {
 func (l *myListener) ExitToExpression(c *lib.ToExpressionContext) {
 	field := c.GetField().GetText()
 	lowerDataType := GetDataType(c.GetLower().GetStart())
-	lowerValue := util.ConvertValue(c.GetLower().GetStart().GetText(), lowerDataType)
+	lowerValue, _ := util.ConvertValue(c.GetLower().GetStart().GetText(), lowerDataType)
 	upperDataType := GetDataType(c.GetUpper().GetStart())
-	upperValue := util.ConvertValue(c.GetUpper().GetText(), upperDataType)
+	upperValue, _ := util.ConvertValue(c.GetUpper().GetText(), upperDataType)
 	l.push(domain.NumericRangeNode{
 		Field:        field,
 		FromValue:    lowerValue,
@@ -171,7 +174,7 @@ func (l *myListener) ExitNotExpression(c *lib.NotExpressionContext) {
 			panic("Error parsing not expression for the string " + c.GetText())
 		}
 		dataType := GetDataType(l.LastToken)
-		value := util.ConvertValue(l.LastToken.GetText(), dataType)
+		value, _ := util.ConvertValue(l.LastToken.GetText(), dataType)
 		l.push(domain.UnaryNode{
 			DataType: dataType,
 			Value:    value,
@@ -188,8 +191,8 @@ func (l *myListener) ExitNotExpression(c *lib.NotExpressionContext) {
 func (l *myListener) ExitComparatorExpression(c *lib.ComparatorExpressionContext) {
 	field := c.GetLeft().GetText()
 	dataType := GetDataType(c.GetRight().GetStart())
-	value := util.ConvertValue(c.GetRight().GetText(), dataType)
-	operator := service.GetOperatorFromSymbol(c.GetOp().GetText())
+	value, _ := util.ConvertValue(c.GetRight().GetText(), dataType)
+	operator := l.OperatorService.GetOperatorFromSymbol(c.GetOp().GetText())
 	l.push(domain.ComparisonNode{
 		Field:    field,
 		Value:    value,
@@ -237,7 +240,7 @@ func GetDataType(token antlr.Token) constant.DataType {
 	case lib.BooleanExpressionLexerINTEGER:
 		return util.GetNumericDataType(token.GetText())
 	case lib.BooleanExpressionLexerAPP_VERSION:
-		return constant.APP_VERSION
+		return constant.VERSION
 	case lib.BooleanExpressionLexerTRUE:
 		return constant.BOOLEAN
 	case lib.BooleanExpressionLexerFALSE:

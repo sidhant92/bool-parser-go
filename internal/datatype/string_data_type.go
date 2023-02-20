@@ -1,0 +1,42 @@
+package datatype
+
+import (
+	"fmt"
+	"github.com/sidhant92/bool-parser-go/pkg/constant"
+	errors "github.com/sidhant92/bool-parser-go/pkg/error"
+	"strings"
+)
+
+type StringDataType struct {
+}
+
+func (s *StringDataType) GetDataType() constant.DataType {
+	return constant.STRING
+}
+
+func (s *StringDataType) IsValid(value interface{}) bool {
+	_, ok := value.(string)
+	if ok {
+		return true
+	}
+	return false
+}
+
+func (s *StringDataType) GetValue(value interface{}) interface{} {
+	return fmt.Sprintf("%v",value)
+}
+
+func (s *StringDataType) Compare(left interface{}, right interface{}) (int, error) {
+	leftValid := s.IsValid(left)
+	rightValid := s.IsValid(right)
+	if !leftValid || !rightValid {
+		return 0, errors.INVALID_DATA_TYPE
+	}
+	leftValue := s.GetValue(left).(string)
+	rightValue := s.GetValue(right).(string)
+	return strings.Compare(leftValue, rightValue), nil
+}
+
+func NewStringDataType() DataType {
+	return &StringDataType{}
+}

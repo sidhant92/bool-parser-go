@@ -6,7 +6,7 @@ const (
 	STRING      DataType = "STRING"
 	INTEGER     DataType = "INTEGER"
 	LONG        DataType = "LONG"
-	DECIMAL     DataType = "DECIMAL"
-	APP_VERSION DataType = "APP_VERSION"
-	BOOLEAN     DataType = "BOOL"
+	DECIMAL DataType = "DECIMAL"
+	VERSION DataType = "VERSION"
+	BOOLEAN DataType = "BOOL"
 )

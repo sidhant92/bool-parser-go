@@ -254,6 +254,7 @@ func TestStringList2(t *testing.T) {
 	assert.Equal(t, res.(domain.InNode).Items[2].Value, "ab\"c")
 }
 
+
 func TestInvalidExpression(t *testing.T) {
 	_, err := parser.Parse("a")
 	assert.NotNil(t, err)
