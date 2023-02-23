@@ -3,9 +3,29 @@ package util
 import (
 	"github.com/hashicorp/go-version"
 	"github.com/sidhant92/bool-parser-go/pkg/constant"
+	"log"
 	"strconv"
 	"strings"
 )
+
+func GetValueFromMap(key string, data map[string]interface{}) interface{} {
+	keys := strings.Split(key, ".")
+	size := len(keys)
+	value, ok := data[keys[0]]
+	if size == 1 {
+		if ok {
+			return value
+		} else {
+			return nil
+		}
+	}
+	nestedMap, ok := value.(map[string]interface{})
+	if ok {
+		return GetValueFromMap(keys[1], nestedMap)
+	}
+	log.Printf("could not find key %s for the data %s", key, data)
+	return nil
+}
 
 func ConvertValue(value string, dataType constant.DataType) (interface{}, error) {
 	switch dataType {

@@ -99,6 +99,28 @@ func TestNumericGreaterThanCorrectExpression(t *testing.T) {
 	assert.True(t, res)
 }
 
+func TestNestedField(t *testing.T) {
+	data := map[string]interface{}{
+		"person": map[string]interface{}{
+			"age": 24,
+		},
+	}
+	res, err := evaluator.Evaluate("person.age > 20", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestMissingNestedField(t *testing.T) {
+	data := map[string]interface{}{
+		"person": map[string]interface{}{
+			"age": 24,
+		},
+	}
+	res, err := evaluator.Evaluate("person.agee > 20", data)
+	assert.ErrorIs(t, err, errors2.KEY_DATA_NOT_PRESENT)
+	assert.False(t, res)
+}
+
 func TestNumericGreaterThanIncorrectExpression(t *testing.T) {
 	data := map[string]interface{}{
 		"age": 26,
@@ -321,7 +343,7 @@ func TestKeyMissing(t *testing.T) {
 		"agee": 34,
 	}
 	res, err := evaluator.Evaluate("age = 24", data)
-	assert.Nil(t, err)
+	assert.ErrorIs(t, err, errors2.KEY_DATA_NOT_PRESENT)
 	assert.False(t, res)
 }
 
