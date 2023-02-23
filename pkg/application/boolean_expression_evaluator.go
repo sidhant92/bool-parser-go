@@ -3,11 +3,11 @@ package application
 import (
 	"errors"
 	"github.com/sidhant92/bool-parser-go/internal/service"
+	"github.com/sidhant92/bool-parser-go/internal/util"
 	"github.com/sidhant92/bool-parser-go/pkg/constant"
 	"github.com/sidhant92/bool-parser-go/pkg/domain"
 	errors2 "github.com/sidhant92/bool-parser-go/pkg/error"
 	"github.com/sidhant92/bool-parser-go/pkg/parser"
-	"log"
 )
 
 type BooleanExpressionEvaluator struct {
@@ -41,18 +41,18 @@ func (b *BooleanExpressionEvaluator) evaluateNode(node domain.Node, data map[str
 }
 
 func (b *BooleanExpressionEvaluator) evaluateComparisonNode(node domain.ComparisonNode, data map[string]interface{}) (bool, error) {
-	if b.checkFieldDataMissing(node.Field, data) {
-		return false, nil
+	fieldData := util.GetValueFromMap(node.Field, data)
+	if fieldData == nil {
+		return false, errors2.KEY_DATA_NOT_PRESENT
 	}
-	fieldData := data[node.Field]
 	return b.OperatorService.Evaluate(node.Operator, node.DataType, fieldData, node.Value)
 }
 
 func (b *BooleanExpressionEvaluator) evaluateNumericRangeNode(node domain.NumericRangeNode, data map[string]interface{}) (bool, error) {
-	if b.checkFieldDataMissing(node.Field, data) {
-		return false, nil
+	fieldData := util.GetValueFromMap(node.Field, data)
+	if fieldData == nil {
+		return false, errors2.KEY_DATA_NOT_PRESENT
 	}
-	fieldData := data[node.Field]
 	leftRes, err := b.OperatorService.Evaluate(constant.GREATER_THAN_EQUAL, node.FromDataType, fieldData, node.FromValue)
 	if err != nil {
 		return false, err
@@ -65,10 +65,10 @@ func (b *BooleanExpressionEvaluator) evaluateNumericRangeNode(node domain.Numeri
 }
 
 func (b *BooleanExpressionEvaluator) evaluateInNode(node domain.InNode, data map[string]interface{}) (bool, error) {
-	if b.checkFieldDataMissing(node.Field, data) {
-		return false, nil
+	fieldData := util.GetValueFromMap(node.Field, data)
+	if fieldData == nil {
+		return false, errors2.KEY_DATA_NOT_PRESENT
 	}
-	fieldData := data[node.Field]
 	dataType := node.Items[0].DataType
 	var values []interface{}
 	for _, item := range node.Items {
@@ -85,10 +85,10 @@ func (b *BooleanExpressionEvaluator) evaluateUnaryNode(node domain.UnaryNode, da
 	if node.DataType == constant.BOOLEAN {
 		return node.Value.(bool), nil
 	}
-	if b.checkFieldDataMissing(node.Value.(string), data) {
-		return false, nil
+	fieldData := util.GetValueFromMap(node.Value.(string), data)
+	if fieldData == nil {
+		return false, errors2.KEY_DATA_NOT_PRESENT
 	}
-	fieldData := data[node.Value.(string)]
 	val, ok := fieldData.(bool)
 	if ok {
 		return val, nil
@@ -125,14 +125,6 @@ func (b *BooleanExpressionEvaluator) evaluateBooleanNode(node domain.BooleanNode
 		}
 		return !res, nil
 	}
-}
-
-func (b *BooleanExpressionEvaluator) checkFieldDataMissing(field string, data map[string]interface{}) bool {
-	if _, ok := data[field]; ok {
-		return false
-	}
-	log.Println("required field data is missing")
-	return true
 }
 
 func NewBooleanExpressionEvaluator(parser parser.Parser) BooleanExpressionEvaluator {

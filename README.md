@@ -47,6 +47,7 @@ Parentheses, `(` and `)`, can be used for grouping.
 #### Usage Notes
 * Phrases that includes quotes, like `content = "It's a wonderful day"`
 * Phrases that includes quotes, like `attribute = 'She said "Hello World"'`
+* For nested keys in data map you can use the dot notation, like `person.age`
 
 ## Usage
 ```
@@ -127,7 +128,7 @@ res, err := evaluator.Evaluate("name = sid AND (age = 25 OR num = 44)", data)
 assert.Nil(t, err)
 assert.True(t, res)
 ```
-App Version Comparison
+Semantic Version Comparison
 ```
 data := map[string]interface{}{
 	"app_version": "1.5.9",
