@@ -6,7 +6,7 @@ import (
 )
 
 type Parser interface {
-	Parse(input string) (domain.Node, error)
+	Parse(input string, defaultField ...string) (domain.Node, error)
 }
 
 func New() Parser {
