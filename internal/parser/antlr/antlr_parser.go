@@ -10,26 +10,26 @@ import (
 )
 
 type ANTLRParser struct {
-	UseCache bool
-	cache    *lru.Cache[string, domain.Node]
+	UseCache     bool
+	cache        *lru.Cache[string, domain.Node]
 }
 
 func Default() *ANTLRParser {
 	return &ANTLRParser{
-		UseCache: false,
-		cache:    nil,
+		UseCache:     false,
+		cache:        nil,
 	}
 }
 
 func Cached(size int) *ANTLRParser {
 	cache, _ := lru.New[string, domain.Node](size)
 	return &ANTLRParser{
-		UseCache: true,
-		cache:    cache,
+		UseCache:     true,
+		cache:        cache,
 	}
 }
 
-func (p *ANTLRParser) Parse(input string) (res domain.Node, err error) {
+func (p *ANTLRParser) Parse(input string, defaultField ...string) (res domain.Node, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			log.Println("panic occurred:", r)
@@ -56,7 +56,11 @@ func (p *ANTLRParser) Parse(input string) (res domain.Node, err error) {
 	lexer := lib.NewBooleanExpressionLexer(inputStream)
 	stream := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
 	antlrParser := lib.NewBooleanExpressionParser(stream)
-	listener := New()
+	var df = ""
+	if len(defaultField) > 0 {
+		df = defaultField[0]
+	}
+	listener := New(df)
 	antlr.ParseTreeWalkerDefault.Walk(listener, antlrParser.Parse())
 	if p.UseCache {
 		p.cache.Add(input, listener.GetResult())

@@ -15,8 +15,8 @@ type BooleanExpressionEvaluator struct {
 	OperatorService *service.OperatorService
 }
 
-func (b *BooleanExpressionEvaluator) Evaluate(expression string, data map[string]interface{}) (bool, error) {
-	node, err := b.Parser.Parse(expression)
+func (b *BooleanExpressionEvaluator) Evaluate(expression string, data map[string]interface{}, defaultField ...string) (bool, error) {
+	node, err := b.Parser.Parse(expression, defaultField...)
 	if err != nil {
 		return false, err
 	}

@@ -409,3 +409,21 @@ func TestStringEqualityWithQuotes(t *testing.T) {
 	assert.Nil(t, err)
 	assert.True(t, res)
 }
+
+func TestDefaultFieldTrue(t *testing.T) {
+	data := map[string]interface{}{
+		"age": 19,
+	}
+	res, err := evaluator.Evaluate(">= 18 AND < 20", data, "age")
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestDefaultFieldFalse(t *testing.T) {
+	data := map[string]interface{}{
+		"age": 17,
+	}
+	res, err := evaluator.Evaluate(">= 18 AND < 20", data, "age")
+	assert.Nil(t, err)
+	assert.False(t, res)
+}

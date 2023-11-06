@@ -18,14 +18,17 @@ type myListener struct {
 	Result domain.Node
 
 	OperatorService *service.OperatorService
+
+	DefaultField string
 }
 
-func New() *myListener {
+func New(defaultField string) *myListener {
 	l := myListener{
 		Nodes:           []domain.Node{},
 		LastToken:       nil,
 		Result:          nil,
 		OperatorService: service.NewOperatorService(),
+		DefaultField:    defaultField,
 	}
 	return &l
 }
@@ -132,7 +135,8 @@ func (l *myListener) ExitTypesExpression(c *lib.TypesExpressionContext) {
 }
 
 func (l *myListener) ExitInExpression(c *lib.InExpressionContext) {
-	field := c.GetField().GetText()
+	l.ValidateField(c.GetField(), c.GetText())
+	field := l.GetField(c.GetField().GetText())
 
 	typesContextFilter := func(tree antlr.Tree) bool { return reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesContext{}) }
 	var typesContextChildren = util.Filter(c.GetData().GetChildren(), typesContextFilter)
@@ -154,7 +158,8 @@ func (l *myListener) ExitInExpression(c *lib.InExpressionContext) {
 }
 
 func (l *myListener) ExitToExpression(c *lib.ToExpressionContext) {
-	field := c.GetField().GetText()
+	l.ValidateField(c.GetField(), c.GetText())
+	field := l.GetField(c.GetField().GetText())
 	lowerDataType := GetDataType(c.GetLower().GetStart())
 	lowerValue, _ := util.ConvertValue(c.GetLower().GetStart().GetText(), lowerDataType)
 	upperDataType := GetDataType(c.GetUpper().GetStart())
@@ -189,7 +194,7 @@ func (l *myListener) ExitNotExpression(c *lib.NotExpressionContext) {
 }
 
 func (l *myListener) ExitComparatorExpression(c *lib.ComparatorExpressionContext) {
-	field := c.GetLeft().GetText()
+	field := l.GetField(c.GetLeft().GetText())
 	dataType := GetDataType(c.GetRight().GetStart())
 	value, _ := util.ConvertValue(c.GetRight().GetText(), dataType)
 	operator := l.OperatorService.GetOperatorFromSymbol(c.GetOp().GetText())
@@ -248,4 +253,17 @@ func GetDataType(token antlr.Token) constant.DataType {
 	default:
 		return constant.STRING
 	}
+}
+
+func (l myListener) ValidateField(token antlr.Token, text string)  {
+	if token == nil || (len(token.GetText()) == 0 && len(text) == 0) {
+		panic("Invalid Expression, field and default value both are empty")
+	}
+}
+
+func (l myListener) GetField(field string) string {
+	if len(field) == 0 {
+		return l.DefaultField
+	}
+	return field
 }
