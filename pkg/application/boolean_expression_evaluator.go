@@ -35,6 +35,8 @@ func (b *BooleanExpressionEvaluator) evaluateNode(node domain.Node, data map[str
 		return b.evaluateUnaryNode(node.(domain.UnaryNode), data)
 	case constant.BOOLEAN_NODE:
 		return b.evaluateBooleanNode(node.(domain.BooleanNode), data)
+	case constant.ARRAY_NODE:
+		return b.evaluateArrayNode(node.(domain.ArrayNode), data)
 	default:
 		return false, errors.New("unknown node")
 	}
@@ -45,7 +47,7 @@ func (b *BooleanExpressionEvaluator) evaluateComparisonNode(node domain.Comparis
 	if fieldData == nil {
 		return false, errors2.KEY_DATA_NOT_PRESENT
 	}
-	return b.OperatorService.Evaluate(node.Operator, node.DataType, fieldData, node.Value)
+	return b.OperatorService.Evaluate(node.Operator, constant.PRIMITIVE, node.DataType, fieldData, node.Value)
 }
 
 func (b *BooleanExpressionEvaluator) evaluateNumericRangeNode(node domain.NumericRangeNode, data map[string]interface{}) (bool, error) {
@@ -53,11 +55,11 @@ func (b *BooleanExpressionEvaluator) evaluateNumericRangeNode(node domain.Numeri
 	if fieldData == nil {
 		return false, errors2.KEY_DATA_NOT_PRESENT
 	}
-	leftRes, err := b.OperatorService.Evaluate(constant.GREATER_THAN_EQUAL, node.FromDataType, fieldData, node.FromValue)
+	leftRes, err := b.OperatorService.Evaluate(constant.GREATER_THAN_EQUAL, constant.PRIMITIVE, node.FromDataType, fieldData, node.FromValue)
 	if err != nil {
 		return false, err
 	}
-	rightRes, err := b.OperatorService.Evaluate(constant.LESS_THAN_EQUAL, node.ToDataType, fieldData, node.ToValue)
+	rightRes, err := b.OperatorService.Evaluate(constant.LESS_THAN_EQUAL, constant.PRIMITIVE, node.ToDataType, fieldData, node.ToValue)
 	if err != nil {
 		return false, err
 	}
@@ -74,7 +76,7 @@ func (b *BooleanExpressionEvaluator) evaluateInNode(node domain.InNode, data map
 	for _, item := range node.Items {
 		values = append(values, item.Value)
 	}
-	res, err := b.OperatorService.Evaluate(constant.IN, dataType, fieldData, values...)
+	res, err := b.OperatorService.Evaluate(constant.IN, constant.PRIMITIVE, dataType, fieldData, values...)
 	if err != nil {
 		return false, err
 	}
@@ -125,6 +127,23 @@ func (b *BooleanExpressionEvaluator) evaluateBooleanNode(node domain.BooleanNode
 		}
 		return !res, nil
 	}
+}
+
+func (b *BooleanExpressionEvaluator) evaluateArrayNode(node domain.ArrayNode, data map[string]interface{}) (bool, error) {
+	fieldData := util.GetValueFromMap(node.Field, data)
+	if fieldData == nil {
+		return false, errors2.KEY_DATA_NOT_PRESENT
+	}
+	dataType := node.Items[0].DataType
+	var values []interface{}
+	for _, item := range node.Items {
+		values = append(values, item.Value)
+	}
+	res, err := b.OperatorService.Evaluate(node.Operator, constant.LIST, dataType, fieldData, values...)
+	if err != nil {
+		return false, err
+	}
+	return res, nil
 }
 
 func NewBooleanExpressionEvaluator(parser parser.Parser) BooleanExpressionEvaluator {

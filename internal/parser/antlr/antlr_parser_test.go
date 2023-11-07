@@ -218,6 +218,19 @@ func TestIntegerList(t *testing.T) {
 	assert.Equal(t, res.(domain.InNode).Items[1].Value, 45)
 }
 
+func TestIntegerNotInList(t *testing.T) {
+	res, _ := parser.Parse("age not IN (12,45)")
+	assert.Equal(t, res.GetNodeType(), constant.BOOLEAN_NODE)
+	assert.Equal(t, res.(domain.BooleanNode).Operator, constant.NOT)
+	assert.Nil(t, res.(domain.BooleanNode).Right)
+	assert.Equal(t, res.(domain.BooleanNode).Left.GetNodeType(), constant.IN_NODE)
+	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Field, "age")
+	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Items[0].DataType, constant.INTEGER)
+	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Items[0].Value, 12)
+	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Items[1].DataType, constant.INTEGER)
+	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Items[1].Value, 45)
+}
+
 func TestStringList(t *testing.T) {
 	res, _ := parser.Parse("name IN (abc, def, 'abc def')")
 	assert.Equal(t, res.GetNodeType(), constant.IN_NODE)
@@ -262,4 +275,22 @@ func TestInvalidExpression(t *testing.T) {
 func TestInvalidNotExpression(t *testing.T) {
 	_, err := parser.Parse("not a > 5")
 	assert.NotNil(t, err)
+}
+
+func TestContainsAny(t *testing.T) {
+	res, _ := parser.Parse("a contains_any (1,2,3)")
+	assert.Equal(t, res.GetNodeType(), constant.ARRAY_NODE)
+	assert.Equal(t, res.(domain.ArrayNode).Field, "a")
+	assert.Equal(t, res.(domain.ArrayNode).Operator, constant.CONTAINS_ANY)
+	assert.Equal(t, len(res.(domain.ArrayNode).Items), 3)
+	assert.Equal(t, res.(domain.ArrayNode).Items[0].Value, 1)
+}
+
+func TestContainsAll(t *testing.T) {
+	res, _ := parser.Parse("a CONTAINS_ALL (\"a\", \"b\")")
+	assert.Equal(t, res.GetNodeType(), constant.ARRAY_NODE)
+	assert.Equal(t, res.(domain.ArrayNode).Field, "a")
+	assert.Equal(t, res.(domain.ArrayNode).Operator, constant.CONTAINS_ALL)
+	assert.Equal(t, len(res.(domain.ArrayNode).Items), 2)
+	assert.Equal(t, res.(domain.ArrayNode).Items[0].Value, "a")
 }

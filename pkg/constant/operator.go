@@ -10,5 +10,6 @@ const (
 	LESS_THAN_EQUAL    Operator = "LESS_THAN_EQUAL"
 	NOT_EQUAL          Operator = "NOT_EQUAL"
 	IN                 Operator = "IN"
+	CONTAINS_ANY       Operator = "CONTAINS_ANY"
+	CONTAINS_ALL       Operator = "CONTAINS_ALL"
 )
-

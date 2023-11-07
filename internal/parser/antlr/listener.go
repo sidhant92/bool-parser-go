@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/antlr/antlr4/runtime/Go/antlr/v4"
+	"github.com/antlr4-go/antlr/v4"
 	"github.com/sidhant92/bool-parser-go/internal/parser/antlr/lib"
 	"github.com/sidhant92/bool-parser-go/internal/service"
 	"github.com/sidhant92/bool-parser-go/internal/util"
@@ -138,22 +138,32 @@ func (l *myListener) ExitInExpression(c *lib.InExpressionContext) {
 	l.ValidateField(c.GetField(), c.GetText())
 	field := l.GetField(c.GetField().GetText())
 
-	typesContextFilter := func(tree antlr.Tree) bool { return reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesContext{}) }
-	var typesContextChildren = util.Filter(c.GetData().GetChildren(), typesContextFilter)
-	var pairs []domain.Pair
-
-	for _, child := range typesContextChildren {
-		dataType := GetDataType(child.(*lib.TypesContext).GetStart())
-		value, _ := util.ConvertValue(child.(*lib.TypesContext).GetText(), dataType)
-		pairs = append(pairs, domain.Pair{
-			DataType: dataType,
-			Value:    value,
-		})
-	}
-
-	l.push(domain.InNode{
+	pairs := l.GetArrayElements(c.GetData().GetChildren())
+	var inNode = domain.InNode{
 		Field: field,
 		Items: pairs,
+	}
+	if c.NOT() == nil {
+		l.push(inNode)
+	} else {
+		var booleanNode = domain.BooleanNode{
+			Left:     inNode,
+			Right:    nil,
+			Operator: constant.NOT,
+		}
+		l.push(booleanNode)
+	}
+}
+
+func (l *myListener) ExitArrayExpression(ctx *lib.ArrayExpressionContext) {
+	l.ValidateField(ctx.GetField(), ctx.GetText())
+	field := l.GetField(ctx.GetField().GetText())
+	pairs := l.GetArrayElements(ctx.GetData().GetChildren())
+	operator := l.OperatorService.GetOperatorFromSymbol(ctx.GetOp().GetText())
+	l.push(domain.ArrayNode{
+		Field:    field,
+		Operator: operator,
+		Items:    pairs,
 	})
 }
 
@@ -206,6 +216,8 @@ func (l *myListener) ExitComparatorExpression(c *lib.ComparatorExpressionContext
 	})
 }
 
+func (l *myListener) EnterArrayExpression(ctx *lib.ArrayExpressionContext) {}
+
 func (l myListener) ExitParentExpression(c *lib.ParentExpressionContext) {
 }
 
@@ -226,6 +238,10 @@ func (l myListener) ExitBinary(c *lib.BinaryContext) {
 
 func (l myListener) ExitBool(c *lib.BoolContext) {
 }
+
+func (l myListener) EnterArrayOperators(ctx *lib.ArrayOperatorsContext) {}
+
+func (l myListener) ExitArrayOperators(ctx *lib.ArrayOperatorsContext) {}
 
 func GetLogicalOperator(token antlr.Token) constant.LogicalOperatorType {
 	switch token.GetTokenType() {
@@ -255,7 +271,7 @@ func GetDataType(token antlr.Token) constant.DataType {
 	}
 }
 
-func (l myListener) ValidateField(token antlr.Token, text string)  {
+func (l myListener) ValidateField(token antlr.Token, text string) {
 	if token == nil || (len(token.GetText()) == 0 && len(text) == 0) {
 		panic("Invalid Expression, field and default value both are empty")
 	}
@@ -266,4 +282,21 @@ func (l myListener) GetField(field string) string {
 		return l.DefaultField
 	}
 	return field
+}
+
+func (l myListener) GetArrayElements(trees []antlr.Tree) []domain.Pair {
+	typesContextFilter := func(tree antlr.Tree) bool { return reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesContext{}) }
+	var typesContextChildren = util.Filter(trees, typesContextFilter)
+	var pairs []domain.Pair
+
+	for _, child := range typesContextChildren {
+		dataType := GetDataType(child.(*lib.TypesContext).GetStart())
+		value, _ := util.ConvertValue(child.(*lib.TypesContext).GetText(), dataType)
+		pairs = append(pairs, domain.Pair{
+			DataType: dataType,
+			Value:    value,
+		})
+	}
+
+	return pairs
 }
