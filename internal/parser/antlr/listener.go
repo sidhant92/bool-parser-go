@@ -139,11 +139,20 @@ func (l *myListener) ExitInExpression(c *lib.InExpressionContext) {
 	field := l.GetField(c.GetField().GetText())
 
 	pairs := l.GetArrayElements(c.GetData().GetChildren())
-
-	l.push(domain.InNode{
+	var inNode = domain.InNode{
 		Field: field,
 		Items: pairs,
-	})
+	}
+	if c.NOT() == nil {
+		l.push(inNode)
+	} else {
+		var booleanNode = domain.BooleanNode{
+			Left:     inNode,
+			Right:    nil,
+			Operator: constant.NOT,
+		}
+		l.push(booleanNode)
+	}
 }
 
 func (l *myListener) ExitArrayExpression(ctx *lib.ArrayExpressionContext) {

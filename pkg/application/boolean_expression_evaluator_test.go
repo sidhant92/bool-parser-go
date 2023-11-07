@@ -280,6 +280,15 @@ func TestPositiveInClauseForDecimals(t *testing.T) {
 	assert.True(t, res)
 }
 
+func TestPositiveNotInClauseForDecimals(t *testing.T) {
+	data := map[string]interface{}{
+		"num": 25.3,
+	}
+	res, err := evaluator.Evaluate("num not in (26.3,26.3,34.4)", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
 func TestNegativeInClauseForStrings(t *testing.T) {
 	data := map[string]interface{}{
 		"name": "test",
