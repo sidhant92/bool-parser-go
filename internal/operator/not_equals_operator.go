@@ -7,9 +7,9 @@ import (
 type NotEqualsOperator struct {
 }
 
-func (e *NotEqualsOperator) Evaluate(dataType constant.DataType, left interface{}, right ...interface{}) (bool, error) {
+func (e *NotEqualsOperator) Evaluate(containerDataType constant.ContainerDataType, dataType constant.DataType, validated bool, left interface{}, right ...interface{}) (bool, error) {
 	eq := GetOperator(constant.EQUALS)
-	res, err := eq.Evaluate(dataType, left, right[0])
+	res, err := eq.Evaluate(containerDataType, dataType, validated, left, right[0])
 	if err != nil {
 		return false, err
 	}
@@ -22,6 +22,14 @@ func (e *NotEqualsOperator) GetSymbol() string  {
 
 func (e *NotEqualsOperator) GetOperator() constant.Operator  {
 	return constant.NOT_EQUAL
+}
+
+func (e *NotEqualsOperator) GetAllowedContainerTypes() []constant.ContainerDataType {
+	return []constant.ContainerDataType{constant.PRIMITIVE}
+}
+
+func (e *NotEqualsOperator) GetAllowedDataTypes() []constant.DataType {
+	return []constant.DataType{constant.STRING, constant.INTEGER, constant.LONG, constant.DECIMAL, constant.BOOLEAN, constant.VERSION}
 }
 
 func NewNotEqualsOperator() AbstractOperator {

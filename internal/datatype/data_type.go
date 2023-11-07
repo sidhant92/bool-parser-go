@@ -9,5 +9,5 @@ type DataType interface {
 
 	GetValue(value interface{}) any
 
-	Compare(left interface{}, right interface{}) (int, error)
+	Compare(left interface{}, right interface{}, validated bool) (int, error)
 }

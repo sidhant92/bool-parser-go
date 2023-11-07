@@ -427,3 +427,48 @@ func TestDefaultFieldFalse(t *testing.T) {
 	assert.Nil(t, err)
 	assert.False(t, res)
 }
+
+func TestContainsAnyTrueCondition(t *testing.T) {
+	data := map[string]interface{}{
+		"age": []int32{1, 2, 3},
+	}
+	res, err := evaluator.Evaluate("age contains_any (2)", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestContainsAnyFalseCondition(t *testing.T) {
+	data := map[string]interface{}{
+		"age": []int32{1, 2, 3},
+	}
+	res, err := evaluator.Evaluate("age contains_any (12)", data)
+	assert.Nil(t, err)
+	assert.False(t, res)
+}
+
+func TestContainsAllTrueCondition(t *testing.T) {
+	data := map[string]interface{}{
+		"age": []int32{1, 2, 3},
+	}
+	res, err := evaluator.Evaluate("age contains_all (1,2)", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestContainsAllFalseCondition(t *testing.T) {
+	data := map[string]interface{}{
+		"age": []int32{1, 2, 3},
+	}
+	res, err := evaluator.Evaluate("age contains_all (2,5)", data)
+	assert.Nil(t, err)
+	assert.False(t, res)
+}
+
+func TestContainsAllFailureCondition(t *testing.T) {
+	data := map[string]interface{}{
+		"age": "sid",
+	}
+	_, err := evaluator.Evaluate("age contains_all (2,5)", data)
+	assert.NotNil(t, err)
+	assert.ErrorIs(t, err, errors2.INVALID_DATA_TYPE)
+}

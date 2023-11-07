@@ -263,3 +263,21 @@ func TestInvalidNotExpression(t *testing.T) {
 	_, err := parser.Parse("not a > 5")
 	assert.NotNil(t, err)
 }
+
+func TestContainsAny(t *testing.T) {
+	res, _ := parser.Parse("a contains_any (1,2,3)")
+	assert.Equal(t, res.GetNodeType(), constant.ARRAY_NODE)
+	assert.Equal(t, res.(domain.ArrayNode).Field, "a")
+	assert.Equal(t, res.(domain.ArrayNode).Operator, constant.CONTAINS_ANY)
+	assert.Equal(t, len(res.(domain.ArrayNode).Items), 3)
+	assert.Equal(t, res.(domain.ArrayNode).Items[0].Value, 1)
+}
+
+func TestContainsAll(t *testing.T) {
+	res, _ := parser.Parse("a CONTAINS_ALL (\"a\", \"b\")")
+	assert.Equal(t, res.GetNodeType(), constant.ARRAY_NODE)
+	assert.Equal(t, res.(domain.ArrayNode).Field, "a")
+	assert.Equal(t, res.(domain.ArrayNode).Operator, constant.CONTAINS_ALL)
+	assert.Equal(t, len(res.(domain.ArrayNode).Items), 2)
+	assert.Equal(t, res.(domain.ArrayNode).Items[0].Value, "a")
+}

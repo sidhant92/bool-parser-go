@@ -7,9 +7,9 @@ import (
 type InOperator struct {
 }
 
-func (e *InOperator) Evaluate(dataType constant.DataType, left interface{}, right ...interface{}) (bool, error) {
+func (e *InOperator) Evaluate(containerDataType constant.ContainerDataType, dataType constant.DataType, validated bool, left interface{}, right ...interface{}) (bool, error) {
 	for _, value := range right {
-		res, err := GetOperator(constant.EQUALS).Evaluate(dataType, left, value)
+		res, err := GetOperator(constant.EQUALS).Evaluate(containerDataType, dataType, validated, left, value)
 		if err != nil {
 			return false, err
 		}
@@ -26,6 +26,14 @@ func (e *InOperator) GetSymbol() string {
 
 func (e *InOperator) GetOperator() constant.Operator {
 	return constant.IN
+}
+
+func (e *InOperator) GetAllowedContainerTypes() []constant.ContainerDataType {
+	return []constant.ContainerDataType{constant.PRIMITIVE}
+}
+
+func (e *InOperator) GetAllowedDataTypes() []constant.DataType {
+	return []constant.DataType{constant.STRING, constant.INTEGER, constant.LONG, constant.DECIMAL, constant.BOOLEAN, constant.VERSION}
 }
 
 func NewInOperator() AbstractOperator {
