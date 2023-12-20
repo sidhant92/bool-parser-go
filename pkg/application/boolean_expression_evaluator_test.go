@@ -110,6 +110,19 @@ func TestNestedField(t *testing.T) {
 	assert.True(t, res)
 }
 
+func TestTwoNestedField(t *testing.T) {
+	data := map[string]interface{}{
+		"person": map[string]interface{}{
+			"details": map[string]interface{}{
+				"age": 24,
+			},
+		},
+	}
+	res, err := evaluator.Evaluate("person.details.age > 20", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
 func TestMissingNestedField(t *testing.T) {
 	data := map[string]interface{}{
 		"person": map[string]interface{}{
