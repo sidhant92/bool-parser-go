@@ -1,8 +1,8 @@
-// Code generated from java-escape by ANTLR 4.11.1. DO NOT EDIT.
+// Code generated from /Users/sid/Desktop/filter1/BooleanExpression.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package lib // BooleanExpression
 
-import "github.com/antlr/antlr4/runtime/Go/antlr/v4"
+import "github.com/antlr4-go/antlr/v4"
 
 // BooleanExpressionListener is a complete listener for a parse tree produced by BooleanExpressionParser.
 type BooleanExpressionListener interface {
@@ -19,6 +19,9 @@ type BooleanExpressionListener interface {
 
 	// EnterInExpression is called when entering the inExpression production.
 	EnterInExpression(c *InExpressionContext)
+
+	// EnterArrayExpression is called when entering the arrayExpression production.
+	EnterArrayExpression(c *ArrayExpressionContext)
 
 	// EnterToExpression is called when entering the toExpression production.
 	EnterToExpression(c *ToExpressionContext)
@@ -37,6 +40,9 @@ type BooleanExpressionListener interface {
 
 	// EnterWordlist is called when entering the wordlist production.
 	EnterWordlist(c *WordlistContext)
+
+	// EnterArrayOperators is called when entering the arrayOperators production.
+	EnterArrayOperators(c *ArrayOperatorsContext)
 
 	// EnterNumericTypes is called when entering the numericTypes production.
 	EnterNumericTypes(c *NumericTypesContext)
@@ -62,6 +68,9 @@ type BooleanExpressionListener interface {
 	// ExitInExpression is called when exiting the inExpression production.
 	ExitInExpression(c *InExpressionContext)
 
+	// ExitArrayExpression is called when exiting the arrayExpression production.
+	ExitArrayExpression(c *ArrayExpressionContext)
+
 	// ExitToExpression is called when exiting the toExpression production.
 	ExitToExpression(c *ToExpressionContext)
 
@@ -79,6 +88,9 @@ type BooleanExpressionListener interface {
 
 	// ExitWordlist is called when exiting the wordlist production.
 	ExitWordlist(c *WordlistContext)
+
+	// ExitArrayOperators is called when exiting the arrayOperators production.
+	ExitArrayOperators(c *ArrayOperatorsContext)
 
 	// ExitNumericTypes is called when exiting the numericTypes production.
 	ExitNumericTypes(c *NumericTypesContext)

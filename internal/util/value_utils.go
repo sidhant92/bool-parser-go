@@ -21,7 +21,8 @@ func GetValueFromMap(key string, data map[string]interface{}) interface{} {
 	}
 	nestedMap, ok := value.(map[string]interface{})
 	if ok {
-		return GetValueFromMap(keys[1], nestedMap)
+		newKey := strings.Join(keys[1:], ".")
+		return GetValueFromMap(newKey, nestedMap)
 	}
 	log.Printf("could not find key %s for the data %s", key, data)
 	return nil

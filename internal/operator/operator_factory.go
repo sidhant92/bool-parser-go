@@ -10,6 +10,8 @@ var operatorMap = map[constant.Operator]AbstractOperator{
 	constant.LESS_THAN: NewLessThanOperator(),
 	constant.LESS_THAN_EQUAL: NewLessThanEqualOperator(),
 	constant.IN: NewInOperator(),
+	constant.CONTAINS_ANY: NewContainsAnyOperator(),
+	constant.CONTAINS_ALL: NewContainsAllOperator(),
 }
 
 func GetOperator(operator constant.Operator) AbstractOperator {

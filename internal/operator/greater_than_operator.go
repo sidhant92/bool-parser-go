@@ -8,9 +8,9 @@ import (
 type GreaterThanOperator struct {
 }
 
-func (e *GreaterThanOperator) Evaluate(dataType constant.DataType, left interface{}, right ...interface{}) (bool, error) {
+func (e *GreaterThanOperator) Evaluate(containerDataType constant.ContainerDataType, dataType constant.DataType, validated bool, left interface{}, right ...interface{}) (bool, error) {
 	dt := datatype.GetDataType(dataType)
-	res, err := dt.Compare(left, right[0])
+	res, err := dt.Compare(left, right[0], validated)
 	if err != nil {
 		return false, err
 	}
@@ -23,6 +23,14 @@ func (e *GreaterThanOperator) GetSymbol() string {
 
 func (e *GreaterThanOperator) GetOperator() constant.Operator {
 	return constant.GREATER_THAN
+}
+
+func (e *GreaterThanOperator) GetAllowedContainerTypes() []constant.ContainerDataType {
+	return []constant.ContainerDataType{constant.PRIMITIVE}
+}
+
+func (e *GreaterThanOperator) GetAllowedDataTypes() []constant.DataType {
+	return []constant.DataType{constant.STRING, constant.INTEGER, constant.LONG, constant.DECIMAL, constant.VERSION}
 }
 
 func NewGreaterThanOperator() AbstractOperator {

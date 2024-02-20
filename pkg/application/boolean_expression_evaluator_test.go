@@ -110,6 +110,19 @@ func TestNestedField(t *testing.T) {
 	assert.True(t, res)
 }
 
+func TestTwoNestedField(t *testing.T) {
+	data := map[string]interface{}{
+		"person": map[string]interface{}{
+			"details": map[string]interface{}{
+				"age": 24,
+			},
+		},
+	}
+	res, err := evaluator.Evaluate("person.details.age > 20", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
 func TestMissingNestedField(t *testing.T) {
 	data := map[string]interface{}{
 		"person": map[string]interface{}{
@@ -280,6 +293,15 @@ func TestPositiveInClauseForDecimals(t *testing.T) {
 	assert.True(t, res)
 }
 
+func TestPositiveNotInClauseForDecimals(t *testing.T) {
+	data := map[string]interface{}{
+		"num": 25.3,
+	}
+	res, err := evaluator.Evaluate("num not in (26.3,26.3,34.4)", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
 func TestNegativeInClauseForStrings(t *testing.T) {
 	data := map[string]interface{}{
 		"name": "test",
@@ -426,4 +448,49 @@ func TestDefaultFieldFalse(t *testing.T) {
 	res, err := evaluator.Evaluate(">= 18 AND < 20", data, "age")
 	assert.Nil(t, err)
 	assert.False(t, res)
+}
+
+func TestContainsAnyTrueCondition(t *testing.T) {
+	data := map[string]interface{}{
+		"age": []int32{1, 2, 3},
+	}
+	res, err := evaluator.Evaluate("age contains_any (2)", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestContainsAnyFalseCondition(t *testing.T) {
+	data := map[string]interface{}{
+		"age": []int32{1, 2, 3},
+	}
+	res, err := evaluator.Evaluate("age contains_any (12)", data)
+	assert.Nil(t, err)
+	assert.False(t, res)
+}
+
+func TestContainsAllTrueCondition(t *testing.T) {
+	data := map[string]interface{}{
+		"age": []int32{1, 2, 3},
+	}
+	res, err := evaluator.Evaluate("age contains_all (1,2)", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestContainsAllFalseCondition(t *testing.T) {
+	data := map[string]interface{}{
+		"age": []int32{1, 2, 3},
+	}
+	res, err := evaluator.Evaluate("age contains_all (2,5)", data)
+	assert.Nil(t, err)
+	assert.False(t, res)
+}
+
+func TestContainsAllFailureCondition(t *testing.T) {
+	data := map[string]interface{}{
+		"age": "sid",
+	}
+	_, err := evaluator.Evaluate("age contains_all (2,5)", data)
+	assert.NotNil(t, err)
+	assert.ErrorIs(t, err, errors2.INVALID_DATA_TYPE)
 }

@@ -1,17 +1,18 @@
 module github.com/sidhant92/bool-parser-go
 
-go 1.20
+go 1.21
 
 require (
-	github.com/antlr/antlr4/runtime/Go/antlr/v4 v4.0.0-20221202181307-76fa05c21b12
+	github.com/antlr4-go/antlr v0.0.0-20230518091524-98b52378c522
+	github.com/antlr4-go/antlr/v4 v4.13.0
 	github.com/hashicorp/go-version v1.6.0
+	github.com/hashicorp/golang-lru/v2 v2.0.1
 	github.com/stretchr/testify v1.8.1
 )
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/hashicorp/golang-lru/v2 v2.0.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect
+	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

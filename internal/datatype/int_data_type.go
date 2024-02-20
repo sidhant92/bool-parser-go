@@ -39,11 +39,13 @@ func (s *IntDataType) GetValue(value interface{}) interface{} {
 	return res
 }
 
-func (s *IntDataType) Compare(left interface{}, right interface{}) (int, error) {
-	leftValid := s.IsValid(left)
-	rightValid := s.IsValid(right)
-	if !leftValid || !rightValid {
-		return 0, errors.INVALID_DATA_TYPE
+func (s *IntDataType) Compare(left interface{}, right interface{}, validated bool) (int, error) {
+	if !validated {
+		leftValid := s.IsValid(left)
+		rightValid := s.IsValid(right)
+		if !leftValid || !rightValid {
+			return 0, errors.INVALID_DATA_TYPE
+		}
 	}
 	leftValue := s.GetValue(left).(int)
 	rightValue := s.GetValue(right).(int)
