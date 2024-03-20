@@ -9,4 +9,8 @@ const (
 	IN_NODE            NodeType = "IN_NODE"
 	ARRAY_NODE         NodeType = "ARRAY_NODE"
 	UNARY_NODE         NodeType = "UNARY_NODE"
+	ARITHMETIC         NodeType = "ARITHMETIC"
+	ARITHMETIC_LEAF    NodeType = "ARITHMETIC_LEAF"
+	ARITHMETIC_UNARY   NodeType = "ARITHMETIC_UNARY"
+	STRING_NODE        NodeType = "STRING_NODE"
 )

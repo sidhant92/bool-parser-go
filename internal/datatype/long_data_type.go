@@ -1,7 +1,6 @@
 package datatype
 
 import (
-	"fmt"
 	"github.com/sidhant92/bool-parser-go/internal/util"
 	"github.com/sidhant92/bool-parser-go/pkg/constant"
 	errors "github.com/sidhant92/bool-parser-go/pkg/error"
@@ -23,7 +22,7 @@ func (s *LongDataType) IsValid(value interface{}) bool {
 	if ok {
 		return true
 	}
-	_, err := util.ConvertValue(fmt.Sprintf("%v",value), constant.LONG)
+	_, err := util.ConvertValue(value, constant.LONG)
 	if err != nil {
 		return false
 	}
@@ -35,7 +34,7 @@ func (s *LongDataType) GetValue(value interface{}) interface{} {
 	if ok {
 		return val
 	}
-	res, _ := util.ConvertValue(fmt.Sprintf("%v",value), constant.LONG)
+	res, _ := util.ConvertValue(value, constant.LONG)
 	return res
 }
 
