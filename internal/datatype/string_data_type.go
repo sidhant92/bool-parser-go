@@ -1,7 +1,7 @@
 package datatype
 
 import (
-	"fmt"
+	"github.com/sidhant92/bool-parser-go/internal/util"
 	"github.com/sidhant92/bool-parser-go/pkg/constant"
 	errors "github.com/sidhant92/bool-parser-go/pkg/error"
 	"strings"
@@ -23,7 +23,7 @@ func (s *StringDataType) IsValid(value interface{}) bool {
 }
 
 func (s *StringDataType) GetValue(value interface{}) interface{} {
-	return fmt.Sprintf("%v",value)
+	return util.ToString(value)
 }
 
 func (s *StringDataType) Compare(left interface{}, right interface{}, validated bool) (int, error) {

@@ -15,7 +15,16 @@ func IsSlice(v interface{}) bool {
 	return reflect.TypeOf(v).Kind() == reflect.Slice
 }
 
-func GetSliceFromInterface(value interface{}) []interface{}  {
+func Contains[T comparable](s []T, e T) bool {
+	for _, v := range s {
+		if v == e {
+			return true
+		}
+	}
+	return false
+}
+
+func GetSliceFromInterface(value interface{}) []interface{} {
 	var slice []interface{}
 	rv := reflect.ValueOf(value)
 	if rv.Kind() == reflect.Slice {

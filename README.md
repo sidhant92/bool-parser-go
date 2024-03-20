@@ -1,7 +1,7 @@
 # bool-parser-go
-A Boolean Expression Parser for Go
+An Expression Parser for Go
 
-The library can help parse complex and nested boolean expressions.
+The library can help parse complex and nested boolean and arithmetic expressions.
 The expressions are in SQL-like syntax, where you can use boolean operators and parentheses to combine individual expressions.
 
 An expression can be as simple as `name = Sidhant`.
@@ -142,3 +142,49 @@ The return type is `res, err`. Failure means that parsing has failed and any fal
 
 
 [For a complete list of examples please check out the test file](pkg/application/boolean_expression_evaluator_test.go)
+
+### Arithmetic Expression Evaluator
+
+The library can be used to evaluate a arithmetic expression.
+It supports both numbers and variables which will be substituted from the passed data.
+The passed variables can also be passed using the dot notation to access nested fields from the input data.
+
+The following Data Types are supported:
+1. String
+2. Integer
+3. Long
+4. Decimal
+
+The following Operators are supported:
+1. Addition (+)
+2. Subtraction (-)
+3. Multiplication (*)
+4. Division (/)
+5. Modulus (%)
+6. Exponent (^)
+
+Usage examples:
+
+Simple Addition Operation
+```
+var evaluator = NewArithmeticExpressionEvaluator(parser.New())
+data := map[string]interface{}{
+	"a": 10,
+}
+res, err := evaluator.Evaluate("a + 5", data)
+assert.Nil(t, err)
+assert.Equal(t, res, 15)
+```
+
+Complex Arithmetic Operation
+```
+var evaluator = NewArithmeticExpressionEvaluator(parser.New())
+data := map[string]interface{}{
+	"a": 10,
+}
+res, err := evaluator.Evaluate("((5 * 2) + a) * 2 + (1 + 3 * (a / 2))", data)
+assert.Nil(t, err)
+assert.Equal(t, res, 56)
+```
+
+[For a complete list of examples please check out the test file](pkg/application/arithmetic_expression_evaluator_test.go)

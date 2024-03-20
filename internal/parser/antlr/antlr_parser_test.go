@@ -3,6 +3,7 @@ package parser
 import (
 	"github.com/sidhant92/bool-parser-go/pkg/constant"
 	"github.com/sidhant92/bool-parser-go/pkg/domain"
+	"github.com/sidhant92/bool-parser-go/pkg/domain/arithmetic"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -269,7 +270,7 @@ func TestStringList2(t *testing.T) {
 
 func TestInvalidExpression(t *testing.T) {
 	_, err := parser.Parse("a")
-	assert.NotNil(t, err)
+	assert.Nil(t, err)
 }
 
 func TestInvalidNotExpression(t *testing.T) {
@@ -293,4 +294,71 @@ func TestContainsAll(t *testing.T) {
 	assert.Equal(t, res.(domain.ArrayNode).Operator, constant.CONTAINS_ALL)
 	assert.Equal(t, len(res.(domain.ArrayNode).Items), 2)
 	assert.Equal(t, res.(domain.ArrayNode).Items[0].Value, "a")
+}
+
+func TestAddOperatorString(t *testing.T) {
+	res, _ := parser.Parse("a + b")
+	assert.Equal(t, res.GetNodeType(), constant.ARITHMETIC)
+	arithmeticNode := res.(*arithmetic.ArithmeticNode)
+	left := arithmeticNode.Left.(*arithmetic.ArithmeticLeafNode)
+	right := arithmeticNode.Right.(*arithmetic.ArithmeticLeafNode)
+	assert.Equal(t, left.Operand, "a")
+	assert.Equal(t, left.DataType, constant.STRING)
+	assert.Equal(t, right.Operand, "b")
+	assert.Equal(t, right.DataType, constant.STRING)
+	assert.Equal(t, arithmeticNode.Operator, constant.ADD)
+}
+
+func TestAddOperatorInt(t *testing.T) {
+	res, _ := parser.Parse("20 + 5")
+	assert.Equal(t, res.GetNodeType(), constant.ARITHMETIC)
+	arithmeticNode := res.(*arithmetic.ArithmeticNode)
+	left := arithmeticNode.Left.(*arithmetic.ArithmeticLeafNode)
+	right := arithmeticNode.Right.(*arithmetic.ArithmeticLeafNode)
+	assert.Equal(t, left.Operand, 20)
+	assert.Equal(t, left.DataType, constant.INTEGER)
+	assert.Equal(t, right.Operand, 5)
+	assert.Equal(t, right.DataType, constant.INTEGER)
+	assert.Equal(t, arithmeticNode.Operator, constant.ADD)
+}
+
+func TestAddOperatorDecimal(t *testing.T) {
+	res, _ := parser.Parse("20.5 + 5")
+	assert.Equal(t, res.GetNodeType(), constant.ARITHMETIC)
+	arithmeticNode := res.(*arithmetic.ArithmeticNode)
+	left := arithmeticNode.Left.(*arithmetic.ArithmeticLeafNode)
+	right := arithmeticNode.Right.(*arithmetic.ArithmeticLeafNode)
+	assert.Equal(t, left.Operand, 20.5)
+	assert.Equal(t, left.DataType, constant.DECIMAL)
+	assert.Equal(t, right.Operand, 5)
+	assert.Equal(t, right.DataType, constant.INTEGER)
+	assert.Equal(t, arithmeticNode.Operator, constant.ADD)
+}
+
+func TestAddOperatorBool(t *testing.T) {
+	res, _ := parser.Parse("false + 5")
+	assert.Equal(t, res.GetNodeType(), constant.ARITHMETIC)
+	arithmeticNode := res.(*arithmetic.ArithmeticNode)
+	left := arithmeticNode.Left.(*arithmetic.ArithmeticLeafNode)
+	right := arithmeticNode.Right.(*arithmetic.ArithmeticLeafNode)
+	assert.Equal(t, left.Operand, false)
+	assert.Equal(t, left.DataType, constant.BOOLEAN)
+	assert.Equal(t, right.Operand, 5)
+	assert.Equal(t, right.DataType, constant.INTEGER)
+	assert.Equal(t, arithmeticNode.Operator, constant.ADD)
+}
+
+func TestComparisonWithArithmetic(t *testing.T) {
+	res, _ := parser.Parse("a > (10 + 20)")
+	assert.Equal(t, res.GetNodeType(), constant.COMPARISON_NODE)
+	comparisonNode := res.(domain.ComparisonNode)
+	assert.Equal(t, comparisonNode.Field, "a")
+	arithmeticNode := comparisonNode.Value.(*arithmetic.ArithmeticNode)
+	left := arithmeticNode.Left.(*arithmetic.ArithmeticLeafNode)
+	right := arithmeticNode.Right.(*arithmetic.ArithmeticLeafNode)
+	assert.Equal(t, arithmeticNode.Operator, constant.ADD)
+	assert.Equal(t, left.Operand, 10)
+	assert.Equal(t, left.DataType, constant.INTEGER)
+	assert.Equal(t, right.Operand, 20)
+	assert.Equal(t, right.DataType, constant.INTEGER)
 }
