@@ -49,7 +49,7 @@ func TestSimpleTrueCorrectExpressions(t *testing.T) {
 	data := map[string]interface{}{
 		"name": "abc-",
 	}
-	res, err := evaluator.Evaluate("name = abc-", data)
+	res, err := evaluator.Evaluate("name = \"abc-\"", data)
 	assert.Nil(t, err)
 	assert.True(t, res)
 }
