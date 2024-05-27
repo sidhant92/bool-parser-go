@@ -52,16 +52,23 @@ func (p *ANTLRParser) Parse(input string, defaultField ...string) (res domain.No
 		}
 	}
 
+	errorListener := NewCustomErrorListener()
 	inputStream := antlr.NewInputStream(input)
 	lexer := lib.NewBooleanExpressionLexer(inputStream)
+	lexer.RemoveErrorListeners()
+	lexer.AddErrorListener(errorListener)
 	stream := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
 	antlrParser := lib.NewBooleanExpressionParser(stream)
+	antlrParser.RemoveErrorListeners()
+	antlrParser.AddErrorListener(errorListener)
 	var df = ""
 	if len(defaultField) > 0 {
 		df = defaultField[0]
 	}
-	listener := New(df)
-	antlr.ParseTreeWalkerDefault.Walk(listener, antlrParser.Parse())
+	parseResult := antlrParser.Parse()
+	listener := New(df, errorListener.errors)
+	antlr.ParseTreeWalkerDefault.Walk(listener, parseResult)
+
 	if p.UseCache {
 		p.cache.Add(input, listener.GetResult())
 	}

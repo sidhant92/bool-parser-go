@@ -22,19 +22,25 @@ type CustomListener struct {
 
 	OperatorService *service.OperatorService
 
+	FunctionEvaluatorService *service.FunctionEvaluatorService
+
 	TokenCount uint8
+
+	ErrorCount int
 
 	DefaultField string
 }
 
-func New(defaultField string) *CustomListener {
+func New(defaultField string, errors int) *CustomListener {
 	l := CustomListener{
-		Nodes:           []domain.Node{},
-		LastToken:       nil,
-		Result:          nil,
-		OperatorService: service.NewOperatorService(),
-		TokenCount:      0,
-		DefaultField:    defaultField,
+		Nodes:                    []domain.Node{},
+		LastToken:                nil,
+		Result:                   nil,
+		OperatorService:          service.NewOperatorService(),
+		FunctionEvaluatorService: service.NewFunctionEvaluatorService(),
+		TokenCount:               0,
+		ErrorCount:               errors,
+		DefaultField:             defaultField,
 	}
 	return &l
 }
@@ -181,7 +187,7 @@ func (l *CustomListener) ExitNotExpression(c *lib.NotExpressionContext) {
 func (l *CustomListener) ExitComparatorExpression(c *lib.ComparatorExpressionContext) {
 	field := l.GetField(c.GetLeft().GetText())
 	operator := l.OperatorService.GetOperatorFromSymbol(c.GetOp().GetText())
-	if (reflect.TypeOf(c.GetRight()) == reflect.TypeOf(&lib.ParentExpressionContext{}) && l.size() != 0) {
+	if (reflect.TypeOf(c.GetRight()) != reflect.TypeOf(&lib.TypesExpressionContext{}) && l.size() != 0) {
 		value := l.pop()
 		l.push(domain.ComparisonNode{
 			Field:    field,
@@ -209,6 +215,16 @@ func (l *CustomListener) ExitUnaryArithmeticExpression(ctx *lib.UnaryArithmeticE
 		DataType: dataType,
 	}
 	node := &arithmetic.ArithmeticUnaryNode{Operand: leafNode}
+	l.push(node)
+}
+
+func (l *CustomListener) ExitArithmeticFunctionExpression(ctx *lib.ArithmeticFunctionExpressionContext) {
+	if l.ErrorCount > 0 {
+		panic("Invalid Expression")
+	}
+	functionType := l.FunctionEvaluatorService.GetFunctionFromSymbol(ctx.GetLeft().GetText())
+	items := l.GetArithmeticArrayElements(ctx.GetData().GetChildren())
+	node := &arithmetic.ArithmeticFunctionNode{FunctionType: functionType, Items: items}
 	l.push(node)
 }
 
@@ -319,6 +335,23 @@ func (l *CustomListener) GetArrayElements(trees []antlr.Tree) []domain.Pair {
 	return pairs
 }
 
+func (l *CustomListener) GetArithmeticArrayElements(trees []antlr.Tree) []arithmetic.ArithmeticLeafNode {
+	typesContextFilter := func(tree antlr.Tree) bool { return reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesContext{}) }
+	var typesContextChildren = util.Filter(trees, typesContextFilter)
+	var items []arithmetic.ArithmeticLeafNode
+
+	for _, child := range typesContextChildren {
+		dataType := GetDataType(child.(*lib.TypesContext).GetStart())
+		value, _ := util.ConvertValue(child.(*lib.TypesContext).GetText(), dataType)
+		items = append(items, arithmetic.ArithmeticLeafNode{
+			DataType: dataType,
+			Operand:  value,
+		})
+	}
+
+	return items
+}
+
 // VisitTerminal is called when a terminal node is visited.
 func (s *CustomListener) VisitTerminal(node antlr.TerminalNode) {}
 
@@ -336,6 +369,9 @@ func (s *CustomListener) EnterParse(ctx *lib.ParseContext) {}
 
 // EnterUnaryArithmeticExpression is called when production unaryArithmeticExpression is entered.
 func (s *CustomListener) EnterUnaryArithmeticExpression(ctx *lib.UnaryArithmeticExpressionContext) {
+}
+
+func (s *CustomListener) EnterArithmeticFunctionExpression(ctx *lib.ArithmeticFunctionExpressionContext) {
 }
 
 // EnterBinaryExpression is called when production binaryExpression is entered.
@@ -412,3 +448,11 @@ func (s *CustomListener) EnterBool(ctx *lib.BoolContext) {}
 
 // ExitBool is called when production bool is exited.
 func (s *CustomListener) ExitBool(ctx *lib.BoolContext) {}
+
+// EnterArrayArithmeticFunction is called when production arrayArithmeticFunction is entered.
+func (s *CustomListener) EnterArrayArithmeticFunction(ctx *lib.ArrayArithmeticFunctionContext) {
+}
+
+// ExitArrayArithmeticFunction is called when production arrayArithmeticFunction is exited.
+func (s *CustomListener) ExitArrayArithmeticFunction(ctx *lib.ArrayArithmeticFunctionContext) {
+}

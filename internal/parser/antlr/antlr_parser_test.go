@@ -362,3 +362,33 @@ func TestComparisonWithArithmetic(t *testing.T) {
 	assert.Equal(t, right.Operand, 20)
 	assert.Equal(t, right.DataType, constant.INTEGER)
 }
+
+func TestArithmeticFunction(t *testing.T) {
+	res, _ := parser.Parse("min (1,2,3)")
+	assert.Equal(t, res.GetNodeType(), constant.ARITHMETIC_FUNCTION)
+	arithmeticFunctionNode := res.(*arithmetic.ArithmeticFunctionNode)
+	assert.Equal(t, arithmeticFunctionNode.FunctionType, constant.MIN)
+	assert.Equal(t, len(arithmeticFunctionNode.Items), 3)
+	assert.Equal(t, arithmeticFunctionNode.Items[0].DataType, constant.INTEGER)
+	assert.Equal(t, arithmeticFunctionNode.Items[0].Operand, 1)
+	assert.Equal(t, arithmeticFunctionNode.Items[1].DataType, constant.INTEGER)
+	assert.Equal(t, arithmeticFunctionNode.Items[1].Operand, 2)
+	assert.Equal(t, arithmeticFunctionNode.Items[2].DataType, constant.INTEGER)
+	assert.Equal(t, arithmeticFunctionNode.Items[2].Operand, 3)
+}
+
+func TestArithmeticFunctionWithSubstitution(t *testing.T) {
+	res, _ := parser.Parse("min(abc)")
+	assert.Equal(t, res.GetNodeType(), constant.ARITHMETIC_FUNCTION)
+	arithmeticFunctionNode := res.(*arithmetic.ArithmeticFunctionNode)
+	assert.Equal(t, arithmeticFunctionNode.FunctionType, constant.MIN)
+	assert.Equal(t, len(arithmeticFunctionNode.Items), 1)
+	assert.Equal(t, arithmeticFunctionNode.Items[0].DataType, constant.STRING)
+	assert.Equal(t, arithmeticFunctionNode.Items[0].Operand, "abc")
+}
+
+func TestArithmeticFunctionWithError(t *testing.T) {
+	res, err := parser.Parse("min abc")
+	assert.Nil(t, res)
+	assert.NotNil(t, err)
+}

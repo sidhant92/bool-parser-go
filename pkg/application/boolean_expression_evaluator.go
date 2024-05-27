@@ -6,13 +6,16 @@ import (
 	"github.com/sidhant92/bool-parser-go/internal/util"
 	"github.com/sidhant92/bool-parser-go/pkg/constant"
 	"github.com/sidhant92/bool-parser-go/pkg/domain"
+	"github.com/sidhant92/bool-parser-go/pkg/domain/arithmetic"
 	errors2 "github.com/sidhant92/bool-parser-go/pkg/error"
 	"github.com/sidhant92/bool-parser-go/pkg/parser"
+	"reflect"
 )
 
 type BooleanExpressionEvaluator struct {
-	Parser          parser.Parser
-	OperatorService *service.OperatorService
+	Parser                        parser.Parser
+	OperatorService               *service.OperatorService
+	ArithmeticExpressionEvaluator ArithmeticExpressionEvaluator
 }
 
 func (b *BooleanExpressionEvaluator) Evaluate(expression string, data map[string]interface{}, defaultField ...string) (bool, error) {
@@ -47,7 +50,13 @@ func (b *BooleanExpressionEvaluator) evaluateComparisonNode(node domain.Comparis
 	if fieldData == nil {
 		return false, errors2.KEY_DATA_NOT_PRESENT
 	}
-	return b.OperatorService.Evaluate(node.Operator, constant.PRIMITIVE, node.DataType, fieldData, node.Value)
+	value := node.Value
+	arithmeticType := reflect.TypeOf(new(arithmetic.ArithmeticBaseNode)).Elem()
+	if reflect.TypeOf(node.Value).Implements(arithmeticType) {
+		res, _ := b.ArithmeticExpressionEvaluator.evaluateNode(value.(domain.Node), data)
+		value = res
+	}
+	return b.OperatorService.Evaluate(node.Operator, constant.PRIMITIVE, node.DataType, fieldData, value)
 }
 
 func (b *BooleanExpressionEvaluator) evaluateNumericRangeNode(node domain.NumericRangeNode, data map[string]interface{}) (bool, error) {
@@ -147,5 +156,5 @@ func (b *BooleanExpressionEvaluator) evaluateArrayNode(node domain.ArrayNode, da
 }
 
 func NewBooleanExpressionEvaluator(parser parser.Parser) BooleanExpressionEvaluator {
-	return BooleanExpressionEvaluator{parser, service.NewOperatorService()}
+	return BooleanExpressionEvaluator{parser, service.NewOperatorService(), NewArithmeticExpressionEvaluator(parser)}
 }

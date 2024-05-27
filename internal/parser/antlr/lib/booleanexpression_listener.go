@@ -29,6 +29,9 @@ type BooleanExpressionListener interface {
 	// EnterToExpression is called when entering the toExpression production.
 	EnterToExpression(c *ToExpressionContext)
 
+	// EnterArithmeticFunctionExpression is called when entering the arithmeticFunctionExpression production.
+	EnterArithmeticFunctionExpression(c *ArithmeticFunctionExpressionContext)
+
 	// EnterNotExpression is called when entering the notExpression production.
 	EnterNotExpression(c *NotExpressionContext)
 
@@ -46,6 +49,9 @@ type BooleanExpressionListener interface {
 
 	// EnterArithmeticOperator is called when entering the arithmeticOperator production.
 	EnterArithmeticOperator(c *ArithmeticOperatorContext)
+
+	// EnterArrayArithmeticFunction is called when entering the arrayArithmeticFunction production.
+	EnterArrayArithmeticFunction(c *ArrayArithmeticFunctionContext)
 
 	// EnterWordlist is called when entering the wordlist production.
 	EnterWordlist(c *WordlistContext)
@@ -86,6 +92,9 @@ type BooleanExpressionListener interface {
 	// ExitToExpression is called when exiting the toExpression production.
 	ExitToExpression(c *ToExpressionContext)
 
+	// ExitArithmeticFunctionExpression is called when exiting the arithmeticFunctionExpression production.
+	ExitArithmeticFunctionExpression(c *ArithmeticFunctionExpressionContext)
+
 	// ExitNotExpression is called when exiting the notExpression production.
 	ExitNotExpression(c *NotExpressionContext)
 
@@ -103,6 +112,9 @@ type BooleanExpressionListener interface {
 
 	// ExitArithmeticOperator is called when exiting the arithmeticOperator production.
 	ExitArithmeticOperator(c *ArithmeticOperatorContext)
+
+	// ExitArrayArithmeticFunction is called when exiting the arrayArithmeticFunction production.
+	ExitArrayArithmeticFunction(c *ArrayArithmeticFunctionContext)
 
 	// ExitWordlist is called when exiting the wordlist production.
 	ExitWordlist(c *WordlistContext)

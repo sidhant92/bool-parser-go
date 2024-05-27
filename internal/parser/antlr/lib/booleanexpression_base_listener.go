@@ -65,6 +65,14 @@ func (s *BaseBooleanExpressionListener) EnterToExpression(ctx *ToExpressionConte
 // ExitToExpression is called when production toExpression is exited.
 func (s *BaseBooleanExpressionListener) ExitToExpression(ctx *ToExpressionContext) {}
 
+// EnterArithmeticFunctionExpression is called when production arithmeticFunctionExpression is entered.
+func (s *BaseBooleanExpressionListener) EnterArithmeticFunctionExpression(ctx *ArithmeticFunctionExpressionContext) {
+}
+
+// ExitArithmeticFunctionExpression is called when production arithmeticFunctionExpression is exited.
+func (s *BaseBooleanExpressionListener) ExitArithmeticFunctionExpression(ctx *ArithmeticFunctionExpressionContext) {
+}
+
 // EnterNotExpression is called when production notExpression is entered.
 func (s *BaseBooleanExpressionListener) EnterNotExpression(ctx *NotExpressionContext) {}
 
@@ -100,6 +108,14 @@ func (s *BaseBooleanExpressionListener) EnterArithmeticOperator(ctx *ArithmeticO
 
 // ExitArithmeticOperator is called when production arithmeticOperator is exited.
 func (s *BaseBooleanExpressionListener) ExitArithmeticOperator(ctx *ArithmeticOperatorContext) {}
+
+// EnterArrayArithmeticFunction is called when production arrayArithmeticFunction is entered.
+func (s *BaseBooleanExpressionListener) EnterArrayArithmeticFunction(ctx *ArrayArithmeticFunctionContext) {
+}
+
+// ExitArrayArithmeticFunction is called when production arrayArithmeticFunction is exited.
+func (s *BaseBooleanExpressionListener) ExitArrayArithmeticFunction(ctx *ArrayArithmeticFunctionContext) {
+}
 
 // EnterWordlist is called when production wordlist is entered.
 func (s *BaseBooleanExpressionListener) EnterWordlist(ctx *WordlistContext) {}

@@ -18,9 +18,10 @@ type ArithmeticLeafNodeResponse struct {
 }
 
 type ArithmeticExpressionEvaluator struct {
-	Parser          parser.Parser
-	OperatorService *service.OperatorService
-	StringDataType  datatype.DataType
+	Parser                   parser.Parser
+	OperatorService          *service.OperatorService
+	FunctionEvaluatorService *service.FunctionEvaluatorService
+	StringDataType           datatype.DataType
 }
 
 func (b *ArithmeticExpressionEvaluator) Evaluate(expression string, data map[string]interface{}) (interface{}, error) {
@@ -37,6 +38,8 @@ func (b *ArithmeticExpressionEvaluator) evaluateNode(node domain.Node, data map[
 		return b.evaluateArithmeticNode(node.(*arithmetic.ArithmeticNode), data)
 	case constant.ARITHMETIC_LEAF:
 		return b.evaluateArithmeticLeafNode(node.(*arithmetic.ArithmeticLeafNode), data)
+	case constant.ARITHMETIC_FUNCTION:
+		return b.evaluateArithmeticFunctionNode(node.(*arithmetic.ArithmeticFunctionNode), data)
 	case constant.ARITHMETIC_UNARY:
 		return b.evaluateArithmeticUnaryNode(node.(*arithmetic.ArithmeticUnaryNode), data)
 	case constant.STRING_NODE:
@@ -79,6 +82,32 @@ func (b *ArithmeticExpressionEvaluator) evaluateArithmeticUnaryNode(node *arithm
 	return b.OperatorService.EvaluateArithmeticExpression(resolvedValue, dataType, nil, constant.STRING, constant.UNARY, constant.PRIMITIVE)
 }
 
+func (b *ArithmeticExpressionEvaluator) evaluateArithmeticFunctionNode(node *arithmetic.ArithmeticFunctionNode, data map[string]interface{}) (interface{}, error) {
+	var resolvedValues []ArithmeticLeafNodeResponse
+	for _, item := range node.Items {
+		res, _ := b.evaluateArithmeticLeafNode(&item, data)
+		resolvedValues = append(resolvedValues, *res)
+	}
+	var flattenedValues []domain.Field
+	for _, item := range resolvedValues {
+		if util.IsSlice(item.Value) {
+			data := util.GetSliceFromInterface(item.Value)
+			for _, val := range data {
+				flattenedValues = append(flattenedValues, domain.Field{
+					Value:    val,
+					DataType: util.GetDataType(val),
+				})
+			}
+		} else {
+			flattenedValues = append(flattenedValues, domain.Field{
+				Value:    item.Value,
+				DataType: item.DataType,
+			})
+		}
+	}
+	return b.FunctionEvaluatorService.Evaluate(node.FunctionType, flattenedValues)
+}
+
 func (b *ArithmeticExpressionEvaluator) evaluateArithmeticNode(node *arithmetic.ArithmeticNode, data map[string]interface{}) (interface{}, error) {
 	leftValue, _ := b.evaluateNode(node.Left, data)
 	rightValue, _ := b.evaluateNode(node.Right, data)
@@ -102,5 +131,5 @@ func (b *ArithmeticExpressionEvaluator) evaluateArithmeticNode(node *arithmetic.
 }
 
 func NewArithmeticExpressionEvaluator(parser parser.Parser) ArithmeticExpressionEvaluator {
-	return ArithmeticExpressionEvaluator{parser, service.NewOperatorService(), datatype.NewStringDataType()}
+	return ArithmeticExpressionEvaluator{parser, service.NewOperatorService(), service.NewFunctionEvaluatorService(), datatype.NewStringDataType()}
 }

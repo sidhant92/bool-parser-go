@@ -494,3 +494,22 @@ func TestContainsAllFailureCondition(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.ErrorIs(t, err, errors2.INVALID_DATA_TYPE)
 }
+
+func TestComparisonWithArithmeticFunction(t *testing.T) {
+	data := map[string]interface{}{
+		"age": 20,
+	}
+	res, err := evaluator.Evaluate("age > min (18, 25, 30)", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestComparisonWithArithmeticVariableFunction(t *testing.T) {
+	data := map[string]interface{}{
+		"age":     20,
+		"numbers": []int{1, 1, 2, 30},
+	}
+	res, err := evaluator.Evaluate("age > max (numbers)", data)
+	assert.Nil(t, err)
+	assert.False(t, res)
+}
