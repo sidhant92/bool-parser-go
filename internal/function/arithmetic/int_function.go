@@ -8,7 +8,7 @@ import (
 type IntFunction struct {
 }
 
-func (m *IntFunction) Evaluate(items []domain.Field) (interface{}, error) {
+func (m *IntFunction) Evaluate(items []domain.EvaluatedNode) (interface{}, error) {
 	datatype := items[0].DataType
 	value := items[0].Value
 	if datatype == constant.DECIMAL {

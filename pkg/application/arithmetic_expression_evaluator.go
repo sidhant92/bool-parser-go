@@ -90,18 +90,18 @@ func (b *ArithmeticExpressionEvaluator) evaluateArithmeticFunctionNode(node *ari
 		res, _ := b.evaluateArithmeticLeafNode(&item, data)
 		resolvedValues = append(resolvedValues, *res)
 	}
-	var flattenedValues []domain.Field
+	var flattenedValues []domain.EvaluatedNode
 	for _, item := range resolvedValues {
 		if util.IsSlice(item.Value) {
 			data := util.GetSliceFromInterface(item.Value)
 			for _, val := range data {
-				flattenedValues = append(flattenedValues, domain.Field{
+				flattenedValues = append(flattenedValues, domain.EvaluatedNode{
 					Value:    val,
 					DataType: util.GetDataType(val),
 				})
 			}
 		} else {
-			flattenedValues = append(flattenedValues, domain.Field{
+			flattenedValues = append(flattenedValues, domain.EvaluatedNode{
 				Value:    item.Value,
 				DataType: item.DataType,
 			})

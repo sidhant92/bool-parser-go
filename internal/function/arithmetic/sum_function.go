@@ -10,7 +10,7 @@ import (
 type SumFunction struct {
 }
 
-func (m *SumFunction) Evaluate(items []domain.Field) (interface{}, error) {
+func (m *SumFunction) Evaluate(items []domain.EvaluatedNode) (interface{}, error) {
 	decimalDataType := datatype.GetDataType(constant.DECIMAL)
 	total := 0.0
 	for _, item := range items {

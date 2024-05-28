@@ -8,7 +8,7 @@ import (
 type LenFunction struct {
 }
 
-func (m *LenFunction) Evaluate(items []domain.Field) (interface{}, error) {
+func (m *LenFunction) Evaluate(items []domain.EvaluatedNode) (interface{}, error) {
 	if len(items) == 1 && items[0].DataType == constant.STRING {
 		return len(items[0].Value.(string)), nil
 	}

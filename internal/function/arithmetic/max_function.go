@@ -13,26 +13,26 @@ import (
 type MaxFunction struct {
 }
 
-func (m *MaxFunction) Evaluate(items []domain.Field) (interface{}, error) {
-	dataTypes := lo.Map(items, func(item domain.Field, index int) constant.DataType {
+func (m *MaxFunction) Evaluate(items []domain.EvaluatedNode) (interface{}, error) {
+	dataTypes := lo.Map(items, func(item domain.EvaluatedNode, index int) constant.DataType {
 		return item.DataType
 	})
 	if util.Contains(dataTypes, constant.DECIMAL) {
 		decimalDataType := datatype.GetDataType(constant.DECIMAL)
-		decimalValues := lo.Map(items, func(item domain.Field, index int) float64 {
+		decimalValues := lo.Map(items, func(item domain.EvaluatedNode, index int) float64 {
 			return decimalDataType.GetValue(item.Value).(float64)
 		})
 		return datatypeutil.CastToWholeIfPossible(slices.Max(decimalValues)), nil
 	}
 	if util.Contains(dataTypes, constant.LONG) {
 		longDataType := datatype.GetDataType(constant.LONG)
-		longValues := lo.Map(items, func(item domain.Field, index int) int64 {
+		longValues := lo.Map(items, func(item domain.EvaluatedNode, index int) int64 {
 			return longDataType.GetValue(item.Value).(int64)
 		})
 		return datatypeutil.CastToIntIfPossible(slices.Max(longValues)), nil
 	}
 	intDataType := datatype.GetDataType(constant.INTEGER)
-	intValues := lo.Map(items, func(item domain.Field, index int) int {
+	intValues := lo.Map(items, func(item domain.EvaluatedNode, index int) int {
 		return intDataType.GetValue(item.Value).(int)
 	})
 	return slices.Max(intValues), nil

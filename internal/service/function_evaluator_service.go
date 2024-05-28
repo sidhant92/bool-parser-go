@@ -22,7 +22,7 @@ func (f *FunctionEvaluatorService) GetFunctionFromSymbol(symbol string) constant
 	panic("Unknown Function " + symbol)
 }
 
-func (f *FunctionEvaluatorService) Evaluate(functionType constant.FunctionType, items []domain.Field) (interface{}, error) {
+func (f *FunctionEvaluatorService) Evaluate(functionType constant.FunctionType, items []domain.EvaluatedNode) (interface{}, error) {
 	var abstractFunction = arithmetic.GetArithmeticFunction(functionType)
 	if len(items) < 1 {
 		log.Printf("Empty items now allowed")

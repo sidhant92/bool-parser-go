@@ -6,7 +6,7 @@ import (
 )
 
 type AbstractFunction interface {
-	Evaluate(fields []domain.Field) (interface{}, error)
+	Evaluate(fields []domain.EvaluatedNode) (interface{}, error)
 
 	GetFunctionType() constant.FunctionType
 

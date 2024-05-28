@@ -12,9 +12,9 @@ import (
 type MedianFunction struct {
 }
 
-func (m *MedianFunction) Evaluate(items []domain.Field) (interface{}, error) {
+func (m *MedianFunction) Evaluate(items []domain.EvaluatedNode) (interface{}, error) {
 	decimalDataType := datatype.GetDataType(constant.DECIMAL)
-	decimalValues := lo.Map(items, func(item domain.Field, index int) float64 {
+	decimalValues := lo.Map(items, func(item domain.EvaluatedNode, index int) float64 {
 		return decimalDataType.GetValue(item.Value).(float64)
 	})
 	res, _ := stats.Median(decimalValues)

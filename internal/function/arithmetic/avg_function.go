@@ -10,7 +10,7 @@ import (
 type AvgFunction struct {
 }
 
-func (m *AvgFunction) Evaluate(items []domain.Field) (interface{}, error) {
+func (m *AvgFunction) Evaluate(items []domain.EvaluatedNode) (interface{}, error) {
 	decimalDataType := datatype.GetDataType(constant.DECIMAL)
 	total := 0.0
 	for _, item := range items {
