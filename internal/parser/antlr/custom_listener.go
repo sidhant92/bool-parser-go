@@ -66,11 +66,11 @@ func (l *CustomListener) GetResult() domain.Node {
 	return l.Result
 }
 
-func (l *CustomListener) GetArithmeticLeafNode(ctx *lib.TypesExpressionContext) *arithmetic.ArithmeticLeafNode {
+func (l *CustomListener) GetUnaryNode(ctx *lib.TypesExpressionContext) *domain.UnaryNode {
 	dataType := GetDataType(ctx.GetStart())
 	operand, _ := util.ConvertValue(ctx.GetText(), dataType)
-	return &arithmetic.ArithmeticLeafNode{
-		Operand:  operand,
+	return &domain.UnaryNode{
+		Value:    operand,
 		DataType: dataType,
 	}
 }
@@ -213,8 +213,8 @@ func (l *CustomListener) ExitComparatorExpression(c *lib.ComparatorExpressionCon
 func (l *CustomListener) ExitUnaryArithmeticExpression(ctx *lib.UnaryArithmeticExpressionContext) {
 	dataType := GetDataType(ctx.GetExp().GetStart())
 	operand, _ := util.ConvertValue(ctx.GetExp().GetText(), dataType)
-	leafNode := &arithmetic.ArithmeticLeafNode{
-		Operand:  operand,
+	leafNode := &domain.UnaryNode{
+		Value:    operand,
 		DataType: dataType,
 	}
 	node := &arithmetic.ArithmeticUnaryNode{Operand: leafNode}
@@ -227,15 +227,19 @@ func (l *CustomListener) ExitArithmeticFunctionExpression(ctx *lib.ArithmeticFun
 	}
 	functionType := l.FunctionEvaluatorService.GetFunctionFromSymbol(ctx.GetLeft().GetText())
 	items := l.GetArithmeticArrayElements(ctx.GetData().GetChildren())
-	node := &arithmetic.ArithmeticFunctionNode{FunctionType: functionType, Items: items}
+	var itemsMapped []interface{}
+	for _, i := range items {
+		itemsMapped = append(itemsMapped, i)
+	}
+	node := &arithmetic.ArithmeticFunctionNode{FunctionType: functionType, Items: itemsMapped}
 	l.push(node)
 }
 
 func (l *CustomListener) ExitArithmeticExpression(ctx *lib.ArithmeticExpressionContext) {
 	operator := l.OperatorService.GetOperatorFromSymbol(ctx.GetOp().GetText())
 	if (reflect.TypeOf(ctx.GetLeft()) == reflect.TypeOf(&lib.TypesExpressionContext{}) && reflect.TypeOf(ctx.GetRight()) == reflect.TypeOf(&lib.TypesExpressionContext{})) {
-		left := l.GetArithmeticLeafNode(ctx.GetLeft().(*lib.TypesExpressionContext))
-		right := l.GetArithmeticLeafNode(ctx.GetRight().(*lib.TypesExpressionContext))
+		left := l.GetUnaryNode(ctx.GetLeft().(*lib.TypesExpressionContext))
+		right := l.GetUnaryNode(ctx.GetRight().(*lib.TypesExpressionContext))
 		node := &arithmetic.ArithmeticNode{
 			Left:     left,
 			Right:    right,
@@ -243,7 +247,7 @@ func (l *CustomListener) ExitArithmeticExpression(ctx *lib.ArithmeticExpressionC
 		}
 		l.push(node)
 	} else if (reflect.TypeOf(ctx.GetLeft()) == reflect.TypeOf(&lib.TypesExpressionContext{})) {
-		left := l.GetArithmeticLeafNode(ctx.GetLeft().(*lib.TypesExpressionContext))
+		left := l.GetUnaryNode(ctx.GetLeft().(*lib.TypesExpressionContext))
 		right := l.pop()
 		node := &arithmetic.ArithmeticNode{
 			Left:     left,
@@ -252,7 +256,7 @@ func (l *CustomListener) ExitArithmeticExpression(ctx *lib.ArithmeticExpressionC
 		}
 		l.push(node)
 	} else if (reflect.TypeOf(ctx.GetRight()) == reflect.TypeOf(&lib.TypesExpressionContext{})) {
-		right := l.GetArithmeticLeafNode(ctx.GetRight().(*lib.TypesExpressionContext))
+		right := l.GetUnaryNode(ctx.GetRight().(*lib.TypesExpressionContext))
 		left := l.pop()
 		node := &arithmetic.ArithmeticNode{
 			Left:     left,
@@ -338,17 +342,17 @@ func (l *CustomListener) GetArrayElements(trees []antlr.Tree) []domain.Pair {
 	return pairs
 }
 
-func (l *CustomListener) GetArithmeticArrayElements(trees []antlr.Tree) []arithmetic.ArithmeticLeafNode {
+func (l *CustomListener) GetArithmeticArrayElements(trees []antlr.Tree) []*domain.UnaryNode {
 	typesContextFilter := func(tree antlr.Tree) bool { return reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesContext{}) }
 	var typesContextChildren = util.Filter(trees, typesContextFilter)
-	var items []arithmetic.ArithmeticLeafNode
+	var items []*domain.UnaryNode
 
 	for _, child := range typesContextChildren {
 		dataType := GetDataType(child.(*lib.TypesContext).GetStart())
 		value, _ := util.ConvertValue(child.(*lib.TypesContext).GetText(), dataType)
-		items = append(items, arithmetic.ArithmeticLeafNode{
+		items = append(items, &domain.UnaryNode{
 			DataType: dataType,
-			Operand:  value,
+			Value:    value,
 		})
 	}
 

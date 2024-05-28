@@ -1,10 +1,12 @@
 package arithmetic
 
-import "github.com/sidhant92/bool-parser-go/pkg/constant"
+import (
+	"github.com/sidhant92/bool-parser-go/pkg/constant"
+)
 
 type ArithmeticFunctionNode struct {
 	FunctionType constant.FunctionType
-	Items        []ArithmeticLeafNode
+	Items        []interface{} // array of nodes
 }
 
 func (c ArithmeticFunctionNode) GetNodeType() constant.NodeType {
