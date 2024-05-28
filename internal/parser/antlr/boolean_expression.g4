@@ -1,4 +1,4 @@
-grammar BooleanExpression;
+grammar boolean_expression;
 
 parse
  : expression EOF
@@ -15,6 +15,7 @@ expression
  | left=expression op= MODULUS right=expression                      #arithmeticExpression
  | left=expression op= ADD right=expression                          #arithmeticExpression
  | left=expression op= SUBTRACT right=expression                     #arithmeticExpression
+ | left=arithmeticFunction data=wordlist                             #arithmeticFunctionExpression
  | left=expression op=binary right=expression                        #binaryExpression
  | types                                                             #typesExpression
  | (field=WORD)? lower=numericTypes TO upper=numericTypes            #toExpression
@@ -35,9 +36,20 @@ arithmeticOperator
  | EXPONENT
  ;
 
+arithmeticFunction
+  : MIN
+  | MAX
+  | SUM
+  | AVG
+  | MEAN
+  | MODE
+  | LEN
+  | MEDIAN
+  | INT
+  ;
 
  wordlist
- : LPAREN WS* first=types WS* (',' WS* rest=types WS*)* RPAREN
+ : LPAREN WS* first=expression WS* (',' WS* rest=expression WS*)* RPAREN
  ;
 
  arrayOperators
@@ -72,6 +84,15 @@ TRUE         : 'TRUE' | 'true';
 FALSE        : 'FALSE' | 'false';
 CONTAINS_ALL : 'CONTAINS_ALL' | 'contains_all';
 CONTAINS_ANY : 'CONTAINS_ANY' | 'contains_any';
+MIN          : 'MIN' | 'min';
+MAX          : 'MAX' | 'max';
+AVG          : 'AVG' | 'avg';
+SUM          : 'SUM' | 'sum';
+MEAN         : 'MEAN' | 'mean';
+MODE         : 'MODE' | 'mode';
+MEDIAN       : 'MEDIAN' | 'median';
+LEN          : 'LEN' | 'len';
+INT          : 'INT' | 'int';
 ADD          : '+';
 SUBTRACT     : '-' ;
 MULTIPLY     : '*' ;

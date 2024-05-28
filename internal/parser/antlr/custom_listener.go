@@ -90,7 +90,10 @@ func (l *CustomListener) ExitParse(c *lib.ParseContext) {
 	}
 	if (l.Result == nil && l.TokenCount == 1 && reflect.TypeOf(l.LastToken) == reflect.TypeOf(&antlr.CommonToken{})) {
 		field, _ := util.ConvertValue(l.LastToken.GetText(), constant.STRING)
-		l.Result = &domain.StringNode{Field: field.(string)}
+		l.Result = &domain.UnaryNode{
+			DataType: constant.STRING,
+			Value:    field,
+		}
 	}
 	if l.Result == nil {
 		panic("Error parsing expression for the string " + c.GetText())

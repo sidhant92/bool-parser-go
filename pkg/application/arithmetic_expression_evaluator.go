@@ -42,19 +42,21 @@ func (b *ArithmeticExpressionEvaluator) evaluateNode(node domain.Node, data map[
 		return b.evaluateArithmeticFunctionNode(node.(*arithmetic.ArithmeticFunctionNode), data)
 	case constant.ARITHMETIC_UNARY:
 		return b.evaluateArithmeticUnaryNode(node.(*arithmetic.ArithmeticUnaryNode), data)
-	case constant.STRING_NODE:
-		return b.evaluateStringNode(node.(*domain.StringNode), data)
+	case constant.UNARY_NODE:
+		return b.evaluateUnaryNode(node.(*domain.UnaryNode), data)
 	default:
 		return nil, errors.New("unknown node")
 	}
 }
 
-func (b *ArithmeticExpressionEvaluator) evaluateStringNode(node *domain.StringNode, data map[string]interface{}) (interface{}, error) {
-	fieldData := util.GetValueFromMap(node.Field, data)
-	if fieldData != nil {
-		return fieldData, nil
+func (b *ArithmeticExpressionEvaluator) evaluateUnaryNode(node *domain.UnaryNode, data map[string]interface{}) (interface{}, error) {
+	if node.DataType == constant.STRING {
+		fieldData := util.GetValueFromMap(node.Value.(string), data)
+		if fieldData != nil {
+			return fieldData, nil
+		}
 	}
-	return node.Field, nil
+	return node.Value, nil
 }
 
 func (b *ArithmeticExpressionEvaluator) evaluateArithmeticLeafNode(node *arithmetic.ArithmeticLeafNode, data map[string]interface{}) (*ArithmeticLeafNodeResponse, error) {
