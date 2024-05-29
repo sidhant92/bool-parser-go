@@ -33,8 +33,6 @@ func (b *ArithmeticExpressionEvaluator) evaluateNode(node domain.Node, data map[
 		return b.evaluateArithmeticNode(node.(*arithmetic.ArithmeticNode), data)
 	case constant.ARITHMETIC_FUNCTION:
 		return b.evaluateArithmeticFunctionNode(node.(*arithmetic.ArithmeticFunctionNode), data)
-	case constant.ARITHMETIC_UNARY:
-		return b.evaluateArithmeticUnaryNode(node.(*arithmetic.ArithmeticUnaryNode), data)
 	case constant.UNARY_NODE:
 		return b.evaluateUnaryNode(node.(*domain.UnaryNode), data)
 	default:
@@ -50,16 +48,6 @@ func (b *ArithmeticExpressionEvaluator) evaluateUnaryNode(node *domain.UnaryNode
 		}
 	}
 	return node.Value, nil
-}
-
-func (b *ArithmeticExpressionEvaluator) evaluateArithmeticUnaryNode(node *arithmetic.ArithmeticUnaryNode, data map[string]interface{}) (interface{}, error) {
-	resolvedValue, _ := b.evaluateNode(node.Operand, data)
-	if (reflect.TypeOf(resolvedValue) == reflect.TypeOf(&domain.EvaluatedNode{})) {
-		response := resolvedValue.(*domain.EvaluatedNode)
-		return b.OperatorService.EvaluateArithmeticExpression(response.Value, response.DataType, nil, constant.STRING, constant.UNARY, constant.PRIMITIVE)
-	}
-	dataType := util.GetDataType(resolvedValue)
-	return b.OperatorService.EvaluateArithmeticExpression(resolvedValue, dataType, nil, constant.STRING, constant.UNARY, constant.PRIMITIVE)
 }
 
 func (b *ArithmeticExpressionEvaluator) evaluateArithmeticFunctionNode(node *arithmetic.ArithmeticFunctionNode, data map[string]interface{}) (interface{}, error) {
@@ -105,6 +93,15 @@ func (b *ArithmeticExpressionEvaluator) evaluateArithmeticFunctionNode(node *ari
 
 func (b *ArithmeticExpressionEvaluator) evaluateArithmeticNode(node *arithmetic.ArithmeticNode, data map[string]interface{}) (interface{}, error) {
 	leftValue, _ := b.evaluateNode(node.Left, data)
+	if node.Operator == constant.UNARY {
+		if reflect.TypeOf(leftValue) == reflect.TypeOf(&domain.EvaluatedNode{}) {
+			evaluatedNode := leftValue.(domain.EvaluatedNode)
+			return b.OperatorService.EvaluateArithmeticExpression(evaluatedNode.Value, evaluatedNode.DataType, nil, constant.STRING, node.Operator, constant.PRIMITIVE)
+		} else {
+			dataType := util.GetDataType(leftValue)
+			return b.OperatorService.EvaluateArithmeticExpression(leftValue, dataType, nil, constant.STRING, node.Operator, constant.PRIMITIVE)
+		}
+	}
 	rightValue, _ := b.evaluateNode(node.Right, data)
 	if (reflect.TypeOf(leftValue) == reflect.TypeOf(&domain.EvaluatedNode{}) && reflect.TypeOf(rightValue) == reflect.TypeOf(&domain.EvaluatedNode{})) {
 		leftLeaf := leftValue.(*domain.EvaluatedNode)

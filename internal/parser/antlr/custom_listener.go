@@ -81,11 +81,11 @@ func (l *CustomListener) ExitParse(c *lib.ParseContext) {
 	} else if l.Result == nil && l.size() == 2 {
 		firstNode := l.pop()
 		secondNode := l.pop()
-		if firstNode.GetNodeType() == constant.ARITHMETIC && secondNode.GetNodeType() == constant.ARITHMETIC_UNARY {
-			l.Result = &arithmetic.ArithmeticUnaryNode{Operand: firstNode}
+		if firstNode.GetNodeType() == constant.ARITHMETIC && secondNode.GetNodeType() == constant.ARITHMETIC && secondNode.(*arithmetic.ArithmeticNode).Right == nil {
+			l.Result = &arithmetic.ArithmeticNode{Left: firstNode, Operator: constant.UNARY}
 		}
-		if secondNode.GetNodeType() == constant.ARITHMETIC && firstNode.GetNodeType() == constant.ARITHMETIC_UNARY {
-			l.Result = &arithmetic.ArithmeticUnaryNode{Operand: secondNode}
+		if secondNode.GetNodeType() == constant.ARITHMETIC && firstNode.GetNodeType() == constant.ARITHMETIC && firstNode.(*arithmetic.ArithmeticNode).Right == nil {
+			l.Result = &arithmetic.ArithmeticNode{Left: secondNode, Operator: constant.UNARY}
 		}
 	}
 	if (l.Result == nil && l.TokenCount == 1 && reflect.TypeOf(l.LastToken) == reflect.TypeOf(&antlr.CommonToken{})) {
@@ -217,7 +217,7 @@ func (l *CustomListener) ExitUnaryArithmeticExpression(ctx *lib.UnaryArithmeticE
 		Value:    operand,
 		DataType: dataType,
 	}
-	node := &arithmetic.ArithmeticUnaryNode{Operand: leafNode}
+	node := &arithmetic.ArithmeticNode{Left: leafNode, Operator: constant.UNARY}
 	l.push(node)
 }
 
