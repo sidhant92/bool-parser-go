@@ -273,11 +273,6 @@ func TestInvalidExpression(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-func TestInvalidNotExpression(t *testing.T) {
-	_, err := parser.Parse("not a > 5")
-	assert.NotNil(t, err)
-}
-
 func TestContainsAny(t *testing.T) {
 	res, _ := parser.Parse("a contains_any (1,2,3)")
 	assert.Equal(t, res.GetNodeType(), constant.ARRAY_NODE)

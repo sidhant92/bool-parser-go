@@ -365,3 +365,21 @@ func TestLenArithmeticFunctionIntegerVariable(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, res, 4)
 }
+
+func TestNestedFunctions(t *testing.T) {
+	data := map[string]interface{}{
+		"a": []int{1, 1, 2, 3},
+	}
+	res, err := arithmeticEvaluator.Evaluate("max(1,2,min(5,7,87))", data)
+	assert.Nil(t, err)
+	assert.Equal(t, res, 5)
+}
+
+func TestNestedFunctions1(t *testing.T) {
+	data := map[string]interface{}{
+		"a": []int{1, 1, 2, 3},
+	}
+	res, err := arithmeticEvaluator.Evaluate("max(1,2,min(5,7,87,min(1,2)))", data)
+	assert.Nil(t, err)
+	assert.Equal(t, res, 2)
+}

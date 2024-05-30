@@ -45,7 +45,7 @@ func booleanexpressionParserInit() {
 		"INTEGER", "WS", "WORD", "ALPHANUMERIC", "SQ", "DQ",
 	}
 	staticData.RuleNames = []string{
-		"parse", "expression", "comparator", "arithmeticOperator", "arrayArithmeticFunction",
+		"parse", "expression", "comparator", "arithmeticOperator", "arithmeticFunction",
 		"wordlist", "arrayOperators", "numericTypes", "types", "binary", "bool",
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
@@ -98,12 +98,12 @@ func booleanexpressionParserInit() {
 		5, 1, 0, 0, 0, 94, 95, 7, 1, 0, 0, 95, 7, 1, 0, 0, 0, 96, 97, 7, 2, 0,
 		0, 97, 9, 1, 0, 0, 0, 98, 102, 5, 32, 0, 0, 99, 101, 5, 37, 0, 0, 100,
 		99, 1, 0, 0, 0, 101, 104, 1, 0, 0, 0, 102, 100, 1, 0, 0, 0, 102, 103, 1,
-		0, 0, 0, 103, 105, 1, 0, 0, 0, 104, 102, 1, 0, 0, 0, 105, 109, 3, 16, 8,
+		0, 0, 0, 103, 105, 1, 0, 0, 0, 104, 102, 1, 0, 0, 0, 105, 109, 3, 2, 1,
 		0, 106, 108, 5, 37, 0, 0, 107, 106, 1, 0, 0, 0, 108, 111, 1, 0, 0, 0, 109,
 		107, 1, 0, 0, 0, 109, 110, 1, 0, 0, 0, 110, 128, 1, 0, 0, 0, 111, 109,
 		1, 0, 0, 0, 112, 116, 5, 1, 0, 0, 113, 115, 5, 37, 0, 0, 114, 113, 1, 0,
 		0, 0, 115, 118, 1, 0, 0, 0, 116, 114, 1, 0, 0, 0, 116, 117, 1, 0, 0, 0,
-		117, 119, 1, 0, 0, 0, 118, 116, 1, 0, 0, 0, 119, 123, 3, 16, 8, 0, 120,
+		117, 119, 1, 0, 0, 0, 118, 116, 1, 0, 0, 0, 119, 123, 3, 2, 1, 0, 120,
 		122, 5, 37, 0, 0, 121, 120, 1, 0, 0, 0, 122, 125, 1, 0, 0, 0, 123, 121,
 		1, 0, 0, 0, 123, 124, 1, 0, 0, 0, 124, 127, 1, 0, 0, 0, 125, 123, 1, 0,
 		0, 0, 126, 112, 1, 0, 0, 0, 127, 130, 1, 0, 0, 0, 128, 126, 1, 0, 0, 0,
@@ -199,17 +199,17 @@ const (
 
 // BooleanExpressionParser rules.
 const (
-	BooleanExpressionParserRULE_parse                   = 0
-	BooleanExpressionParserRULE_expression              = 1
-	BooleanExpressionParserRULE_comparator              = 2
-	BooleanExpressionParserRULE_arithmeticOperator      = 3
-	BooleanExpressionParserRULE_arrayArithmeticFunction = 4
-	BooleanExpressionParserRULE_wordlist                = 5
-	BooleanExpressionParserRULE_arrayOperators          = 6
-	BooleanExpressionParserRULE_numericTypes            = 7
-	BooleanExpressionParserRULE_types                   = 8
-	BooleanExpressionParserRULE_binary                  = 9
-	BooleanExpressionParserRULE_bool                    = 10
+	BooleanExpressionParserRULE_parse              = 0
+	BooleanExpressionParserRULE_expression         = 1
+	BooleanExpressionParserRULE_comparator         = 2
+	BooleanExpressionParserRULE_arithmeticOperator = 3
+	BooleanExpressionParserRULE_arithmeticFunction = 4
+	BooleanExpressionParserRULE_wordlist           = 5
+	BooleanExpressionParserRULE_arrayOperators     = 6
+	BooleanExpressionParserRULE_numericTypes       = 7
+	BooleanExpressionParserRULE_types              = 8
+	BooleanExpressionParserRULE_binary             = 9
+	BooleanExpressionParserRULE_bool               = 10
 )
 
 // IParseContext is an interface to support dynamic dispatch.
@@ -841,7 +841,7 @@ func (s *ToExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
 
 type ArithmeticFunctionExpressionContext struct {
 	ExpressionContext
-	left IArrayArithmeticFunctionContext
+	left IArithmeticFunctionContext
 	data IWordlistContext
 }
 
@@ -855,13 +855,11 @@ func NewArithmeticFunctionExpressionContext(parser antlr.Parser, ctx antlr.Parse
 	return p
 }
 
-func (s *ArithmeticFunctionExpressionContext) GetLeft() IArrayArithmeticFunctionContext {
-	return s.left
-}
+func (s *ArithmeticFunctionExpressionContext) GetLeft() IArithmeticFunctionContext { return s.left }
 
 func (s *ArithmeticFunctionExpressionContext) GetData() IWordlistContext { return s.data }
 
-func (s *ArithmeticFunctionExpressionContext) SetLeft(v IArrayArithmeticFunctionContext) { s.left = v }
+func (s *ArithmeticFunctionExpressionContext) SetLeft(v IArithmeticFunctionContext) { s.left = v }
 
 func (s *ArithmeticFunctionExpressionContext) SetData(v IWordlistContext) { s.data = v }
 
@@ -869,10 +867,10 @@ func (s *ArithmeticFunctionExpressionContext) GetRuleContext() antlr.RuleContext
 	return s
 }
 
-func (s *ArithmeticFunctionExpressionContext) ArrayArithmeticFunction() IArrayArithmeticFunctionContext {
+func (s *ArithmeticFunctionExpressionContext) ArithmeticFunction() IArithmeticFunctionContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IArrayArithmeticFunctionContext); ok {
+		if _, ok := ctx.(IArithmeticFunctionContext); ok {
 			t = ctx.(antlr.RuleContext)
 			break
 		}
@@ -882,7 +880,7 @@ func (s *ArithmeticFunctionExpressionContext) ArrayArithmeticFunction() IArrayAr
 		return nil
 	}
 
-	return t.(IArrayArithmeticFunctionContext)
+	return t.(IArithmeticFunctionContext)
 }
 
 func (s *ArithmeticFunctionExpressionContext) Wordlist() IWordlistContext {
@@ -1327,7 +1325,7 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 		{
 			p.SetState(34)
 
-			var _x = p.ArrayArithmeticFunction()
+			var _x = p.ArithmeticFunction()
 
 			localctx.(*ArithmeticFunctionExpressionContext).left = _x
 		}
@@ -2037,8 +2035,8 @@ errorExit:
 	goto errorExit // Trick to prevent compiler error if the label is not used
 }
 
-// IArrayArithmeticFunctionContext is an interface to support dynamic dispatch.
-type IArrayArithmeticFunctionContext interface {
+// IArithmeticFunctionContext is an interface to support dynamic dispatch.
+type IArithmeticFunctionContext interface {
 	antlr.ParserRuleContext
 
 	// GetParser returns the parser.
@@ -2055,101 +2053,101 @@ type IArrayArithmeticFunctionContext interface {
 	MEDIAN() antlr.TerminalNode
 	INT() antlr.TerminalNode
 
-	// IsArrayArithmeticFunctionContext differentiates from other interfaces.
-	IsArrayArithmeticFunctionContext()
+	// IsArithmeticFunctionContext differentiates from other interfaces.
+	IsArithmeticFunctionContext()
 }
 
-type ArrayArithmeticFunctionContext struct {
+type ArithmeticFunctionContext struct {
 	antlr.BaseParserRuleContext
 	parser antlr.Parser
 }
 
-func NewEmptyArrayArithmeticFunctionContext() *ArrayArithmeticFunctionContext {
-	var p = new(ArrayArithmeticFunctionContext)
+func NewEmptyArithmeticFunctionContext() *ArithmeticFunctionContext {
+	var p = new(ArithmeticFunctionContext)
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = BooleanExpressionParserRULE_arrayArithmeticFunction
+	p.RuleIndex = BooleanExpressionParserRULE_arithmeticFunction
 	return p
 }
 
-func InitEmptyArrayArithmeticFunctionContext(p *ArrayArithmeticFunctionContext) {
+func InitEmptyArithmeticFunctionContext(p *ArithmeticFunctionContext) {
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = BooleanExpressionParserRULE_arrayArithmeticFunction
+	p.RuleIndex = BooleanExpressionParserRULE_arithmeticFunction
 }
 
-func (*ArrayArithmeticFunctionContext) IsArrayArithmeticFunctionContext() {}
+func (*ArithmeticFunctionContext) IsArithmeticFunctionContext() {}
 
-func NewArrayArithmeticFunctionContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ArrayArithmeticFunctionContext {
-	var p = new(ArrayArithmeticFunctionContext)
+func NewArithmeticFunctionContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ArithmeticFunctionContext {
+	var p = new(ArithmeticFunctionContext)
 
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = BooleanExpressionParserRULE_arrayArithmeticFunction
+	p.RuleIndex = BooleanExpressionParserRULE_arithmeticFunction
 
 	return p
 }
 
-func (s *ArrayArithmeticFunctionContext) GetParser() antlr.Parser { return s.parser }
+func (s *ArithmeticFunctionContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *ArrayArithmeticFunctionContext) MIN() antlr.TerminalNode {
+func (s *ArithmeticFunctionContext) MIN() antlr.TerminalNode {
 	return s.GetToken(BooleanExpressionParserMIN, 0)
 }
 
-func (s *ArrayArithmeticFunctionContext) MAX() antlr.TerminalNode {
+func (s *ArithmeticFunctionContext) MAX() antlr.TerminalNode {
 	return s.GetToken(BooleanExpressionParserMAX, 0)
 }
 
-func (s *ArrayArithmeticFunctionContext) SUM() antlr.TerminalNode {
+func (s *ArithmeticFunctionContext) SUM() antlr.TerminalNode {
 	return s.GetToken(BooleanExpressionParserSUM, 0)
 }
 
-func (s *ArrayArithmeticFunctionContext) AVG() antlr.TerminalNode {
+func (s *ArithmeticFunctionContext) AVG() antlr.TerminalNode {
 	return s.GetToken(BooleanExpressionParserAVG, 0)
 }
 
-func (s *ArrayArithmeticFunctionContext) MEAN() antlr.TerminalNode {
+func (s *ArithmeticFunctionContext) MEAN() antlr.TerminalNode {
 	return s.GetToken(BooleanExpressionParserMEAN, 0)
 }
 
-func (s *ArrayArithmeticFunctionContext) MODE() antlr.TerminalNode {
+func (s *ArithmeticFunctionContext) MODE() antlr.TerminalNode {
 	return s.GetToken(BooleanExpressionParserMODE, 0)
 }
 
-func (s *ArrayArithmeticFunctionContext) LEN() antlr.TerminalNode {
+func (s *ArithmeticFunctionContext) LEN() antlr.TerminalNode {
 	return s.GetToken(BooleanExpressionParserLEN, 0)
 }
 
-func (s *ArrayArithmeticFunctionContext) MEDIAN() antlr.TerminalNode {
+func (s *ArithmeticFunctionContext) MEDIAN() antlr.TerminalNode {
 	return s.GetToken(BooleanExpressionParserMEDIAN, 0)
 }
 
-func (s *ArrayArithmeticFunctionContext) INT() antlr.TerminalNode {
+func (s *ArithmeticFunctionContext) INT() antlr.TerminalNode {
 	return s.GetToken(BooleanExpressionParserINT, 0)
 }
 
-func (s *ArrayArithmeticFunctionContext) GetRuleContext() antlr.RuleContext {
+func (s *ArithmeticFunctionContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *ArrayArithmeticFunctionContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+func (s *ArithmeticFunctionContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *ArrayArithmeticFunctionContext) EnterRule(listener antlr.ParseTreeListener) {
+func (s *ArithmeticFunctionContext) EnterRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(BooleanExpressionListener); ok {
-		listenerT.EnterArrayArithmeticFunction(s)
+		listenerT.EnterArithmeticFunction(s)
 	}
 }
 
-func (s *ArrayArithmeticFunctionContext) ExitRule(listener antlr.ParseTreeListener) {
+func (s *ArithmeticFunctionContext) ExitRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(BooleanExpressionListener); ok {
-		listenerT.ExitArrayArithmeticFunction(s)
+		listenerT.ExitArithmeticFunction(s)
 	}
 }
 
-func (p *BooleanExpressionParser) ArrayArithmeticFunction() (localctx IArrayArithmeticFunctionContext) {
-	localctx = NewArrayArithmeticFunctionContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 8, BooleanExpressionParserRULE_arrayArithmeticFunction)
+func (p *BooleanExpressionParser) ArithmeticFunction() (localctx IArithmeticFunctionContext) {
+	localctx = NewArithmeticFunctionContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 8, BooleanExpressionParserRULE_arithmeticFunction)
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
@@ -2186,22 +2184,22 @@ type IWordlistContext interface {
 	GetParser() antlr.Parser
 
 	// GetFirst returns the first rule contexts.
-	GetFirst() ITypesContext
+	GetFirst() IExpressionContext
 
 	// GetRest returns the rest rule contexts.
-	GetRest() ITypesContext
+	GetRest() IExpressionContext
 
 	// SetFirst sets the first rule contexts.
-	SetFirst(ITypesContext)
+	SetFirst(IExpressionContext)
 
 	// SetRest sets the rest rule contexts.
-	SetRest(ITypesContext)
+	SetRest(IExpressionContext)
 
 	// Getter signatures
 	LPAREN() antlr.TerminalNode
 	RPAREN() antlr.TerminalNode
-	AllTypes() []ITypesContext
-	Types(i int) ITypesContext
+	AllExpression() []IExpressionContext
+	Expression(i int) IExpressionContext
 	AllWS() []antlr.TerminalNode
 	WS(i int) antlr.TerminalNode
 
@@ -2212,8 +2210,8 @@ type IWordlistContext interface {
 type WordlistContext struct {
 	antlr.BaseParserRuleContext
 	parser antlr.Parser
-	first  ITypesContext
-	rest   ITypesContext
+	first  IExpressionContext
+	rest   IExpressionContext
 }
 
 func NewEmptyWordlistContext() *WordlistContext {
@@ -2243,13 +2241,13 @@ func NewWordlistContext(parser antlr.Parser, parent antlr.ParserRuleContext, inv
 
 func (s *WordlistContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *WordlistContext) GetFirst() ITypesContext { return s.first }
+func (s *WordlistContext) GetFirst() IExpressionContext { return s.first }
 
-func (s *WordlistContext) GetRest() ITypesContext { return s.rest }
+func (s *WordlistContext) GetRest() IExpressionContext { return s.rest }
 
-func (s *WordlistContext) SetFirst(v ITypesContext) { s.first = v }
+func (s *WordlistContext) SetFirst(v IExpressionContext) { s.first = v }
 
-func (s *WordlistContext) SetRest(v ITypesContext) { s.rest = v }
+func (s *WordlistContext) SetRest(v IExpressionContext) { s.rest = v }
 
 func (s *WordlistContext) LPAREN() antlr.TerminalNode {
 	return s.GetToken(BooleanExpressionParserLPAREN, 0)
@@ -2259,20 +2257,20 @@ func (s *WordlistContext) RPAREN() antlr.TerminalNode {
 	return s.GetToken(BooleanExpressionParserRPAREN, 0)
 }
 
-func (s *WordlistContext) AllTypes() []ITypesContext {
+func (s *WordlistContext) AllExpression() []IExpressionContext {
 	children := s.GetChildren()
 	len := 0
 	for _, ctx := range children {
-		if _, ok := ctx.(ITypesContext); ok {
+		if _, ok := ctx.(IExpressionContext); ok {
 			len++
 		}
 	}
 
-	tst := make([]ITypesContext, len)
+	tst := make([]IExpressionContext, len)
 	i := 0
 	for _, ctx := range children {
-		if t, ok := ctx.(ITypesContext); ok {
-			tst[i] = t.(ITypesContext)
+		if t, ok := ctx.(IExpressionContext); ok {
+			tst[i] = t.(IExpressionContext)
 			i++
 		}
 	}
@@ -2280,11 +2278,11 @@ func (s *WordlistContext) AllTypes() []ITypesContext {
 	return tst
 }
 
-func (s *WordlistContext) Types(i int) ITypesContext {
+func (s *WordlistContext) Expression(i int) IExpressionContext {
 	var t antlr.RuleContext
 	j := 0
 	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(ITypesContext); ok {
+		if _, ok := ctx.(IExpressionContext); ok {
 			if j == i {
 				t = ctx.(antlr.RuleContext)
 				break
@@ -2297,7 +2295,7 @@ func (s *WordlistContext) Types(i int) ITypesContext {
 		return nil
 	}
 
-	return t.(ITypesContext)
+	return t.(IExpressionContext)
 }
 
 func (s *WordlistContext) AllWS() []antlr.TerminalNode {
@@ -2378,7 +2376,7 @@ func (p *BooleanExpressionParser) Wordlist() (localctx IWordlistContext) {
 	{
 		p.SetState(105)
 
-		var _x = p.Types()
+		var _x = p.expression(0)
 
 		localctx.(*WordlistContext).first = _x
 	}
@@ -2456,7 +2454,7 @@ func (p *BooleanExpressionParser) Wordlist() (localctx IWordlistContext) {
 		{
 			p.SetState(119)
 
-			var _x = p.Types()
+			var _x = p.expression(0)
 
 			localctx.(*WordlistContext).rest = _x
 		}

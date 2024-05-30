@@ -66,27 +66,9 @@ func (l *CustomListener) GetResult() logical.Node {
 	return l.Result
 }
 
-func (l *CustomListener) GetUnaryNode(ctx *lib.TypesExpressionContext) *arithmetic.UnaryNode {
-	dataType := GetDataType(ctx.GetStart())
-	operand, _ := util.ConvertValue(ctx.GetText(), dataType)
-	return &arithmetic.UnaryNode{
-		Value:    operand,
-		DataType: dataType,
-	}
-}
-
 func (l *CustomListener) ExitParse(c *lib.ParseContext) {
-	if l.Result == nil && l.size() == 1 {
+	if l.Result == nil && l.size() > 0 {
 		l.Result = l.pop()
-	} else if l.Result == nil && l.size() == 2 {
-		firstNode := l.pop()
-		secondNode := l.pop()
-		if firstNode.GetNodeType() == constant.ARITHMETIC && secondNode.GetNodeType() == constant.ARITHMETIC && secondNode.(*arithmetic.ArithmeticNode).Right == nil {
-			l.Result = &arithmetic.ArithmeticNode{Left: firstNode, Operator: constant.UNARY}
-		}
-		if secondNode.GetNodeType() == constant.ARITHMETIC && firstNode.GetNodeType() == constant.ARITHMETIC && firstNode.(*arithmetic.ArithmeticNode).Right == nil {
-			l.Result = &arithmetic.ArithmeticNode{Left: secondNode, Operator: constant.UNARY}
-		}
 	}
 	if (l.Result == nil && l.TokenCount == 1 && reflect.TypeOf(l.LastToken) == reflect.TypeOf(&antlr.CommonToken{})) {
 		field, _ := util.ConvertValue(l.LastToken.GetText(), constant.STRING)
@@ -118,29 +100,8 @@ func (l *CustomListener) ExitTypesExpression(c *lib.TypesExpressionContext) {
 	l.LastToken = c.GetStart()
 }
 
-func (l *CustomListener) ExitInExpression(c *lib.InExpressionContext) {
-	l.ValidateField(c.GetField(), c.GetText())
-	field := l.GetField(c.GetField().GetText())
-
-	items := l.GetArrayElements(c.GetData().GetChildren())
-	var itemsMapped []interface{}
-	for _, i := range items {
-		itemsMapped = append(itemsMapped, i)
-	}
-	var inNode = logical.InNode{
-		Field: field,
-		Items: itemsMapped,
-	}
-	if c.NOT() == nil {
-		l.push(inNode)
-	} else {
-		var booleanNode = logical.BooleanNode{
-			Left:     inNode,
-			Right:    nil,
-			Operator: constant.NOT,
-		}
-		l.push(booleanNode)
-	}
+func (l *CustomListener) ExitInExpression(ctx *lib.InExpressionContext) {
+	l.push(l.mapInExpressionContext(ctx))
 }
 
 func (l *CustomListener) ExitArrayExpression(ctx *lib.ArrayExpressionContext) {
@@ -159,20 +120,8 @@ func (l *CustomListener) ExitArrayExpression(ctx *lib.ArrayExpressionContext) {
 	})
 }
 
-func (l *CustomListener) ExitToExpression(c *lib.ToExpressionContext) {
-	l.ValidateField(c.GetField(), c.GetText())
-	field := l.GetField(c.GetField().GetText())
-	lowerDataType := GetDataType(c.GetLower().GetStart())
-	lowerValue, _ := util.ConvertValue(c.GetLower().GetStart().GetText(), lowerDataType)
-	upperDataType := GetDataType(c.GetUpper().GetStart())
-	upperValue, _ := util.ConvertValue(c.GetUpper().GetText(), upperDataType)
-	l.push(logical.NumericRangeNode{
-		Field:        field,
-		FromValue:    lowerValue,
-		ToValue:      upperValue,
-		FromDataType: lowerDataType,
-		ToDataType:   upperDataType,
-	})
+func (l *CustomListener) ExitToExpression(ctx *lib.ToExpressionContext) {
+	l.push(l.mapToExpressionContext(ctx))
 }
 
 func (l *CustomListener) ExitNotExpression(c *lib.NotExpressionContext) {
@@ -195,41 +144,117 @@ func (l *CustomListener) ExitNotExpression(c *lib.NotExpressionContext) {
 	l.push(boolNode)
 }
 
-func (l *CustomListener) ExitComparatorExpression(c *lib.ComparatorExpressionContext) {
-	field := l.GetField(c.GetLeft().GetText())
-	operator := l.OperatorService.GetOperatorFromSymbol(c.GetOp().GetText())
-	if (reflect.TypeOf(c.GetRight()) != reflect.TypeOf(&lib.TypesExpressionContext{}) && l.size() != 0) {
-		value := l.pop()
-		l.push(logical.ComparisonNode{
-			Field:    field,
-			Value:    value,
-			Operator: operator,
-			DataType: constant.INTEGER,
-		})
-	} else {
-		dataType := GetDataType(c.GetRight().GetStart())
-		value, _ := util.ConvertValue(c.GetRight().GetText(), dataType)
-		l.push(logical.ComparisonNode{
-			Field:    field,
-			Value:    value,
-			Operator: operator,
-			DataType: dataType,
-		})
-	}
+func (l *CustomListener) ExitComparatorExpression(ctx *lib.ComparatorExpressionContext) {
+	l.push(l.mapComparatorExpressionContext(ctx))
 }
 
 func (l *CustomListener) ExitUnaryArithmeticExpression(ctx *lib.UnaryArithmeticExpressionContext) {
 	dataType := GetDataType(ctx.GetExp().GetStart())
 	operand, _ := util.ConvertValue(ctx.GetExp().GetText(), dataType)
-	leafNode := &arithmetic.UnaryNode{
-		Value:    operand,
-		DataType: dataType,
+	var leafNode logical.Node
+	if len(l.Nodes) > 0 {
+		leafNode = l.pop()
+	} else {
+		leafNode = &arithmetic.UnaryNode{
+			Value:    operand,
+			DataType: dataType,
+		}
 	}
 	node := &arithmetic.ArithmeticNode{Left: leafNode, Operator: constant.UNARY}
 	l.push(node)
 }
 
 func (l *CustomListener) ExitArithmeticFunctionExpression(ctx *lib.ArithmeticFunctionExpressionContext) {
+	l.push(l.mapArithmeticFunctionExpressionContext(ctx))
+}
+
+func (l *CustomListener) ExitArithmeticExpression(ctx *lib.ArithmeticExpressionContext) {
+	l.push(l.mapArithmeticExpressionContext(ctx))
+}
+
+func (l *CustomListener) mapTypesExpressionContext(ctx *lib.TypesExpressionContext) logical.Node {
+	dataType := GetDataType(ctx.GetStart())
+	operand, _ := util.ConvertValue(ctx.GetText(), dataType)
+	return &arithmetic.UnaryNode{
+		Value:    operand,
+		DataType: dataType,
+	}
+}
+
+func (l *CustomListener) mapTypesContext(ctx *lib.TypesContext) logical.Node {
+	dataType := GetDataType(ctx.GetStart())
+	operand, _ := util.ConvertValue(ctx.GetText(), dataType)
+	return &arithmetic.UnaryNode{
+		Value:    operand,
+		DataType: dataType,
+	}
+}
+
+func (l *CustomListener) mapInExpressionContext(ctx *lib.InExpressionContext) logical.Node {
+	l.ValidateField(ctx.GetField(), ctx.GetText())
+	field := l.GetField(ctx.GetField().GetText())
+
+	items := l.GetArrayElements(ctx.GetData().GetChildren())
+	var itemsMapped []interface{}
+	for _, i := range items {
+		itemsMapped = append(itemsMapped, i)
+	}
+	var inNode = logical.InNode{
+		Field: field,
+		Items: itemsMapped,
+	}
+	if ctx.NOT() == nil {
+		return inNode
+	} else {
+		var booleanNode = logical.BooleanNode{
+			Left:     inNode,
+			Right:    nil,
+			Operator: constant.NOT,
+		}
+		return booleanNode
+	}
+}
+
+func (l *CustomListener) mapToExpressionContext(ctx *lib.ToExpressionContext) logical.Node {
+	l.ValidateField(ctx.GetField(), ctx.GetText())
+	field := l.GetField(ctx.GetField().GetText())
+	lowerDataType := GetDataType(ctx.GetLower().GetStart())
+	lowerValue, _ := util.ConvertValue(ctx.GetLower().GetStart().GetText(), lowerDataType)
+	upperDataType := GetDataType(ctx.GetUpper().GetStart())
+	upperValue, _ := util.ConvertValue(ctx.GetUpper().GetText(), upperDataType)
+	return logical.NumericRangeNode{
+		Field:        field,
+		FromValue:    lowerValue,
+		ToValue:      upperValue,
+		FromDataType: lowerDataType,
+		ToDataType:   upperDataType,
+	}
+}
+
+func (l *CustomListener) mapComparatorExpressionContext(ctx *lib.ComparatorExpressionContext) logical.Node {
+	field := l.GetField(ctx.GetLeft().GetText())
+	operator := l.OperatorService.GetOperatorFromSymbol(ctx.GetOp().GetText())
+	if (reflect.TypeOf(ctx.GetRight()) != reflect.TypeOf(&lib.TypesExpressionContext{}) && l.size() != 0) {
+		value := l.pop()
+		return logical.ComparisonNode{
+			Field:    field,
+			Value:    value,
+			Operator: operator,
+			DataType: constant.INTEGER,
+		}
+	} else {
+		dataType := GetDataType(ctx.GetRight().GetStart())
+		value, _ := util.ConvertValue(ctx.GetRight().GetText(), dataType)
+		return logical.ComparisonNode{
+			Field:    field,
+			Value:    value,
+			Operator: operator,
+			DataType: dataType,
+		}
+	}
+}
+
+func (l *CustomListener) mapArithmeticFunctionExpressionContext(ctx *lib.ArithmeticFunctionExpressionContext) logical.Node {
 	if l.ErrorCount > 0 {
 		panic("Invalid Expression")
 	}
@@ -240,38 +265,38 @@ func (l *CustomListener) ExitArithmeticFunctionExpression(ctx *lib.ArithmeticFun
 		itemsMapped = append(itemsMapped, i)
 	}
 	node := &arithmetic.ArithmeticFunctionNode{FunctionType: functionType, Items: itemsMapped}
-	l.push(node)
+	return node
 }
 
-func (l *CustomListener) ExitArithmeticExpression(ctx *lib.ArithmeticExpressionContext) {
+func (l *CustomListener) mapArithmeticExpressionContext(ctx *lib.ArithmeticExpressionContext) logical.Node {
 	operator := l.OperatorService.GetOperatorFromSymbol(ctx.GetOp().GetText())
 	if (reflect.TypeOf(ctx.GetLeft()) == reflect.TypeOf(&lib.TypesExpressionContext{}) && reflect.TypeOf(ctx.GetRight()) == reflect.TypeOf(&lib.TypesExpressionContext{})) {
-		left := l.GetUnaryNode(ctx.GetLeft().(*lib.TypesExpressionContext))
-		right := l.GetUnaryNode(ctx.GetRight().(*lib.TypesExpressionContext))
+		left := l.mapTypesExpressionContext(ctx.GetLeft().(*lib.TypesExpressionContext))
+		right := l.mapTypesExpressionContext(ctx.GetRight().(*lib.TypesExpressionContext))
 		node := &arithmetic.ArithmeticNode{
 			Left:     left,
 			Right:    right,
 			Operator: operator,
 		}
-		l.push(node)
+		return node
 	} else if (reflect.TypeOf(ctx.GetLeft()) == reflect.TypeOf(&lib.TypesExpressionContext{})) {
-		left := l.GetUnaryNode(ctx.GetLeft().(*lib.TypesExpressionContext))
+		left := l.mapTypesExpressionContext(ctx.GetLeft().(*lib.TypesExpressionContext))
 		right := l.pop()
 		node := &arithmetic.ArithmeticNode{
 			Left:     left,
 			Right:    right,
 			Operator: operator,
 		}
-		l.push(node)
+		return node
 	} else if (reflect.TypeOf(ctx.GetRight()) == reflect.TypeOf(&lib.TypesExpressionContext{})) {
-		right := l.GetUnaryNode(ctx.GetRight().(*lib.TypesExpressionContext))
+		right := l.mapTypesExpressionContext(ctx.GetRight().(*lib.TypesExpressionContext))
 		left := l.pop()
 		node := &arithmetic.ArithmeticNode{
 			Left:     left,
 			Right:    right,
 			Operator: operator,
 		}
-		l.push(node)
+		return node
 	} else {
 		if l.size() < 2 {
 			panic("Error parsing expression for the string " + ctx.GetText())
@@ -283,7 +308,7 @@ func (l *CustomListener) ExitArithmeticExpression(ctx *lib.ArithmeticExpressionC
 			Right:    right,
 			Operator: operator,
 		}
-		l.push(node)
+		return node
 	}
 }
 
@@ -333,21 +358,36 @@ func (l *CustomListener) GetField(field string) string {
 	return field
 }
 
-func (l *CustomListener) GetArrayElements(trees []antlr.Tree) []*arithmetic.UnaryNode {
-	typesContextFilter := func(tree antlr.Tree) bool { return reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesContext{}) }
-	var typesContextChildren = util.Filter(trees, typesContextFilter)
-	var items []*arithmetic.UnaryNode
+func (l *CustomListener) GetArrayElements(trees []antlr.Tree) []logical.Node {
+	var items []logical.Node
 
-	for _, child := range typesContextChildren {
-		dataType := GetDataType(child.(*lib.TypesContext).GetStart())
-		value, _ := util.ConvertValue(child.(*lib.TypesContext).GetText(), dataType)
-		items = append(items, &arithmetic.UnaryNode{
-			DataType: dataType,
-			Value:    value,
-		})
+	for _, child := range trees {
+		if (reflect.TypeOf(child) != reflect.TypeOf(&antlr.TerminalNodeImpl{})) {
+			items = append(items, l.mapContextToNode(child))
+		}
 	}
 
 	return items
+}
+
+func (l *CustomListener) mapContextToNode(tree antlr.Tree) logical.Node {
+	if (reflect.TypeOf(tree) == reflect.TypeOf(&lib.ArithmeticExpressionContext{})) {
+		return l.mapArithmeticExpressionContext(tree.(*lib.ArithmeticExpressionContext))
+	} else if (reflect.TypeOf(tree) == reflect.TypeOf(&lib.InExpressionContext{})) {
+		return l.mapInExpressionContext(tree.(*lib.InExpressionContext))
+	} else if (reflect.TypeOf(tree) == reflect.TypeOf(&lib.ArithmeticFunctionExpressionContext{})) {
+		return l.mapArithmeticFunctionExpressionContext(tree.(*lib.ArithmeticFunctionExpressionContext))
+	} else if (reflect.TypeOf(tree) == reflect.TypeOf(&lib.ComparatorExpressionContext{})) {
+		return l.mapComparatorExpressionContext(tree.(*lib.ComparatorExpressionContext))
+	} else if (reflect.TypeOf(tree) == reflect.TypeOf(&lib.ToExpressionContext{})) {
+		return l.mapToExpressionContext(tree.(*lib.ToExpressionContext))
+	} else if (reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesExpressionContext{})) {
+		return l.mapTypesExpressionContext(tree.(*lib.TypesExpressionContext))
+	} else if (reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesContext{})) {
+		return l.mapTypesContext(tree.(*lib.TypesContext))
+	} else {
+		panic("Array does not support this expression")
+	}
 }
 
 // VisitTerminal is called when a terminal node is visited.
@@ -447,10 +487,10 @@ func (s *CustomListener) EnterBool(ctx *lib.BoolContext) {}
 // ExitBool is called when production bool is exited.
 func (s *CustomListener) ExitBool(ctx *lib.BoolContext) {}
 
-// EnterArrayArithmeticFunction is called when production arrayArithmeticFunction is entered.
-func (s *CustomListener) EnterArrayArithmeticFunction(ctx *lib.ArrayArithmeticFunctionContext) {
+// EnterArithmeticFunction is called when production arrayArithmeticFunction is entered.
+func (s *CustomListener) EnterArithmeticFunction(ctx *lib.ArithmeticFunctionContext) {
 }
 
-// ExitArrayArithmeticFunction is called when production arrayArithmeticFunction is exited.
-func (s *CustomListener) ExitArrayArithmeticFunction(ctx *lib.ArrayArithmeticFunctionContext) {
+// ExitArithmeticFunction is called when production arrayArithmeticFunction is exited.
+func (s *CustomListener) ExitArithmeticFunction(ctx *lib.ArithmeticFunctionContext) {
 }

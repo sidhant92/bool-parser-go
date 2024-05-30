@@ -109,13 +109,11 @@ func (s *BaseBooleanExpressionListener) EnterArithmeticOperator(ctx *ArithmeticO
 // ExitArithmeticOperator is called when production arithmeticOperator is exited.
 func (s *BaseBooleanExpressionListener) ExitArithmeticOperator(ctx *ArithmeticOperatorContext) {}
 
-// EnterArrayArithmeticFunction is called when production arrayArithmeticFunction is entered.
-func (s *BaseBooleanExpressionListener) EnterArrayArithmeticFunction(ctx *ArrayArithmeticFunctionContext) {
-}
+// EnterArithmeticFunction is called when production arithmeticFunction is entered.
+func (s *BaseBooleanExpressionListener) EnterArithmeticFunction(ctx *ArithmeticFunctionContext) {}
 
-// ExitArrayArithmeticFunction is called when production arrayArithmeticFunction is exited.
-func (s *BaseBooleanExpressionListener) ExitArrayArithmeticFunction(ctx *ArrayArithmeticFunctionContext) {
-}
+// ExitArithmeticFunction is called when production arithmeticFunction is exited.
+func (s *BaseBooleanExpressionListener) ExitArithmeticFunction(ctx *ArithmeticFunctionContext) {}
 
 // EnterWordlist is called when production wordlist is entered.
 func (s *BaseBooleanExpressionListener) EnterWordlist(ctx *WordlistContext) {}

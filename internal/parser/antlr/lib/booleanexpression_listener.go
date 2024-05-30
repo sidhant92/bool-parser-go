@@ -50,8 +50,8 @@ type BooleanExpressionListener interface {
 	// EnterArithmeticOperator is called when entering the arithmeticOperator production.
 	EnterArithmeticOperator(c *ArithmeticOperatorContext)
 
-	// EnterArrayArithmeticFunction is called when entering the arrayArithmeticFunction production.
-	EnterArrayArithmeticFunction(c *ArrayArithmeticFunctionContext)
+	// EnterArithmeticFunction is called when entering the arithmeticFunction production.
+	EnterArithmeticFunction(c *ArithmeticFunctionContext)
 
 	// EnterWordlist is called when entering the wordlist production.
 	EnterWordlist(c *WordlistContext)
@@ -113,8 +113,8 @@ type BooleanExpressionListener interface {
 	// ExitArithmeticOperator is called when exiting the arithmeticOperator production.
 	ExitArithmeticOperator(c *ArithmeticOperatorContext)
 
-	// ExitArrayArithmeticFunction is called when exiting the arrayArithmeticFunction production.
-	ExitArrayArithmeticFunction(c *ArrayArithmeticFunctionContext)
+	// ExitArithmeticFunction is called when exiting the arithmeticFunction production.
+	ExitArithmeticFunction(c *ArithmeticFunctionContext)
 
 	// ExitWordlist is called when exiting the wordlist production.
 	ExitWordlist(c *WordlistContext)
