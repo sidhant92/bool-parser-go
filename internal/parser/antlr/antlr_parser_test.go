@@ -213,10 +213,10 @@ func TestIntegerList(t *testing.T) {
 	res, _ := parser.Parse("age IN (12,45)")
 	assert.Equal(t, res.GetNodeType(), constant.IN_NODE)
 	assert.Equal(t, res.(domain.InNode).Field, "age")
-	assert.Equal(t, res.(domain.InNode).Items[0].DataType, constant.INTEGER)
-	assert.Equal(t, res.(domain.InNode).Items[0].Value, 12)
-	assert.Equal(t, res.(domain.InNode).Items[1].DataType, constant.INTEGER)
-	assert.Equal(t, res.(domain.InNode).Items[1].Value, 45)
+	assert.Equal(t, res.(domain.InNode).Items[0].(*domain.UnaryNode).DataType, constant.INTEGER)
+	assert.Equal(t, res.(domain.InNode).Items[0].(*domain.UnaryNode).Value, 12)
+	assert.Equal(t, res.(domain.InNode).Items[1].(*domain.UnaryNode).DataType, constant.INTEGER)
+	assert.Equal(t, res.(domain.InNode).Items[1].(*domain.UnaryNode).Value, 45)
 }
 
 func TestIntegerNotInList(t *testing.T) {
@@ -226,46 +226,46 @@ func TestIntegerNotInList(t *testing.T) {
 	assert.Nil(t, res.(domain.BooleanNode).Right)
 	assert.Equal(t, res.(domain.BooleanNode).Left.GetNodeType(), constant.IN_NODE)
 	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Field, "age")
-	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Items[0].DataType, constant.INTEGER)
-	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Items[0].Value, 12)
-	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Items[1].DataType, constant.INTEGER)
-	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Items[1].Value, 45)
+	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Items[0].(*domain.UnaryNode).DataType, constant.INTEGER)
+	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Items[0].(*domain.UnaryNode).Value, 12)
+	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Items[1].(*domain.UnaryNode).DataType, constant.INTEGER)
+	assert.Equal(t, res.(domain.BooleanNode).Left.(domain.InNode).Items[1].(*domain.UnaryNode).Value, 45)
 }
 
 func TestStringList(t *testing.T) {
 	res, _ := parser.Parse("name IN (abc, def, 'abc def')")
 	assert.Equal(t, res.GetNodeType(), constant.IN_NODE)
 	assert.Equal(t, res.(domain.InNode).Field, "name")
-	assert.Equal(t, res.(domain.InNode).Items[0].DataType, constant.STRING)
-	assert.Equal(t, res.(domain.InNode).Items[0].Value, "abc")
-	assert.Equal(t, res.(domain.InNode).Items[1].DataType, constant.STRING)
-	assert.Equal(t, res.(domain.InNode).Items[1].Value, "def")
-	assert.Equal(t, res.(domain.InNode).Items[2].DataType, constant.STRING)
-	assert.Equal(t, res.(domain.InNode).Items[2].Value, "abc def")
+	assert.Equal(t, res.(domain.InNode).Items[0].(*domain.UnaryNode).DataType, constant.STRING)
+	assert.Equal(t, res.(domain.InNode).Items[0].(*domain.UnaryNode).Value, "abc")
+	assert.Equal(t, res.(domain.InNode).Items[1].(*domain.UnaryNode).DataType, constant.STRING)
+	assert.Equal(t, res.(domain.InNode).Items[1].(*domain.UnaryNode).Value, "def")
+	assert.Equal(t, res.(domain.InNode).Items[2].(*domain.UnaryNode).DataType, constant.STRING)
+	assert.Equal(t, res.(domain.InNode).Items[2].(*domain.UnaryNode).Value, "abc def")
 }
 
 func TestStringList1(t *testing.T) {
 	res, _ := parser.Parse("name IN (abc, def, 'abc, def'")
 	assert.Equal(t, res.GetNodeType(), constant.IN_NODE)
 	assert.Equal(t, res.(domain.InNode).Field, "name")
-	assert.Equal(t, res.(domain.InNode).Items[0].DataType, constant.STRING)
-	assert.Equal(t, res.(domain.InNode).Items[0].Value, "abc")
-	assert.Equal(t, res.(domain.InNode).Items[1].DataType, constant.STRING)
-	assert.Equal(t, res.(domain.InNode).Items[1].Value, "def")
-	assert.Equal(t, res.(domain.InNode).Items[2].DataType, constant.STRING)
-	assert.Equal(t, res.(domain.InNode).Items[2].Value, "abc, def")
+	assert.Equal(t, res.(domain.InNode).Items[0].(*domain.UnaryNode).DataType, constant.STRING)
+	assert.Equal(t, res.(domain.InNode).Items[0].(*domain.UnaryNode).Value, "abc")
+	assert.Equal(t, res.(domain.InNode).Items[1].(*domain.UnaryNode).DataType, constant.STRING)
+	assert.Equal(t, res.(domain.InNode).Items[1].(*domain.UnaryNode).Value, "def")
+	assert.Equal(t, res.(domain.InNode).Items[2].(*domain.UnaryNode).DataType, constant.STRING)
+	assert.Equal(t, res.(domain.InNode).Items[2].(*domain.UnaryNode).Value, "abc, def")
 }
 
 func TestStringList2(t *testing.T) {
 	res, _ := parser.Parse("name IN (abc, def, 'ab\"c')")
 	assert.Equal(t, res.GetNodeType(), constant.IN_NODE)
 	assert.Equal(t, res.(domain.InNode).Field, "name")
-	assert.Equal(t, res.(domain.InNode).Items[0].DataType, constant.STRING)
-	assert.Equal(t, res.(domain.InNode).Items[0].Value, "abc")
-	assert.Equal(t, res.(domain.InNode).Items[1].DataType, constant.STRING)
-	assert.Equal(t, res.(domain.InNode).Items[1].Value, "def")
-	assert.Equal(t, res.(domain.InNode).Items[2].DataType, constant.STRING)
-	assert.Equal(t, res.(domain.InNode).Items[2].Value, "ab\"c")
+	assert.Equal(t, res.(domain.InNode).Items[0].(*domain.UnaryNode).DataType, constant.STRING)
+	assert.Equal(t, res.(domain.InNode).Items[0].(*domain.UnaryNode).Value, "abc")
+	assert.Equal(t, res.(domain.InNode).Items[1].(*domain.UnaryNode).DataType, constant.STRING)
+	assert.Equal(t, res.(domain.InNode).Items[1].(*domain.UnaryNode).Value, "def")
+	assert.Equal(t, res.(domain.InNode).Items[2].(*domain.UnaryNode).DataType, constant.STRING)
+	assert.Equal(t, res.(domain.InNode).Items[2].(*domain.UnaryNode).Value, "ab\"c")
 }
 
 func TestInvalidExpression(t *testing.T) {
@@ -284,7 +284,7 @@ func TestContainsAny(t *testing.T) {
 	assert.Equal(t, res.(domain.ArrayNode).Field, "a")
 	assert.Equal(t, res.(domain.ArrayNode).Operator, constant.CONTAINS_ANY)
 	assert.Equal(t, len(res.(domain.ArrayNode).Items), 3)
-	assert.Equal(t, res.(domain.ArrayNode).Items[0].Value, 1)
+	assert.Equal(t, res.(domain.ArrayNode).Items[0].(*domain.UnaryNode).Value, 1)
 }
 
 func TestContainsAll(t *testing.T) {
@@ -293,7 +293,7 @@ func TestContainsAll(t *testing.T) {
 	assert.Equal(t, res.(domain.ArrayNode).Field, "a")
 	assert.Equal(t, res.(domain.ArrayNode).Operator, constant.CONTAINS_ALL)
 	assert.Equal(t, len(res.(domain.ArrayNode).Items), 2)
-	assert.Equal(t, res.(domain.ArrayNode).Items[0].Value, "a")
+	assert.Equal(t, res.(domain.ArrayNode).Items[0].(*domain.UnaryNode).Value, "a")
 }
 
 func TestAddOperatorString(t *testing.T) {

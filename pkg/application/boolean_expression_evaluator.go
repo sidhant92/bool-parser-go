@@ -59,6 +59,16 @@ func (b *BooleanExpressionEvaluator) evaluateComparisonNode(node domain.Comparis
 	return b.OperatorService.Evaluate(node.Operator, constant.PRIMITIVE, node.DataType, fieldData, value)
 }
 
+func (b *BooleanExpressionEvaluator) resolveArrayElements(items []interface{}, data map[string]interface{}) []domain.EvaluatedNode {
+	var resolvedValues []interface{}
+	for _, item := range util.GetSliceFromInterface(items) {
+		res, _ := b.ArithmeticExpressionEvaluator.evaluateNode(item.(domain.Node), data)
+		resolvedValues = append(resolvedValues, res)
+	}
+	flattenedValues := util.MapToEvaluatedNodes(resolvedValues)
+	return flattenedValues
+}
+
 func (b *BooleanExpressionEvaluator) evaluateNumericRangeNode(node domain.NumericRangeNode, data map[string]interface{}) (bool, error) {
 	fieldData := util.GetValueFromMap(node.Field, data)
 	if fieldData == nil {
@@ -80,9 +90,10 @@ func (b *BooleanExpressionEvaluator) evaluateInNode(node domain.InNode, data map
 	if fieldData == nil {
 		return false, errors2.KEY_DATA_NOT_PRESENT
 	}
-	dataType := node.Items[0].DataType
+	items := b.resolveArrayElements(node.Items, data)
+	dataType := items[0].DataType
 	var values []interface{}
-	for _, item := range node.Items {
+	for _, item := range items {
 		values = append(values, item.Value)
 	}
 	res, err := b.OperatorService.Evaluate(constant.IN, constant.PRIMITIVE, dataType, fieldData, values...)
@@ -143,11 +154,12 @@ func (b *BooleanExpressionEvaluator) evaluateArrayNode(node domain.ArrayNode, da
 	if fieldData == nil {
 		return false, errors2.KEY_DATA_NOT_PRESENT
 	}
-	dataType := node.Items[0].DataType
+	items := b.resolveArrayElements(node.Items, data)
 	var values []interface{}
-	for _, item := range node.Items {
+	for _, item := range items {
 		values = append(values, item.Value)
 	}
+	dataType := items[0].DataType
 	res, err := b.OperatorService.Evaluate(node.Operator, constant.LIST, dataType, fieldData, values...)
 	if err != nil {
 		return false, err

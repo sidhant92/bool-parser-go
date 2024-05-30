@@ -57,37 +57,7 @@ func (b *ArithmeticExpressionEvaluator) evaluateArithmeticFunctionNode(node *ari
 		res, _ := b.evaluateNode(item.(domain.Node), data)
 		resolvedValues = append(resolvedValues, res)
 	}
-	var flattenedValues []domain.EvaluatedNode
-	for _, item := range resolvedValues {
-		if (reflect.TypeOf(item) == reflect.TypeOf(&domain.EvaluatedNode{})) {
-			evaluatedNode := item.(domain.EvaluatedNode)
-			if util.IsSlice(evaluatedNode.Value) {
-				data := util.GetSliceFromInterface(evaluatedNode.Value)
-				for _, val := range data {
-					flattenedValues = append(flattenedValues, domain.EvaluatedNode{
-						Value:    val,
-						DataType: util.GetDataType(val),
-					})
-				}
-			} else {
-				flattenedValues = append(flattenedValues, evaluatedNode)
-			}
-		}
-		if util.IsSlice(item) {
-			data := util.GetSliceFromInterface(item)
-			for _, val := range data {
-				flattenedValues = append(flattenedValues, domain.EvaluatedNode{
-					Value:    val,
-					DataType: util.GetDataType(val),
-				})
-			}
-		} else {
-			flattenedValues = append(flattenedValues, domain.EvaluatedNode{
-				Value:    item,
-				DataType: util.GetDataType(item),
-			})
-		}
-	}
+	flattenedValues := util.MapToEvaluatedNodes(resolvedValues)
 	return b.FunctionEvaluatorService.Evaluate(node.FunctionType, flattenedValues)
 }
 

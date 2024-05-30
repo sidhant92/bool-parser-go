@@ -122,10 +122,14 @@ func (l *CustomListener) ExitInExpression(c *lib.InExpressionContext) {
 	l.ValidateField(c.GetField(), c.GetText())
 	field := l.GetField(c.GetField().GetText())
 
-	pairs := l.GetArrayElements(c.GetData().GetChildren())
+	items := l.GetArrayElements(c.GetData().GetChildren())
+	var itemsMapped []interface{}
+	for _, i := range items {
+		itemsMapped = append(itemsMapped, i)
+	}
 	var inNode = domain.InNode{
 		Field: field,
-		Items: pairs,
+		Items: itemsMapped,
 	}
 	if c.NOT() == nil {
 		l.push(inNode)
@@ -142,12 +146,16 @@ func (l *CustomListener) ExitInExpression(c *lib.InExpressionContext) {
 func (l *CustomListener) ExitArrayExpression(ctx *lib.ArrayExpressionContext) {
 	l.ValidateField(ctx.GetField(), ctx.GetText())
 	field := l.GetField(ctx.GetField().GetText())
-	pairs := l.GetArrayElements(ctx.GetData().GetChildren())
+	items := l.GetArrayElements(ctx.GetData().GetChildren())
+	var itemsMapped []interface{}
+	for _, i := range items {
+		itemsMapped = append(itemsMapped, i)
+	}
 	operator := l.OperatorService.GetOperatorFromSymbol(ctx.GetOp().GetText())
 	l.push(domain.ArrayNode{
 		Field:    field,
 		Operator: operator,
-		Items:    pairs,
+		Items:    itemsMapped,
 	})
 }
 
@@ -226,7 +234,7 @@ func (l *CustomListener) ExitArithmeticFunctionExpression(ctx *lib.ArithmeticFun
 		panic("Invalid Expression")
 	}
 	functionType := l.FunctionEvaluatorService.GetFunctionFromSymbol(ctx.GetLeft().GetText())
-	items := l.GetArithmeticArrayElements(ctx.GetData().GetChildren())
+	items := l.GetArrayElements(ctx.GetData().GetChildren())
 	var itemsMapped []interface{}
 	for _, i := range items {
 		itemsMapped = append(itemsMapped, i)
@@ -325,24 +333,7 @@ func (l *CustomListener) GetField(field string) string {
 	return field
 }
 
-func (l *CustomListener) GetArrayElements(trees []antlr.Tree) []domain.Pair {
-	typesContextFilter := func(tree antlr.Tree) bool { return reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesContext{}) }
-	var typesContextChildren = util.Filter(trees, typesContextFilter)
-	var pairs []domain.Pair
-
-	for _, child := range typesContextChildren {
-		dataType := GetDataType(child.(*lib.TypesContext).GetStart())
-		value, _ := util.ConvertValue(child.(*lib.TypesContext).GetText(), dataType)
-		pairs = append(pairs, domain.Pair{
-			DataType: dataType,
-			Value:    value,
-		})
-	}
-
-	return pairs
-}
-
-func (l *CustomListener) GetArithmeticArrayElements(trees []antlr.Tree) []*domain.UnaryNode {
+func (l *CustomListener) GetArrayElements(trees []antlr.Tree) []*domain.UnaryNode {
 	typesContextFilter := func(tree antlr.Tree) bool { return reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesContext{}) }
 	var typesContextChildren = util.Filter(trees, typesContextFilter)
 	var items []*domain.UnaryNode
