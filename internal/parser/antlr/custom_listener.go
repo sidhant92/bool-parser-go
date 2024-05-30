@@ -6,19 +6,19 @@ import (
 	"github.com/sidhant92/bool-parser-go/internal/service"
 	"github.com/sidhant92/bool-parser-go/internal/util"
 	"github.com/sidhant92/bool-parser-go/pkg/constant"
-	"github.com/sidhant92/bool-parser-go/pkg/domain"
 	"github.com/sidhant92/bool-parser-go/pkg/domain/arithmetic"
+	"github.com/sidhant92/bool-parser-go/pkg/domain/logical"
 	"reflect"
 )
 
 type CustomListener struct {
 	BaseBooleanExpressionListener,
 
-	Nodes []domain.Node
+	Nodes []logical.Node
 
 	LastToken antlr.Token
 
-	Result domain.Node
+	Result logical.Node
 
 	OperatorService *service.OperatorService
 
@@ -33,7 +33,7 @@ type CustomListener struct {
 
 func New(defaultField string, errors int) *CustomListener {
 	l := CustomListener{
-		Nodes:                    []domain.Node{},
+		Nodes:                    []logical.Node{},
 		LastToken:                nil,
 		Result:                   nil,
 		OperatorService:          service.NewOperatorService(),
@@ -45,7 +45,7 @@ func New(defaultField string, errors int) *CustomListener {
 	return &l
 }
 
-func (l *CustomListener) push(node domain.Node) {
+func (l *CustomListener) push(node logical.Node) {
 	l.Nodes = append(l.Nodes, node)
 }
 
@@ -53,7 +53,7 @@ func (l *CustomListener) size() int {
 	return len(l.Nodes)
 }
 
-func (l *CustomListener) pop() domain.Node {
+func (l *CustomListener) pop() logical.Node {
 	if l.size() < 1 {
 		panic("Invalid Expression")
 	}
@@ -62,14 +62,14 @@ func (l *CustomListener) pop() domain.Node {
 	return result
 }
 
-func (l *CustomListener) GetResult() domain.Node {
+func (l *CustomListener) GetResult() logical.Node {
 	return l.Result
 }
 
-func (l *CustomListener) GetUnaryNode(ctx *lib.TypesExpressionContext) *domain.UnaryNode {
+func (l *CustomListener) GetUnaryNode(ctx *lib.TypesExpressionContext) *arithmetic.UnaryNode {
 	dataType := GetDataType(ctx.GetStart())
 	operand, _ := util.ConvertValue(ctx.GetText(), dataType)
-	return &domain.UnaryNode{
+	return &arithmetic.UnaryNode{
 		Value:    operand,
 		DataType: dataType,
 	}
@@ -90,7 +90,7 @@ func (l *CustomListener) ExitParse(c *lib.ParseContext) {
 	}
 	if (l.Result == nil && l.TokenCount == 1 && reflect.TypeOf(l.LastToken) == reflect.TypeOf(&antlr.CommonToken{})) {
 		field, _ := util.ConvertValue(l.LastToken.GetText(), constant.STRING)
-		l.Result = &domain.UnaryNode{
+		l.Result = &arithmetic.UnaryNode{
 			DataType: constant.STRING,
 			Value:    field,
 		}
@@ -107,7 +107,7 @@ func (l *CustomListener) ExitBinaryExpression(c *lib.BinaryExpressionContext) {
 	firstNode := l.pop()
 	secondNode := l.pop()
 	operator := GetLogicalOperator(c.GetOp().GetStart())
-	l.push(domain.BooleanNode{
+	l.push(logical.BooleanNode{
 		Left:     secondNode,
 		Right:    firstNode,
 		Operator: operator,
@@ -127,14 +127,14 @@ func (l *CustomListener) ExitInExpression(c *lib.InExpressionContext) {
 	for _, i := range items {
 		itemsMapped = append(itemsMapped, i)
 	}
-	var inNode = domain.InNode{
+	var inNode = logical.InNode{
 		Field: field,
 		Items: itemsMapped,
 	}
 	if c.NOT() == nil {
 		l.push(inNode)
 	} else {
-		var booleanNode = domain.BooleanNode{
+		var booleanNode = logical.BooleanNode{
 			Left:     inNode,
 			Right:    nil,
 			Operator: constant.NOT,
@@ -152,7 +152,7 @@ func (l *CustomListener) ExitArrayExpression(ctx *lib.ArrayExpressionContext) {
 		itemsMapped = append(itemsMapped, i)
 	}
 	operator := l.OperatorService.GetOperatorFromSymbol(ctx.GetOp().GetText())
-	l.push(domain.ArrayNode{
+	l.push(logical.ArrayNode{
 		Field:    field,
 		Operator: operator,
 		Items:    itemsMapped,
@@ -166,7 +166,7 @@ func (l *CustomListener) ExitToExpression(c *lib.ToExpressionContext) {
 	lowerValue, _ := util.ConvertValue(c.GetLower().GetStart().GetText(), lowerDataType)
 	upperDataType := GetDataType(c.GetUpper().GetStart())
 	upperValue, _ := util.ConvertValue(c.GetUpper().GetText(), upperDataType)
-	l.push(domain.NumericRangeNode{
+	l.push(logical.NumericRangeNode{
 		Field:        field,
 		FromValue:    lowerValue,
 		ToValue:      upperValue,
@@ -182,12 +182,12 @@ func (l *CustomListener) ExitNotExpression(c *lib.NotExpressionContext) {
 		}
 		dataType := GetDataType(l.LastToken)
 		value, _ := util.ConvertValue(l.LastToken.GetText(), dataType)
-		l.push(domain.UnaryNode{
+		l.push(arithmetic.UnaryNode{
 			DataType: dataType,
 			Value:    value,
 		})
 	}
-	boolNode := domain.BooleanNode{
+	boolNode := logical.BooleanNode{
 		Left:     l.pop(),
 		Right:    nil,
 		Operator: constant.NOT,
@@ -200,7 +200,7 @@ func (l *CustomListener) ExitComparatorExpression(c *lib.ComparatorExpressionCon
 	operator := l.OperatorService.GetOperatorFromSymbol(c.GetOp().GetText())
 	if (reflect.TypeOf(c.GetRight()) != reflect.TypeOf(&lib.TypesExpressionContext{}) && l.size() != 0) {
 		value := l.pop()
-		l.push(domain.ComparisonNode{
+		l.push(logical.ComparisonNode{
 			Field:    field,
 			Value:    value,
 			Operator: operator,
@@ -209,7 +209,7 @@ func (l *CustomListener) ExitComparatorExpression(c *lib.ComparatorExpressionCon
 	} else {
 		dataType := GetDataType(c.GetRight().GetStart())
 		value, _ := util.ConvertValue(c.GetRight().GetText(), dataType)
-		l.push(domain.ComparisonNode{
+		l.push(logical.ComparisonNode{
 			Field:    field,
 			Value:    value,
 			Operator: operator,
@@ -221,7 +221,7 @@ func (l *CustomListener) ExitComparatorExpression(c *lib.ComparatorExpressionCon
 func (l *CustomListener) ExitUnaryArithmeticExpression(ctx *lib.UnaryArithmeticExpressionContext) {
 	dataType := GetDataType(ctx.GetExp().GetStart())
 	operand, _ := util.ConvertValue(ctx.GetExp().GetText(), dataType)
-	leafNode := &domain.UnaryNode{
+	leafNode := &arithmetic.UnaryNode{
 		Value:    operand,
 		DataType: dataType,
 	}
@@ -333,15 +333,15 @@ func (l *CustomListener) GetField(field string) string {
 	return field
 }
 
-func (l *CustomListener) GetArrayElements(trees []antlr.Tree) []*domain.UnaryNode {
+func (l *CustomListener) GetArrayElements(trees []antlr.Tree) []*arithmetic.UnaryNode {
 	typesContextFilter := func(tree antlr.Tree) bool { return reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesContext{}) }
 	var typesContextChildren = util.Filter(trees, typesContextFilter)
-	var items []*domain.UnaryNode
+	var items []*arithmetic.UnaryNode
 
 	for _, child := range typesContextChildren {
 		dataType := GetDataType(child.(*lib.TypesContext).GetStart())
 		value, _ := util.ConvertValue(child.(*lib.TypesContext).GetText(), dataType)
-		items = append(items, &domain.UnaryNode{
+		items = append(items, &arithmetic.UnaryNode{
 			DataType: dataType,
 			Value:    value,
 		})

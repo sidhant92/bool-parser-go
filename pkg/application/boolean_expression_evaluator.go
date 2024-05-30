@@ -7,6 +7,7 @@ import (
 	"github.com/sidhant92/bool-parser-go/pkg/constant"
 	"github.com/sidhant92/bool-parser-go/pkg/domain"
 	"github.com/sidhant92/bool-parser-go/pkg/domain/arithmetic"
+	"github.com/sidhant92/bool-parser-go/pkg/domain/logical"
 	errors2 "github.com/sidhant92/bool-parser-go/pkg/error"
 	"github.com/sidhant92/bool-parser-go/pkg/parser"
 	"reflect"
@@ -26,26 +27,26 @@ func (b *BooleanExpressionEvaluator) Evaluate(expression string, data map[string
 	return b.evaluateNode(node, data)
 }
 
-func (b *BooleanExpressionEvaluator) evaluateNode(node domain.Node, data map[string]interface{}) (bool, error) {
+func (b *BooleanExpressionEvaluator) evaluateNode(node logical.Node, data map[string]interface{}) (bool, error) {
 	switch node.GetNodeType() {
 	case constant.COMPARISON_NODE:
-		return b.evaluateComparisonNode(node.(domain.ComparisonNode), data)
+		return b.evaluateComparisonNode(node.(logical.ComparisonNode), data)
 	case constant.NUMERIC_RANGE_NODE:
-		return b.evaluateNumericRangeNode(node.(domain.NumericRangeNode), data)
+		return b.evaluateNumericRangeNode(node.(logical.NumericRangeNode), data)
 	case constant.IN_NODE:
-		return b.evaluateInNode(node.(domain.InNode), data)
+		return b.evaluateInNode(node.(logical.InNode), data)
 	case constant.UNARY_NODE:
-		return b.evaluateUnaryNode(node.(domain.UnaryNode), data)
+		return b.evaluateUnaryNode(node.(arithmetic.UnaryNode), data)
 	case constant.BOOLEAN_NODE:
-		return b.evaluateBooleanNode(node.(domain.BooleanNode), data)
+		return b.evaluateBooleanNode(node.(logical.BooleanNode), data)
 	case constant.ARRAY_NODE:
-		return b.evaluateArrayNode(node.(domain.ArrayNode), data)
+		return b.evaluateArrayNode(node.(logical.ArrayNode), data)
 	default:
 		return false, errors.New("unknown node")
 	}
 }
 
-func (b *BooleanExpressionEvaluator) evaluateComparisonNode(node domain.ComparisonNode, data map[string]interface{}) (bool, error) {
+func (b *BooleanExpressionEvaluator) evaluateComparisonNode(node logical.ComparisonNode, data map[string]interface{}) (bool, error) {
 	fieldData := util.GetValueFromMap(node.Field, data)
 	if fieldData == nil {
 		return false, errors2.KEY_DATA_NOT_PRESENT
@@ -53,7 +54,7 @@ func (b *BooleanExpressionEvaluator) evaluateComparisonNode(node domain.Comparis
 	value := node.Value
 	arithmeticType := reflect.TypeOf(new(arithmetic.ArithmeticBaseNode)).Elem()
 	if reflect.TypeOf(node.Value).Implements(arithmeticType) {
-		res, _ := b.ArithmeticExpressionEvaluator.evaluateNode(value.(domain.Node), data)
+		res, _ := b.ArithmeticExpressionEvaluator.evaluateNode(value.(logical.Node), data)
 		value = res
 	}
 	return b.OperatorService.Evaluate(node.Operator, constant.PRIMITIVE, node.DataType, fieldData, value)
@@ -62,14 +63,20 @@ func (b *BooleanExpressionEvaluator) evaluateComparisonNode(node domain.Comparis
 func (b *BooleanExpressionEvaluator) resolveArrayElements(items []interface{}, data map[string]interface{}) []domain.EvaluatedNode {
 	var resolvedValues []interface{}
 	for _, item := range util.GetSliceFromInterface(items) {
-		res, _ := b.ArithmeticExpressionEvaluator.evaluateNode(item.(domain.Node), data)
-		resolvedValues = append(resolvedValues, res)
+		arithmeticBaseNode := reflect.TypeOf(new(arithmetic.ArithmeticBaseNode)).Elem()
+		if reflect.TypeOf(item).Implements(arithmeticBaseNode) {
+			res, _ := b.ArithmeticExpressionEvaluator.evaluateNode(item.(logical.Node), data)
+			resolvedValues = append(resolvedValues, res)
+		} else {
+			res, _ := b.evaluateNode(item.(logical.Node), data)
+			resolvedValues = append(resolvedValues, res)
+		}
 	}
 	flattenedValues := util.MapToEvaluatedNodes(resolvedValues)
 	return flattenedValues
 }
 
-func (b *BooleanExpressionEvaluator) evaluateNumericRangeNode(node domain.NumericRangeNode, data map[string]interface{}) (bool, error) {
+func (b *BooleanExpressionEvaluator) evaluateNumericRangeNode(node logical.NumericRangeNode, data map[string]interface{}) (bool, error) {
 	fieldData := util.GetValueFromMap(node.Field, data)
 	if fieldData == nil {
 		return false, errors2.KEY_DATA_NOT_PRESENT
@@ -85,7 +92,7 @@ func (b *BooleanExpressionEvaluator) evaluateNumericRangeNode(node domain.Numeri
 	return leftRes && rightRes, nil
 }
 
-func (b *BooleanExpressionEvaluator) evaluateInNode(node domain.InNode, data map[string]interface{}) (bool, error) {
+func (b *BooleanExpressionEvaluator) evaluateInNode(node logical.InNode, data map[string]interface{}) (bool, error) {
 	fieldData := util.GetValueFromMap(node.Field, data)
 	if fieldData == nil {
 		return false, errors2.KEY_DATA_NOT_PRESENT
@@ -103,7 +110,7 @@ func (b *BooleanExpressionEvaluator) evaluateInNode(node domain.InNode, data map
 	return res, nil
 }
 
-func (b *BooleanExpressionEvaluator) evaluateUnaryNode(node domain.UnaryNode, data map[string]interface{}) (bool, error) {
+func (b *BooleanExpressionEvaluator) evaluateUnaryNode(node arithmetic.UnaryNode, data map[string]interface{}) (bool, error) {
 	if node.DataType == constant.BOOLEAN {
 		return node.Value.(bool), nil
 	}
@@ -118,7 +125,7 @@ func (b *BooleanExpressionEvaluator) evaluateUnaryNode(node domain.UnaryNode, da
 	return false, errors2.INVALID_UNARY_OPERAND
 }
 
-func (b *BooleanExpressionEvaluator) evaluateBooleanNode(node domain.BooleanNode, data map[string]interface{}) (bool, error) {
+func (b *BooleanExpressionEvaluator) evaluateBooleanNode(node logical.BooleanNode, data map[string]interface{}) (bool, error) {
 	switch node.Operator {
 	case constant.AND:
 		leftRes, err := b.evaluateNode(node.Left, data)
@@ -149,7 +156,7 @@ func (b *BooleanExpressionEvaluator) evaluateBooleanNode(node domain.BooleanNode
 	}
 }
 
-func (b *BooleanExpressionEvaluator) evaluateArrayNode(node domain.ArrayNode, data map[string]interface{}) (bool, error) {
+func (b *BooleanExpressionEvaluator) evaluateArrayNode(node logical.ArrayNode, data map[string]interface{}) (bool, error) {
 	fieldData := util.GetValueFromMap(node.Field, data)
 	if fieldData == nil {
 		return false, errors2.KEY_DATA_NOT_PRESENT

@@ -5,13 +5,13 @@ import (
 	"github.com/antlr4-go/antlr/v4"
 	lru "github.com/hashicorp/golang-lru/v2"
 	"github.com/sidhant92/bool-parser-go/internal/parser/antlr/lib"
-	"github.com/sidhant92/bool-parser-go/pkg/domain"
+	"github.com/sidhant92/bool-parser-go/pkg/domain/logical"
 	"log"
 )
 
 type ANTLRParser struct {
 	UseCache bool
-	cache    *lru.Cache[string, domain.Node]
+	cache    *lru.Cache[string, logical.Node]
 }
 
 func Default() *ANTLRParser {
@@ -22,14 +22,14 @@ func Default() *ANTLRParser {
 }
 
 func Cached(size int) *ANTLRParser {
-	cache, _ := lru.New[string, domain.Node](size)
+	cache, _ := lru.New[string, logical.Node](size)
 	return &ANTLRParser{
 		UseCache: true,
 		cache:    cache,
 	}
 }
 
-func (p *ANTLRParser) Parse(input string, defaultField ...string) (res domain.Node, err error) {
+func (p *ANTLRParser) Parse(input string, defaultField ...string) (res logical.Node, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			log.Println("panic occurred:", r)

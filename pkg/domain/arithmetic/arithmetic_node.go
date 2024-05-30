@@ -2,13 +2,13 @@ package arithmetic
 
 import (
 	"github.com/sidhant92/bool-parser-go/pkg/constant"
-	"github.com/sidhant92/bool-parser-go/pkg/domain"
+	"github.com/sidhant92/bool-parser-go/pkg/domain/logical"
 )
 
 type ArithmeticNode struct {
-	Left domain.Node
+	Left logical.Node
 
-	Right domain.Node
+	Right logical.Node
 
 	Operator constant.Operator
 }

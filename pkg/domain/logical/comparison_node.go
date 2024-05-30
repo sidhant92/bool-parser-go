@@ -1,4 +1,4 @@
-package domain
+package logical
 
 import "github.com/sidhant92/bool-parser-go/pkg/constant"
 
