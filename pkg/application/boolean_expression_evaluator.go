@@ -51,13 +51,16 @@ func (b *BooleanExpressionEvaluator) evaluateComparisonNode(node logical.Compari
 	if fieldData == nil {
 		return false, errors2.KEY_DATA_NOT_PRESENT
 	}
-	value := node.Value
+	var value interface{}
+	value = node.Value
+	var dataType = node.DataType
 	arithmeticType := reflect.TypeOf(new(arithmetic.ArithmeticBaseNode)).Elem()
 	if reflect.TypeOf(node.Value).Implements(arithmeticType) {
 		res, _ := b.ArithmeticExpressionEvaluator.evaluateNode(value.(logical.Node), data)
 		value = res
+		dataType = util.GetDataType(value)
 	}
-	return b.OperatorService.Evaluate(node.Operator, constant.PRIMITIVE, node.DataType, fieldData, value)
+	return b.OperatorService.Evaluate(node.Operator, constant.PRIMITIVE, dataType, fieldData, value)
 }
 
 func (b *BooleanExpressionEvaluator) resolveArrayElements(items []interface{}, data map[string]interface{}) []domain.EvaluatedNode {

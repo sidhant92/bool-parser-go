@@ -1,4 +1,4 @@
-// Code generated from /Users/sid/Desktop/filter1/BooleanExpression.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /Users/sid/Desktop/filter2/BooleanExpression.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package lib // BooleanExpression
 
@@ -42,7 +42,8 @@ func booleanexpressionParserInit() {
 		"CONTAINS_ANY", "MIN", "MAX", "AVG", "SUM", "MEAN", "MODE", "MEDIAN",
 		"LEN", "INT", "ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "MODULUS", "EXPONENT",
 		"NE", "GT", "GE", "LT", "LE", "EQ", "LPAREN", "RPAREN", "DECIMAL", "APP_VERSION",
-		"INTEGER", "WS", "WORD", "ALPHANUMERIC", "SQ", "DQ",
+		"INTEGER", "WS", "WORD", "SQSTR", "DQSTR", "FIELD", "ALPHANUMERIC",
+		"SQ", "DQ",
 	}
 	staticData.RuleNames = []string{
 		"parse", "expression", "comparator", "arithmeticOperator", "arithmeticFunction",
@@ -50,72 +51,69 @@ func booleanexpressionParserInit() {
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
 	staticData.serializedATN = []int32{
-		4, 1, 41, 150, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
+		4, 1, 44, 145, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
 		4, 2, 5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 2, 8, 7, 8, 2, 9, 7, 9, 2, 10, 7,
 		10, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 40, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 3, 1, 47, 8, 1, 1, 1, 3, 1, 50, 8, 1, 1, 1, 1, 1, 1, 1, 3, 1, 55,
-		8, 1, 1, 1, 1, 1, 1, 1, 3, 1, 60, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3,
+		1, 46, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 54, 8, 1, 1, 1,
 		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 1, 88, 8, 1, 10,
-		1, 12, 1, 91, 9, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1, 4, 1, 4, 1, 5, 1, 5, 5,
-		5, 101, 8, 5, 10, 5, 12, 5, 104, 9, 5, 1, 5, 1, 5, 5, 5, 108, 8, 5, 10,
-		5, 12, 5, 111, 9, 5, 1, 5, 1, 5, 5, 5, 115, 8, 5, 10, 5, 12, 5, 118, 9,
-		5, 1, 5, 1, 5, 5, 5, 122, 8, 5, 10, 5, 12, 5, 125, 9, 5, 5, 5, 127, 8,
-		5, 10, 5, 12, 5, 130, 9, 5, 1, 5, 1, 5, 1, 6, 1, 6, 1, 7, 1, 7, 1, 8, 1,
-		8, 1, 8, 1, 8, 1, 8, 1, 8, 3, 8, 144, 8, 8, 1, 9, 1, 9, 1, 10, 1, 10, 1,
-		10, 0, 1, 2, 11, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 0, 7, 1, 0, 26,
-		31, 1, 0, 20, 25, 1, 0, 11, 19, 1, 0, 9, 10, 2, 0, 34, 34, 36, 36, 1, 0,
-		4, 5, 1, 0, 7, 8, 167, 0, 22, 1, 0, 0, 0, 2, 59, 1, 0, 0, 0, 4, 92, 1,
-		0, 0, 0, 6, 94, 1, 0, 0, 0, 8, 96, 1, 0, 0, 0, 10, 98, 1, 0, 0, 0, 12,
-		133, 1, 0, 0, 0, 14, 135, 1, 0, 0, 0, 16, 143, 1, 0, 0, 0, 18, 145, 1,
-		0, 0, 0, 20, 147, 1, 0, 0, 0, 22, 23, 3, 2, 1, 0, 23, 24, 5, 0, 0, 1, 24,
-		1, 1, 0, 0, 0, 25, 26, 6, 1, -1, 0, 26, 27, 5, 32, 0, 0, 27, 28, 3, 2,
-		1, 0, 28, 29, 5, 33, 0, 0, 29, 60, 1, 0, 0, 0, 30, 31, 5, 6, 0, 0, 31,
-		60, 3, 2, 1, 15, 32, 33, 5, 21, 0, 0, 33, 60, 3, 2, 1, 13, 34, 35, 3, 8,
-		4, 0, 35, 36, 3, 10, 5, 0, 36, 60, 1, 0, 0, 0, 37, 60, 3, 16, 8, 0, 38,
-		40, 5, 38, 0, 0, 39, 38, 1, 0, 0, 0, 39, 40, 1, 0, 0, 0, 40, 41, 1, 0,
-		0, 0, 41, 42, 3, 14, 7, 0, 42, 43, 5, 3, 0, 0, 43, 44, 3, 14, 7, 0, 44,
-		60, 1, 0, 0, 0, 45, 47, 5, 38, 0, 0, 46, 45, 1, 0, 0, 0, 46, 47, 1, 0,
-		0, 0, 47, 49, 1, 0, 0, 0, 48, 50, 5, 6, 0, 0, 49, 48, 1, 0, 0, 0, 49, 50,
-		1, 0, 0, 0, 50, 51, 1, 0, 0, 0, 51, 52, 5, 2, 0, 0, 52, 60, 3, 10, 5, 0,
-		53, 55, 5, 38, 0, 0, 54, 53, 1, 0, 0, 0, 54, 55, 1, 0, 0, 0, 55, 56, 1,
-		0, 0, 0, 56, 57, 3, 12, 6, 0, 57, 58, 3, 10, 5, 0, 58, 60, 1, 0, 0, 0,
-		59, 25, 1, 0, 0, 0, 59, 30, 1, 0, 0, 0, 59, 32, 1, 0, 0, 0, 59, 34, 1,
-		0, 0, 0, 59, 37, 1, 0, 0, 0, 59, 39, 1, 0, 0, 0, 59, 46, 1, 0, 0, 0, 59,
-		54, 1, 0, 0, 0, 60, 89, 1, 0, 0, 0, 61, 62, 10, 14, 0, 0, 62, 63, 3, 4,
-		2, 0, 63, 64, 3, 2, 1, 15, 64, 88, 1, 0, 0, 0, 65, 66, 10, 12, 0, 0, 66,
-		67, 5, 25, 0, 0, 67, 88, 3, 2, 1, 13, 68, 69, 10, 11, 0, 0, 69, 70, 5,
-		23, 0, 0, 70, 88, 3, 2, 1, 12, 71, 72, 10, 10, 0, 0, 72, 73, 5, 22, 0,
-		0, 73, 88, 3, 2, 1, 11, 74, 75, 10, 9, 0, 0, 75, 76, 5, 24, 0, 0, 76, 88,
-		3, 2, 1, 10, 77, 78, 10, 8, 0, 0, 78, 79, 5, 20, 0, 0, 79, 88, 3, 2, 1,
-		9, 80, 81, 10, 7, 0, 0, 81, 82, 5, 21, 0, 0, 82, 88, 3, 2, 1, 8, 83, 84,
-		10, 5, 0, 0, 84, 85, 3, 18, 9, 0, 85, 86, 3, 2, 1, 6, 86, 88, 1, 0, 0,
-		0, 87, 61, 1, 0, 0, 0, 87, 65, 1, 0, 0, 0, 87, 68, 1, 0, 0, 0, 87, 71,
-		1, 0, 0, 0, 87, 74, 1, 0, 0, 0, 87, 77, 1, 0, 0, 0, 87, 80, 1, 0, 0, 0,
-		87, 83, 1, 0, 0, 0, 88, 91, 1, 0, 0, 0, 89, 87, 1, 0, 0, 0, 89, 90, 1,
-		0, 0, 0, 90, 3, 1, 0, 0, 0, 91, 89, 1, 0, 0, 0, 92, 93, 7, 0, 0, 0, 93,
-		5, 1, 0, 0, 0, 94, 95, 7, 1, 0, 0, 95, 7, 1, 0, 0, 0, 96, 97, 7, 2, 0,
-		0, 97, 9, 1, 0, 0, 0, 98, 102, 5, 32, 0, 0, 99, 101, 5, 37, 0, 0, 100,
-		99, 1, 0, 0, 0, 101, 104, 1, 0, 0, 0, 102, 100, 1, 0, 0, 0, 102, 103, 1,
-		0, 0, 0, 103, 105, 1, 0, 0, 0, 104, 102, 1, 0, 0, 0, 105, 109, 3, 2, 1,
-		0, 106, 108, 5, 37, 0, 0, 107, 106, 1, 0, 0, 0, 108, 111, 1, 0, 0, 0, 109,
-		107, 1, 0, 0, 0, 109, 110, 1, 0, 0, 0, 110, 128, 1, 0, 0, 0, 111, 109,
-		1, 0, 0, 0, 112, 116, 5, 1, 0, 0, 113, 115, 5, 37, 0, 0, 114, 113, 1, 0,
-		0, 0, 115, 118, 1, 0, 0, 0, 116, 114, 1, 0, 0, 0, 116, 117, 1, 0, 0, 0,
-		117, 119, 1, 0, 0, 0, 118, 116, 1, 0, 0, 0, 119, 123, 3, 2, 1, 0, 120,
-		122, 5, 37, 0, 0, 121, 120, 1, 0, 0, 0, 122, 125, 1, 0, 0, 0, 123, 121,
-		1, 0, 0, 0, 123, 124, 1, 0, 0, 0, 124, 127, 1, 0, 0, 0, 125, 123, 1, 0,
-		0, 0, 126, 112, 1, 0, 0, 0, 127, 130, 1, 0, 0, 0, 128, 126, 1, 0, 0, 0,
-		128, 129, 1, 0, 0, 0, 129, 131, 1, 0, 0, 0, 130, 128, 1, 0, 0, 0, 131,
-		132, 5, 33, 0, 0, 132, 11, 1, 0, 0, 0, 133, 134, 7, 3, 0, 0, 134, 13, 1,
-		0, 0, 0, 135, 136, 7, 4, 0, 0, 136, 15, 1, 0, 0, 0, 137, 144, 5, 36, 0,
-		0, 138, 144, 5, 34, 0, 0, 139, 144, 5, 35, 0, 0, 140, 144, 3, 20, 10, 0,
-		141, 144, 5, 38, 0, 0, 142, 144, 1, 0, 0, 0, 143, 137, 1, 0, 0, 0, 143,
-		138, 1, 0, 0, 0, 143, 139, 1, 0, 0, 0, 143, 140, 1, 0, 0, 0, 143, 141,
-		1, 0, 0, 0, 143, 142, 1, 0, 0, 0, 144, 17, 1, 0, 0, 0, 145, 146, 7, 5,
-		0, 0, 146, 19, 1, 0, 0, 0, 147, 148, 7, 6, 0, 0, 148, 21, 1, 0, 0, 0, 13,
-		39, 46, 49, 54, 59, 87, 89, 102, 109, 116, 123, 128, 143,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 5, 1, 82, 8, 1, 10, 1, 12, 1, 85, 9, 1, 1, 2, 1, 2, 1, 3, 1, 3, 1,
+		4, 1, 4, 1, 5, 1, 5, 5, 5, 95, 8, 5, 10, 5, 12, 5, 98, 9, 5, 1, 5, 1, 5,
+		5, 5, 102, 8, 5, 10, 5, 12, 5, 105, 9, 5, 1, 5, 1, 5, 5, 5, 109, 8, 5,
+		10, 5, 12, 5, 112, 9, 5, 1, 5, 1, 5, 5, 5, 116, 8, 5, 10, 5, 12, 5, 119,
+		9, 5, 5, 5, 121, 8, 5, 10, 5, 12, 5, 124, 9, 5, 1, 5, 1, 5, 1, 6, 1, 6,
+		1, 7, 1, 7, 1, 8, 1, 8, 1, 8, 1, 8, 1, 8, 1, 8, 1, 8, 3, 8, 139, 8, 8,
+		1, 9, 1, 9, 1, 10, 1, 10, 1, 10, 0, 1, 2, 11, 0, 2, 4, 6, 8, 10, 12, 14,
+		16, 18, 20, 0, 7, 1, 0, 26, 31, 1, 0, 20, 25, 1, 0, 11, 19, 1, 0, 9, 10,
+		2, 0, 34, 34, 36, 36, 1, 0, 4, 5, 1, 0, 7, 8, 160, 0, 22, 1, 0, 0, 0, 2,
+		53, 1, 0, 0, 0, 4, 86, 1, 0, 0, 0, 6, 88, 1, 0, 0, 0, 8, 90, 1, 0, 0, 0,
+		10, 92, 1, 0, 0, 0, 12, 127, 1, 0, 0, 0, 14, 129, 1, 0, 0, 0, 16, 138,
+		1, 0, 0, 0, 18, 140, 1, 0, 0, 0, 20, 142, 1, 0, 0, 0, 22, 23, 3, 2, 1,
+		0, 23, 24, 5, 0, 0, 1, 24, 1, 1, 0, 0, 0, 25, 26, 6, 1, -1, 0, 26, 27,
+		5, 32, 0, 0, 27, 28, 3, 2, 1, 0, 28, 29, 5, 33, 0, 0, 29, 54, 1, 0, 0,
+		0, 30, 31, 5, 6, 0, 0, 31, 54, 3, 2, 1, 15, 32, 33, 5, 21, 0, 0, 33, 54,
+		3, 2, 1, 13, 34, 35, 3, 8, 4, 0, 35, 36, 3, 10, 5, 0, 36, 54, 1, 0, 0,
+		0, 37, 54, 3, 16, 8, 0, 38, 39, 5, 41, 0, 0, 39, 40, 3, 14, 7, 0, 40, 41,
+		5, 3, 0, 0, 41, 42, 3, 14, 7, 0, 42, 54, 1, 0, 0, 0, 43, 45, 5, 41, 0,
+		0, 44, 46, 5, 6, 0, 0, 45, 44, 1, 0, 0, 0, 45, 46, 1, 0, 0, 0, 46, 47,
+		1, 0, 0, 0, 47, 48, 5, 2, 0, 0, 48, 54, 3, 10, 5, 0, 49, 50, 5, 41, 0,
+		0, 50, 51, 3, 12, 6, 0, 51, 52, 3, 10, 5, 0, 52, 54, 1, 0, 0, 0, 53, 25,
+		1, 0, 0, 0, 53, 30, 1, 0, 0, 0, 53, 32, 1, 0, 0, 0, 53, 34, 1, 0, 0, 0,
+		53, 37, 1, 0, 0, 0, 53, 38, 1, 0, 0, 0, 53, 43, 1, 0, 0, 0, 53, 49, 1,
+		0, 0, 0, 54, 83, 1, 0, 0, 0, 55, 56, 10, 14, 0, 0, 56, 57, 3, 4, 2, 0,
+		57, 58, 3, 2, 1, 15, 58, 82, 1, 0, 0, 0, 59, 60, 10, 12, 0, 0, 60, 61,
+		5, 25, 0, 0, 61, 82, 3, 2, 1, 13, 62, 63, 10, 11, 0, 0, 63, 64, 5, 23,
+		0, 0, 64, 82, 3, 2, 1, 12, 65, 66, 10, 10, 0, 0, 66, 67, 5, 22, 0, 0, 67,
+		82, 3, 2, 1, 11, 68, 69, 10, 9, 0, 0, 69, 70, 5, 24, 0, 0, 70, 82, 3, 2,
+		1, 10, 71, 72, 10, 8, 0, 0, 72, 73, 5, 20, 0, 0, 73, 82, 3, 2, 1, 9, 74,
+		75, 10, 7, 0, 0, 75, 76, 5, 21, 0, 0, 76, 82, 3, 2, 1, 8, 77, 78, 10, 5,
+		0, 0, 78, 79, 3, 18, 9, 0, 79, 80, 3, 2, 1, 6, 80, 82, 1, 0, 0, 0, 81,
+		55, 1, 0, 0, 0, 81, 59, 1, 0, 0, 0, 81, 62, 1, 0, 0, 0, 81, 65, 1, 0, 0,
+		0, 81, 68, 1, 0, 0, 0, 81, 71, 1, 0, 0, 0, 81, 74, 1, 0, 0, 0, 81, 77,
+		1, 0, 0, 0, 82, 85, 1, 0, 0, 0, 83, 81, 1, 0, 0, 0, 83, 84, 1, 0, 0, 0,
+		84, 3, 1, 0, 0, 0, 85, 83, 1, 0, 0, 0, 86, 87, 7, 0, 0, 0, 87, 5, 1, 0,
+		0, 0, 88, 89, 7, 1, 0, 0, 89, 7, 1, 0, 0, 0, 90, 91, 7, 2, 0, 0, 91, 9,
+		1, 0, 0, 0, 92, 96, 5, 32, 0, 0, 93, 95, 5, 37, 0, 0, 94, 93, 1, 0, 0,
+		0, 95, 98, 1, 0, 0, 0, 96, 94, 1, 0, 0, 0, 96, 97, 1, 0, 0, 0, 97, 99,
+		1, 0, 0, 0, 98, 96, 1, 0, 0, 0, 99, 103, 3, 2, 1, 0, 100, 102, 5, 37, 0,
+		0, 101, 100, 1, 0, 0, 0, 102, 105, 1, 0, 0, 0, 103, 101, 1, 0, 0, 0, 103,
+		104, 1, 0, 0, 0, 104, 122, 1, 0, 0, 0, 105, 103, 1, 0, 0, 0, 106, 110,
+		5, 1, 0, 0, 107, 109, 5, 37, 0, 0, 108, 107, 1, 0, 0, 0, 109, 112, 1, 0,
+		0, 0, 110, 108, 1, 0, 0, 0, 110, 111, 1, 0, 0, 0, 111, 113, 1, 0, 0, 0,
+		112, 110, 1, 0, 0, 0, 113, 117, 3, 2, 1, 0, 114, 116, 5, 37, 0, 0, 115,
+		114, 1, 0, 0, 0, 116, 119, 1, 0, 0, 0, 117, 115, 1, 0, 0, 0, 117, 118,
+		1, 0, 0, 0, 118, 121, 1, 0, 0, 0, 119, 117, 1, 0, 0, 0, 120, 106, 1, 0,
+		0, 0, 121, 124, 1, 0, 0, 0, 122, 120, 1, 0, 0, 0, 122, 123, 1, 0, 0, 0,
+		123, 125, 1, 0, 0, 0, 124, 122, 1, 0, 0, 0, 125, 126, 5, 33, 0, 0, 126,
+		11, 1, 0, 0, 0, 127, 128, 7, 3, 0, 0, 128, 13, 1, 0, 0, 0, 129, 130, 7,
+		4, 0, 0, 130, 15, 1, 0, 0, 0, 131, 139, 5, 36, 0, 0, 132, 139, 5, 34, 0,
+		0, 133, 139, 5, 35, 0, 0, 134, 139, 3, 20, 10, 0, 135, 139, 5, 38, 0, 0,
+		136, 139, 5, 41, 0, 0, 137, 139, 1, 0, 0, 0, 138, 131, 1, 0, 0, 0, 138,
+		132, 1, 0, 0, 0, 138, 133, 1, 0, 0, 0, 138, 134, 1, 0, 0, 0, 138, 135,
+		1, 0, 0, 0, 138, 136, 1, 0, 0, 0, 138, 137, 1, 0, 0, 0, 139, 17, 1, 0,
+		0, 0, 140, 141, 7, 5, 0, 0, 141, 19, 1, 0, 0, 0, 142, 143, 7, 6, 0, 0,
+		143, 21, 1, 0, 0, 0, 10, 45, 53, 81, 83, 96, 103, 110, 117, 122, 138,
 	}
 	deserializer := antlr.NewATNDeserializer(nil)
 	staticData.atn = deserializer.Deserialize(staticData.serializedATN)
@@ -192,9 +190,12 @@ const (
 	BooleanExpressionParserINTEGER      = 36
 	BooleanExpressionParserWS           = 37
 	BooleanExpressionParserWORD         = 38
-	BooleanExpressionParserALPHANUMERIC = 39
-	BooleanExpressionParserSQ           = 40
-	BooleanExpressionParserDQ           = 41
+	BooleanExpressionParserSQSTR        = 39
+	BooleanExpressionParserDQSTR        = 40
+	BooleanExpressionParserFIELD        = 41
+	BooleanExpressionParserALPHANUMERIC = 42
+	BooleanExpressionParserSQ           = 43
+	BooleanExpressionParserDQ           = 44
 )
 
 // BooleanExpressionParser rules.
@@ -644,8 +645,8 @@ func (s *InExpressionContext) Wordlist() IWordlistContext {
 	return t.(IWordlistContext)
 }
 
-func (s *InExpressionContext) WORD() antlr.TerminalNode {
-	return s.GetToken(BooleanExpressionParserWORD, 0)
+func (s *InExpressionContext) FIELD() antlr.TerminalNode {
+	return s.GetToken(BooleanExpressionParserFIELD, 0)
 }
 
 func (s *InExpressionContext) NOT() antlr.TerminalNode {
@@ -729,8 +730,8 @@ func (s *ArrayExpressionContext) Wordlist() IWordlistContext {
 	return t.(IWordlistContext)
 }
 
-func (s *ArrayExpressionContext) WORD() antlr.TerminalNode {
-	return s.GetToken(BooleanExpressionParserWORD, 0)
+func (s *ArrayExpressionContext) FIELD() antlr.TerminalNode {
+	return s.GetToken(BooleanExpressionParserFIELD, 0)
 }
 
 func (s *ArrayExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
@@ -823,8 +824,8 @@ func (s *ToExpressionContext) NumericTypes(i int) INumericTypesContext {
 	return t.(INumericTypesContext)
 }
 
-func (s *ToExpressionContext) WORD() antlr.TerminalNode {
-	return s.GetToken(BooleanExpressionParserWORD, 0)
+func (s *ToExpressionContext) FIELD() antlr.TerminalNode {
+	return s.GetToken(BooleanExpressionParserFIELD, 0)
 }
 
 func (s *ToExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
@@ -1245,13 +1246,13 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 	var _alt int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(59)
+	p.SetState(53)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
-	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 4, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 1, p.GetParserRuleContext()) {
 	case 1:
 		localctx = NewParentExpressionContext(p, localctx)
 		p.SetParserRuleContext(localctx)
@@ -1350,36 +1351,28 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 		localctx = NewToExpressionContext(p, localctx)
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
-		p.SetState(39)
-		p.GetErrorHandler().Sync(p)
-		if p.HasError() {
-			goto errorExit
-		}
-		_la = p.GetTokenStream().LA(1)
 
-		if _la == BooleanExpressionParserWORD {
-			{
-				p.SetState(38)
-
-				var _m = p.Match(BooleanExpressionParserWORD)
-
-				localctx.(*ToExpressionContext).field = _m
-				if p.HasError() {
-					// Recognition error - abort rule
-					goto errorExit
-				}
-			}
-
-		}
 		{
-			p.SetState(41)
+			p.SetState(38)
+
+			var _m = p.Match(BooleanExpressionParserFIELD)
+
+			localctx.(*ToExpressionContext).field = _m
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+
+		{
+			p.SetState(39)
 
 			var _x = p.NumericTypes()
 
 			localctx.(*ToExpressionContext).lower = _x
 		}
 		{
-			p.SetState(42)
+			p.SetState(40)
 			p.Match(BooleanExpressionParserTO)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -1387,7 +1380,7 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 			}
 		}
 		{
-			p.SetState(43)
+			p.SetState(41)
 
 			var _x = p.NumericTypes()
 
@@ -1398,28 +1391,20 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 		localctx = NewInExpressionContext(p, localctx)
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
-		p.SetState(46)
-		p.GetErrorHandler().Sync(p)
-		if p.HasError() {
-			goto errorExit
-		}
-		_la = p.GetTokenStream().LA(1)
 
-		if _la == BooleanExpressionParserWORD {
-			{
-				p.SetState(45)
+		{
+			p.SetState(43)
 
-				var _m = p.Match(BooleanExpressionParserWORD)
+			var _m = p.Match(BooleanExpressionParserFIELD)
 
-				localctx.(*InExpressionContext).field = _m
-				if p.HasError() {
-					// Recognition error - abort rule
-					goto errorExit
-				}
+			localctx.(*InExpressionContext).field = _m
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
 			}
-
 		}
-		p.SetState(49)
+
+		p.SetState(45)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -1428,7 +1413,7 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 
 		if _la == BooleanExpressionParserNOT {
 			{
-				p.SetState(48)
+				p.SetState(44)
 
 				var _m = p.Match(BooleanExpressionParserNOT)
 
@@ -1441,7 +1426,7 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 
 		}
 		{
-			p.SetState(51)
+			p.SetState(47)
 			p.Match(BooleanExpressionParserIN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -1449,7 +1434,7 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 			}
 		}
 		{
-			p.SetState(52)
+			p.SetState(48)
 
 			var _x = p.Wordlist()
 
@@ -1460,36 +1445,28 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 		localctx = NewArrayExpressionContext(p, localctx)
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
-		p.SetState(54)
-		p.GetErrorHandler().Sync(p)
-		if p.HasError() {
-			goto errorExit
-		}
-		_la = p.GetTokenStream().LA(1)
 
-		if _la == BooleanExpressionParserWORD {
-			{
-				p.SetState(53)
-
-				var _m = p.Match(BooleanExpressionParserWORD)
-
-				localctx.(*ArrayExpressionContext).field = _m
-				if p.HasError() {
-					// Recognition error - abort rule
-					goto errorExit
-				}
-			}
-
-		}
 		{
-			p.SetState(56)
+			p.SetState(49)
+
+			var _m = p.Match(BooleanExpressionParserFIELD)
+
+			localctx.(*ArrayExpressionContext).field = _m
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+
+		{
+			p.SetState(50)
 
 			var _x = p.ArrayOperators()
 
 			localctx.(*ArrayExpressionContext).op = _x
 		}
 		{
-			p.SetState(57)
+			p.SetState(51)
 
 			var _x = p.Wordlist()
 
@@ -1500,12 +1477,12 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 		goto errorExit
 	}
 	p.GetParserRuleContext().SetStop(p.GetTokenStream().LT(-1))
-	p.SetState(89)
+	p.SetState(83)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
-	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 6, p.GetParserRuleContext())
+	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 3, p.GetParserRuleContext())
 	if p.HasError() {
 		goto errorExit
 	}
@@ -1515,33 +1492,33 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 				p.TriggerExitRuleEvent()
 			}
 			_prevctx = localctx
-			p.SetState(87)
+			p.SetState(81)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
 			}
 
-			switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 5, p.GetParserRuleContext()) {
+			switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 2, p.GetParserRuleContext()) {
 			case 1:
 				localctx = NewComparatorExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
 				localctx.(*ComparatorExpressionContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, BooleanExpressionParserRULE_expression)
-				p.SetState(61)
+				p.SetState(55)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 14)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 14)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(62)
+					p.SetState(56)
 
 					var _x = p.Comparator()
 
 					localctx.(*ComparatorExpressionContext).op = _x
 				}
 				{
-					p.SetState(63)
+					p.SetState(57)
 
 					var _x = p.expression(15)
 
@@ -1553,14 +1530,14 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 				localctx.(*ArithmeticExpressionContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, BooleanExpressionParserRULE_expression)
-				p.SetState(65)
+				p.SetState(59)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 12)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 12)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(66)
+					p.SetState(60)
 
 					var _m = p.Match(BooleanExpressionParserEXPONENT)
 
@@ -1571,7 +1548,7 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 					}
 				}
 				{
-					p.SetState(67)
+					p.SetState(61)
 
 					var _x = p.expression(13)
 
@@ -1583,14 +1560,14 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 				localctx.(*ArithmeticExpressionContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, BooleanExpressionParserRULE_expression)
-				p.SetState(68)
+				p.SetState(62)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 11)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 11)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(69)
+					p.SetState(63)
 
 					var _m = p.Match(BooleanExpressionParserDIVIDE)
 
@@ -1601,7 +1578,7 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 					}
 				}
 				{
-					p.SetState(70)
+					p.SetState(64)
 
 					var _x = p.expression(12)
 
@@ -1613,14 +1590,14 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 				localctx.(*ArithmeticExpressionContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, BooleanExpressionParserRULE_expression)
-				p.SetState(71)
+				p.SetState(65)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 10)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 10)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(72)
+					p.SetState(66)
 
 					var _m = p.Match(BooleanExpressionParserMULTIPLY)
 
@@ -1631,7 +1608,7 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 					}
 				}
 				{
-					p.SetState(73)
+					p.SetState(67)
 
 					var _x = p.expression(11)
 
@@ -1643,14 +1620,14 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 				localctx.(*ArithmeticExpressionContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, BooleanExpressionParserRULE_expression)
-				p.SetState(74)
+				p.SetState(68)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 9)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 9)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(75)
+					p.SetState(69)
 
 					var _m = p.Match(BooleanExpressionParserMODULUS)
 
@@ -1661,7 +1638,7 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 					}
 				}
 				{
-					p.SetState(76)
+					p.SetState(70)
 
 					var _x = p.expression(10)
 
@@ -1673,14 +1650,14 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 				localctx.(*ArithmeticExpressionContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, BooleanExpressionParserRULE_expression)
-				p.SetState(77)
+				p.SetState(71)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 8)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 8)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(78)
+					p.SetState(72)
 
 					var _m = p.Match(BooleanExpressionParserADD)
 
@@ -1691,7 +1668,7 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 					}
 				}
 				{
-					p.SetState(79)
+					p.SetState(73)
 
 					var _x = p.expression(9)
 
@@ -1703,14 +1680,14 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 				localctx.(*ArithmeticExpressionContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, BooleanExpressionParserRULE_expression)
-				p.SetState(80)
+				p.SetState(74)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 7)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 7)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(81)
+					p.SetState(75)
 
 					var _m = p.Match(BooleanExpressionParserSUBTRACT)
 
@@ -1721,7 +1698,7 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 					}
 				}
 				{
-					p.SetState(82)
+					p.SetState(76)
 
 					var _x = p.expression(8)
 
@@ -1733,21 +1710,21 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 				localctx.(*BinaryExpressionContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, BooleanExpressionParserRULE_expression)
-				p.SetState(83)
+				p.SetState(77)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 5)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 5)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(84)
+					p.SetState(78)
 
 					var _x = p.Binary()
 
 					localctx.(*BinaryExpressionContext).op = _x
 				}
 				{
-					p.SetState(85)
+					p.SetState(79)
 
 					var _x = p.expression(6)
 
@@ -1759,12 +1736,12 @@ func (p *BooleanExpressionParser) expression(_p int) (localctx IExpressionContex
 			}
 
 		}
-		p.SetState(91)
+		p.SetState(85)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
-		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 6, p.GetParserRuleContext())
+		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 3, p.GetParserRuleContext())
 		if p.HasError() {
 			goto errorExit
 		}
@@ -1885,7 +1862,7 @@ func (p *BooleanExpressionParser) Comparator() (localctx IComparatorContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(92)
+		p.SetState(86)
 		_la = p.GetTokenStream().LA(1)
 
 		if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&4227858432) != 0) {
@@ -2011,7 +1988,7 @@ func (p *BooleanExpressionParser) ArithmeticOperator() (localctx IArithmeticOper
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(94)
+		p.SetState(88)
 		_la = p.GetTokenStream().LA(1)
 
 		if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&66060288) != 0) {
@@ -2152,7 +2129,7 @@ func (p *BooleanExpressionParser) ArithmeticFunction() (localctx IArithmeticFunc
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(96)
+		p.SetState(90)
 		_la = p.GetTokenStream().LA(1)
 
 		if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&1046528) != 0) {
@@ -2335,26 +2312,26 @@ func (p *BooleanExpressionParser) Wordlist() (localctx IWordlistContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(98)
+		p.SetState(92)
 		p.Match(BooleanExpressionParserLPAREN)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
-	p.SetState(102)
+	p.SetState(96)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
-	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 7, p.GetParserRuleContext())
+	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 4, p.GetParserRuleContext())
 	if p.HasError() {
 		goto errorExit
 	}
 	for _alt != 2 && _alt != antlr.ATNInvalidAltNumber {
 		if _alt == 1 {
 			{
-				p.SetState(99)
+				p.SetState(93)
 				p.Match(BooleanExpressionParserWS)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -2363,24 +2340,24 @@ func (p *BooleanExpressionParser) Wordlist() (localctx IWordlistContext) {
 			}
 
 		}
-		p.SetState(104)
+		p.SetState(98)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
-		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 7, p.GetParserRuleContext())
+		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 4, p.GetParserRuleContext())
 		if p.HasError() {
 			goto errorExit
 		}
 	}
 	{
-		p.SetState(105)
+		p.SetState(99)
 
 		var _x = p.expression(0)
 
 		localctx.(*WordlistContext).first = _x
 	}
-	p.SetState(109)
+	p.SetState(103)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -2389,7 +2366,7 @@ func (p *BooleanExpressionParser) Wordlist() (localctx IWordlistContext) {
 
 	for _la == BooleanExpressionParserWS {
 		{
-			p.SetState(106)
+			p.SetState(100)
 			p.Match(BooleanExpressionParserWS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2397,14 +2374,14 @@ func (p *BooleanExpressionParser) Wordlist() (localctx IWordlistContext) {
 			}
 		}
 
-		p.SetState(111)
+		p.SetState(105)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
 		_la = p.GetTokenStream().LA(1)
 	}
-	p.SetState(128)
+	p.SetState(122)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -2413,26 +2390,26 @@ func (p *BooleanExpressionParser) Wordlist() (localctx IWordlistContext) {
 
 	for _la == BooleanExpressionParserT__0 {
 		{
-			p.SetState(112)
+			p.SetState(106)
 			p.Match(BooleanExpressionParserT__0)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
-		p.SetState(116)
+		p.SetState(110)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
-		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 9, p.GetParserRuleContext())
+		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 6, p.GetParserRuleContext())
 		if p.HasError() {
 			goto errorExit
 		}
 		for _alt != 2 && _alt != antlr.ATNInvalidAltNumber {
 			if _alt == 1 {
 				{
-					p.SetState(113)
+					p.SetState(107)
 					p.Match(BooleanExpressionParserWS)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -2441,24 +2418,24 @@ func (p *BooleanExpressionParser) Wordlist() (localctx IWordlistContext) {
 				}
 
 			}
-			p.SetState(118)
+			p.SetState(112)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
 			}
-			_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 9, p.GetParserRuleContext())
+			_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 6, p.GetParserRuleContext())
 			if p.HasError() {
 				goto errorExit
 			}
 		}
 		{
-			p.SetState(119)
+			p.SetState(113)
 
 			var _x = p.expression(0)
 
 			localctx.(*WordlistContext).rest = _x
 		}
-		p.SetState(123)
+		p.SetState(117)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -2467,7 +2444,7 @@ func (p *BooleanExpressionParser) Wordlist() (localctx IWordlistContext) {
 
 		for _la == BooleanExpressionParserWS {
 			{
-				p.SetState(120)
+				p.SetState(114)
 				p.Match(BooleanExpressionParserWS)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -2475,7 +2452,7 @@ func (p *BooleanExpressionParser) Wordlist() (localctx IWordlistContext) {
 				}
 			}
 
-			p.SetState(125)
+			p.SetState(119)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
@@ -2483,7 +2460,7 @@ func (p *BooleanExpressionParser) Wordlist() (localctx IWordlistContext) {
 			_la = p.GetTokenStream().LA(1)
 		}
 
-		p.SetState(130)
+		p.SetState(124)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -2491,7 +2468,7 @@ func (p *BooleanExpressionParser) Wordlist() (localctx IWordlistContext) {
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(131)
+		p.SetState(125)
 		p.Match(BooleanExpressionParserRPAREN)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -2594,7 +2571,7 @@ func (p *BooleanExpressionParser) ArrayOperators() (localctx IArrayOperatorsCont
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(133)
+		p.SetState(127)
 		_la = p.GetTokenStream().LA(1)
 
 		if !(_la == BooleanExpressionParserCONTAINS_ALL || _la == BooleanExpressionParserCONTAINS_ANY) {
@@ -2700,7 +2677,7 @@ func (p *BooleanExpressionParser) NumericTypes() (localctx INumericTypesContext)
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(135)
+		p.SetState(129)
 		_la = p.GetTokenStream().LA(1)
 
 		if !(_la == BooleanExpressionParserDECIMAL || _la == BooleanExpressionParserINTEGER) {
@@ -2737,6 +2714,7 @@ type ITypesContext interface {
 	APP_VERSION() antlr.TerminalNode
 	Bool_() IBoolContext
 	WORD() antlr.TerminalNode
+	FIELD() antlr.TerminalNode
 
 	// IsTypesContext differentiates from other interfaces.
 	IsTypesContext()
@@ -2806,6 +2784,10 @@ func (s *TypesContext) WORD() antlr.TerminalNode {
 	return s.GetToken(BooleanExpressionParserWORD, 0)
 }
 
+func (s *TypesContext) FIELD() antlr.TerminalNode {
+	return s.GetToken(BooleanExpressionParserFIELD, 0)
+}
+
 func (s *TypesContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
@@ -2829,17 +2811,17 @@ func (s *TypesContext) ExitRule(listener antlr.ParseTreeListener) {
 func (p *BooleanExpressionParser) Types() (localctx ITypesContext) {
 	localctx = NewTypesContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 16, BooleanExpressionParserRULE_types)
-	p.SetState(143)
+	p.SetState(138)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
-	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 12, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 9, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(137)
+			p.SetState(131)
 			p.Match(BooleanExpressionParserINTEGER)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2850,7 +2832,7 @@ func (p *BooleanExpressionParser) Types() (localctx ITypesContext) {
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(138)
+			p.SetState(132)
 			p.Match(BooleanExpressionParserDECIMAL)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2861,7 +2843,7 @@ func (p *BooleanExpressionParser) Types() (localctx ITypesContext) {
 	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(139)
+			p.SetState(133)
 			p.Match(BooleanExpressionParserAPP_VERSION)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2872,14 +2854,14 @@ func (p *BooleanExpressionParser) Types() (localctx ITypesContext) {
 	case 4:
 		p.EnterOuterAlt(localctx, 4)
 		{
-			p.SetState(140)
+			p.SetState(134)
 			p.Bool_()
 		}
 
 	case 5:
 		p.EnterOuterAlt(localctx, 5)
 		{
-			p.SetState(141)
+			p.SetState(135)
 			p.Match(BooleanExpressionParserWORD)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2889,6 +2871,17 @@ func (p *BooleanExpressionParser) Types() (localctx ITypesContext) {
 
 	case 6:
 		p.EnterOuterAlt(localctx, 6)
+		{
+			p.SetState(136)
+			p.Match(BooleanExpressionParserFIELD)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+
+	case 7:
+		p.EnterOuterAlt(localctx, 7)
 
 	case antlr.ATNInvalidAltNumber:
 		goto errorExit
@@ -2989,7 +2982,7 @@ func (p *BooleanExpressionParser) Binary() (localctx IBinaryContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(145)
+		p.SetState(140)
 		_la = p.GetTokenStream().LA(1)
 
 		if !(_la == BooleanExpressionParserAND || _la == BooleanExpressionParserOR) {
@@ -3095,7 +3088,7 @@ func (p *BooleanExpressionParser) Bool_() (localctx IBoolContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(147)
+		p.SetState(142)
 		_la = p.GetTokenStream().LA(1)
 
 		if !(_la == BooleanExpressionParserTRUE || _la == BooleanExpressionParserFALSE) {

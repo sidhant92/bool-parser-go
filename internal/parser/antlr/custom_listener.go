@@ -71,10 +71,14 @@ func (l *CustomListener) ExitParse(c *lib.ParseContext) {
 		l.Result = l.pop()
 	}
 	if (l.Result == nil && l.TokenCount == 1 && reflect.TypeOf(l.LastToken) == reflect.TypeOf(&antlr.CommonToken{})) {
-		field, _ := util.ConvertValue(l.LastToken.GetText(), constant.STRING)
-		l.Result = &arithmetic.UnaryNode{
-			DataType: constant.STRING,
-			Value:    field,
+		if l.LastToken.GetTokenType() == lib.BooleanExpressionLexerFIELD {
+			l.Result = &arithmetic.FieldNode{Field: l.LastToken.GetText()}
+		} else {
+			field, _ := util.ConvertValue(l.LastToken.GetText(), constant.STRING)
+			l.Result = &arithmetic.UnaryNode{
+				DataType: constant.STRING,
+				Value:    field,
+			}
 		}
 	}
 	if l.Result == nil {
@@ -149,16 +153,11 @@ func (l *CustomListener) ExitComparatorExpression(ctx *lib.ComparatorExpressionC
 }
 
 func (l *CustomListener) ExitUnaryArithmeticExpression(ctx *lib.UnaryArithmeticExpressionContext) {
-	dataType := GetDataType(ctx.GetExp().GetStart())
-	operand, _ := util.ConvertValue(ctx.GetExp().GetText(), dataType)
 	var leafNode logical.Node
 	if len(l.Nodes) > 0 {
 		leafNode = l.pop()
 	} else {
-		leafNode = &arithmetic.UnaryNode{
-			Value:    operand,
-			DataType: dataType,
-		}
+		leafNode = l.mapTypesExpressionContext(ctx.GetExp().(*lib.TypesExpressionContext))
 	}
 	node := &arithmetic.ArithmeticNode{Left: leafNode, Operator: constant.UNARY}
 	l.push(node)
@@ -173,11 +172,20 @@ func (l *CustomListener) ExitArithmeticExpression(ctx *lib.ArithmeticExpressionC
 }
 
 func (l *CustomListener) mapTypesExpressionContext(ctx *lib.TypesExpressionContext) logical.Node {
+	if ctx.GetStart().GetTokenType() == lib.BooleanExpressionLexerFIELD {
+		return l.mapTypesExpressionContextField(ctx)
+	}
 	dataType := GetDataType(ctx.GetStart())
-	operand, _ := util.ConvertValue(ctx.GetText(), dataType)
+	operand, _ := util.ConvertValue(ctx.GetStart().GetText(), dataType)
 	return &arithmetic.UnaryNode{
 		Value:    operand,
 		DataType: dataType,
+	}
+}
+
+func (l *CustomListener) mapTypesExpressionContextField(ctx *lib.TypesExpressionContext) logical.Node {
+	return &arithmetic.FieldNode{
+		Field: ctx.GetText(),
 	}
 }
 
@@ -244,7 +252,7 @@ func (l *CustomListener) mapComparatorExpressionContext(ctx *lib.ComparatorExpre
 		}
 	} else {
 		dataType := GetDataType(ctx.GetRight().GetStart())
-		value, _ := util.ConvertValue(ctx.GetRight().GetText(), dataType)
+		value := l.mapContextToNode(ctx.GetRight())
 		return logical.ComparisonNode{
 			Field:    field,
 			Value:    value,
@@ -381,6 +389,8 @@ func (l *CustomListener) mapContextToNode(tree antlr.Tree) logical.Node {
 		return l.mapComparatorExpressionContext(tree.(*lib.ComparatorExpressionContext))
 	} else if (reflect.TypeOf(tree) == reflect.TypeOf(&lib.ToExpressionContext{})) {
 		return l.mapToExpressionContext(tree.(*lib.ToExpressionContext))
+	} else if (reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesExpressionContext{}) && tree.(*lib.TypesExpressionContext).GetStart().GetTokenType() == lib.BooleanExpressionLexerFIELD) {
+		return l.mapTypesExpressionContextField(tree.(*lib.TypesExpressionContext))
 	} else if (reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesExpressionContext{})) {
 		return l.mapTypesExpressionContext(tree.(*lib.TypesExpressionContext))
 	} else if (reflect.TypeOf(tree) == reflect.TypeOf(&lib.TypesContext{})) {

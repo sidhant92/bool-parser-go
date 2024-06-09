@@ -33,66 +33,45 @@ func TestUnaryTokenString(t *testing.T) {
 }
 
 func TestSingleStringToken(t *testing.T) {
-	res, _ := parser.Parse("name = test")
-	assert.Equal(t, res.GetNodeType(), constant.COMPARISON_NODE)
-	assert.Equal(t, res.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.ComparisonNode).Field, "name")
-	assert.Equal(t, res.(logical.ComparisonNode).DataType, constant.STRING)
-	assert.Equal(t, res.(logical.ComparisonNode).Value, "test")
+	res, _ := parser.Parse("name = 'test'")
+	testComparisonToken(t, res, "name", constant.EQUALS)
+	testUnaryToken(t, res.(logical.ComparisonNode).Value, "test", constant.STRING)
 }
 
 func TestSingleStringTokenWithSingleQuotes(t *testing.T) {
 	res, _ := parser.Parse("name = \"te'st\"")
-	assert.Equal(t, res.GetNodeType(), constant.COMPARISON_NODE)
-	assert.Equal(t, res.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.ComparisonNode).Field, "name")
-	assert.Equal(t, res.(logical.ComparisonNode).DataType, constant.STRING)
-	assert.Equal(t, res.(logical.ComparisonNode).Value, "te'st")
+	testComparisonToken(t, res, "name", constant.EQUALS)
+	testUnaryToken(t, res.(logical.ComparisonNode).Value, "te'st", constant.STRING)
 }
 
 func TestSingleStringTokenWithDoubleQuotes(t *testing.T) {
 	res, _ := parser.Parse("name = 'te\"st'")
-	assert.Equal(t, res.GetNodeType(), constant.COMPARISON_NODE)
-	assert.Equal(t, res.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.ComparisonNode).Field, "name")
-	assert.Equal(t, res.(logical.ComparisonNode).DataType, constant.STRING)
-	assert.Equal(t, res.(logical.ComparisonNode).Value, "te\"st")
+	testComparisonToken(t, res, "name", constant.EQUALS)
+	testUnaryToken(t, res.(logical.ComparisonNode).Value, "te\"st", constant.STRING)
 }
 
 func TestSingleStringTokenWithSpace(t *testing.T) {
 	res, _ := parser.Parse("name = \"first second\"")
-	assert.Equal(t, res.GetNodeType(), constant.COMPARISON_NODE)
-	assert.Equal(t, res.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.ComparisonNode).Field, "name")
-	assert.Equal(t, res.(logical.ComparisonNode).DataType, constant.STRING)
-	assert.Equal(t, res.(logical.ComparisonNode).Value, "first second")
+	testComparisonToken(t, res, "name", constant.EQUALS)
+	testUnaryToken(t, res.(logical.ComparisonNode).Value, "first second", constant.STRING)
 }
 
 func TestSingleIntToken(t *testing.T) {
 	res, _ := parser.Parse("age = 44")
-	assert.Equal(t, res.GetNodeType(), constant.COMPARISON_NODE)
-	assert.Equal(t, res.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.ComparisonNode).Field, "age")
-	assert.Equal(t, res.(logical.ComparisonNode).DataType, constant.INTEGER)
-	assert.Equal(t, res.(logical.ComparisonNode).Value, 44)
+	testComparisonToken(t, res, "age", constant.EQUALS)
+	testUnaryToken(t, res.(logical.ComparisonNode).Value, 44, constant.INTEGER)
 }
 
 func TestSingleLongToken(t *testing.T) {
 	res, _ := parser.Parse("age=1611473334456113434")
-	assert.Equal(t, res.GetNodeType(), constant.COMPARISON_NODE)
-	assert.Equal(t, res.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.ComparisonNode).Field, "age")
-	assert.Equal(t, res.(logical.ComparisonNode).DataType, constant.INTEGER)
-	assert.Equal(t, res.(logical.ComparisonNode).Value, 1611473334456113434)
+	testComparisonToken(t, res, "age", constant.EQUALS)
+	testUnaryToken(t, res.(logical.ComparisonNode).Value, 1611473334456113434, constant.INTEGER)
 }
 
 func TestSingleDecimalToken(t *testing.T) {
 	res, _ := parser.Parse("age=44.34")
-	assert.Equal(t, res.GetNodeType(), constant.COMPARISON_NODE)
-	assert.Equal(t, res.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.ComparisonNode).Field, "age")
-	assert.Equal(t, res.(logical.ComparisonNode).DataType, constant.DECIMAL)
-	assert.Equal(t, res.(logical.ComparisonNode).Value, 44.34)
+	testComparisonToken(t, res, "age", constant.EQUALS)
+	testUnaryToken(t, res.(logical.ComparisonNode).Value, 44.34, constant.DECIMAL)
 }
 
 func TestSingleIntRangeToken(t *testing.T) {
@@ -117,96 +96,85 @@ func TestSingleDecimalRangeToken(t *testing.T) {
 
 func TestGreaterThan(t *testing.T) {
 	res, _ := parser.Parse("age > 18")
-	assert.Equal(t, res.GetNodeType(), constant.COMPARISON_NODE)
-	assert.Equal(t, res.(logical.ComparisonNode).Field, "age")
-	assert.Equal(t, res.(logical.ComparisonNode).Operator, constant.GREATER_THAN)
-	assert.Equal(t, res.(logical.ComparisonNode).Value, 18)
+	testComparisonToken(t, res, "age", constant.GREATER_THAN)
+	testUnaryToken(t, res.(logical.ComparisonNode).Value, 18, constant.INTEGER)
+}
+
+func TestGreaterThanField(t *testing.T) {
+	res, _ := parser.Parse("age > a")
+	testComparisonToken(t, res, "age", constant.GREATER_THAN)
+	testFieldToken(t, res.(logical.ComparisonNode).Value, "a")
 }
 
 func TestSimpleOrCondition(t *testing.T) {
-	res, _ := parser.Parse("name = test OR age=33")
+	res, _ := parser.Parse("name = 'test' OR age=33")
 	assert.Equal(t, res.GetNodeType(), constant.BOOLEAN_NODE)
 	assert.Equal(t, res.(logical.BooleanNode).Operator, constant.OR)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Field, "name")
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, "test")
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.ComparisonNode).Field, "age")
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.ComparisonNode).Value, 33)
+	testComparisonToken(t, res.(logical.BooleanNode).Left, "name", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, "test", constant.STRING)
+	testComparisonToken(t, res.(logical.BooleanNode).Right, "age", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Right.(logical.ComparisonNode).Value, 33, constant.INTEGER)
 }
 
 func TestSimpleAndCondition(t *testing.T) {
-	res, _ := parser.Parse("name = test AND age=333")
+	res, _ := parser.Parse("name = 'test' AND age=333")
 	assert.Equal(t, res.GetNodeType(), constant.BOOLEAN_NODE)
 	assert.Equal(t, res.(logical.BooleanNode).Operator, constant.AND)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Field, "name")
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, "test")
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.ComparisonNode).Field, "age")
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.ComparisonNode).Value, 333)
+	testComparisonToken(t, res.(logical.BooleanNode).Left, "name", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, "test", constant.STRING)
+	testComparisonToken(t, res.(logical.BooleanNode).Right, "age", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Right.(logical.ComparisonNode).Value, 333, constant.INTEGER)
 }
 
 func TestSimpleNotCondition(t *testing.T) {
-	res, _ := parser.Parse("NOT (name = test)")
+	res, _ := parser.Parse("NOT (name = 'test')")
 	assert.Equal(t, res.GetNodeType(), constant.BOOLEAN_NODE)
 	assert.Equal(t, res.(logical.BooleanNode).Operator, constant.NOT)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Field, "name")
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, "test")
+	testComparisonToken(t, res.(logical.BooleanNode).Left, "name", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, "test", constant.STRING)
 	assert.Nil(t, res.(logical.BooleanNode).Right)
 }
 
 func TestNestedAndCondition(t *testing.T) {
-	res, _ := parser.Parse("name = test OR (age=33 AND city = dummy)")
+	res, _ := parser.Parse("name = 'test' OR (age=33 AND city = 'dummy')")
 	assert.Equal(t, res.GetNodeType(), constant.BOOLEAN_NODE)
 	assert.Equal(t, res.(logical.BooleanNode).Operator, constant.OR)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Field, "name")
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, "test")
+	testComparisonToken(t, res.(logical.BooleanNode).Left, "name", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, "test", constant.STRING)
 	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Operator, constant.AND)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left.(logical.ComparisonNode).Field, "age")
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, 33)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right.(logical.ComparisonNode).Field, "city")
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right.(logical.ComparisonNode).Value, "dummy")
+	testComparisonToken(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left, "age", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, 33, constant.INTEGER)
+	testComparisonToken(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right, "city", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right.(logical.ComparisonNode).Value, "dummy", constant.STRING)
 }
 
 func TestNestedAndCondition1(t *testing.T) {
-	res, _ := parser.Parse("(agel=44 AND cityl = abc) OR (ager=33 AND cityr = dummy)")
+	res, _ := parser.Parse("(agel=44 AND cityl = 'abc') OR (ager=33 AND cityr = 'dummy')")
 	assert.Equal(t, res.GetNodeType(), constant.BOOLEAN_NODE)
 	assert.Equal(t, res.(logical.BooleanNode).Operator, constant.OR)
 	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.BooleanNode).Operator, constant.AND)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.BooleanNode).Left.(logical.ComparisonNode).Field, "agel")
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.BooleanNode).Left.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, 44)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.BooleanNode).Right.(logical.ComparisonNode).Field, "cityl")
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.BooleanNode).Right.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.BooleanNode).Right.(logical.ComparisonNode).Value, "abc")
 	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Operator, constant.AND)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left.(logical.ComparisonNode).Field, "ager")
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, 33)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right.(logical.ComparisonNode).Field, "cityr")
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right.(logical.ComparisonNode).Value, "dummy")
+	testComparisonToken(t, res.(logical.BooleanNode).Left.(logical.BooleanNode).Left, "agel", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Left.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, 44, constant.INTEGER)
+	testComparisonToken(t, res.(logical.BooleanNode).Left.(logical.BooleanNode).Right, "cityl", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Left.(logical.BooleanNode).Right.(logical.ComparisonNode).Value, "abc", constant.STRING)
+	testComparisonToken(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left, "ager", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, 33, constant.INTEGER)
+	testComparisonToken(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right, "cityr", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right.(logical.ComparisonNode).Value, "dummy", constant.STRING)
 }
 
 func TestNestedOrCondition(t *testing.T) {
-	res, _ := parser.Parse("name = test AND (age=33 OR city = dummy)")
+	res, _ := parser.Parse("name = 'test' AND (age=33 OR city = 'dummy')")
 	assert.Equal(t, res.GetNodeType(), constant.BOOLEAN_NODE)
 	assert.Equal(t, res.(logical.BooleanNode).Operator, constant.AND)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Field, "name")
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, "test")
+	testComparisonToken(t, res.(logical.BooleanNode).Left, "name", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, "test", constant.STRING)
 	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Operator, constant.OR)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left.(logical.ComparisonNode).Field, "age")
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, 33)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right.(logical.ComparisonNode).Field, "city")
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right.(logical.ComparisonNode).Operator, constant.EQUALS)
-	assert.Equal(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right.(logical.ComparisonNode).Value, "dummy")
+	testComparisonToken(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left, "age", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Left.(logical.ComparisonNode).Value, 33, constant.INTEGER)
+	testComparisonToken(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right, "city", constant.EQUALS)
+	testUnaryToken(t, res.(logical.BooleanNode).Right.(logical.BooleanNode).Right.(logical.ComparisonNode).Value, "dummy", constant.STRING)
 }
 
 func TestIntegerList(t *testing.T) {
@@ -233,7 +201,7 @@ func TestIntegerNotInList(t *testing.T) {
 }
 
 func TestStringList(t *testing.T) {
-	res, _ := parser.Parse("name IN (abc, def, 'abc def')")
+	res, _ := parser.Parse("name IN ('abc', 'def', 'abc def')")
 	assert.Equal(t, res.GetNodeType(), constant.IN_NODE)
 	assert.Equal(t, res.(logical.InNode).Field, "name")
 	assert.Equal(t, res.(logical.InNode).Items[0].(*arithmetic.UnaryNode).DataType, constant.STRING)
@@ -245,7 +213,7 @@ func TestStringList(t *testing.T) {
 }
 
 func TestStringList1(t *testing.T) {
-	res, _ := parser.Parse("name IN (abc, def, 'abc, def'")
+	res, _ := parser.Parse("name IN ('abc', 'def', 'abc, def'")
 	assert.Equal(t, res.GetNodeType(), constant.IN_NODE)
 	assert.Equal(t, res.(logical.InNode).Field, "name")
 	assert.Equal(t, res.(logical.InNode).Items[0].(*arithmetic.UnaryNode).DataType, constant.STRING)
@@ -257,7 +225,7 @@ func TestStringList1(t *testing.T) {
 }
 
 func TestStringList2(t *testing.T) {
-	res, _ := parser.Parse("name IN (abc, def, 'ab\"c')")
+	res, _ := parser.Parse("name IN ('abc', 'def', 'ab\"c')")
 	assert.Equal(t, res.GetNodeType(), constant.IN_NODE)
 	assert.Equal(t, res.(logical.InNode).Field, "name")
 	assert.Equal(t, res.(logical.InNode).Items[0].(*arithmetic.UnaryNode).DataType, constant.STRING)
@@ -295,12 +263,10 @@ func TestAddOperatorString(t *testing.T) {
 	res, _ := parser.Parse("a + b")
 	assert.Equal(t, res.GetNodeType(), constant.ARITHMETIC)
 	arithmeticNode := res.(*arithmetic.ArithmeticNode)
-	left := arithmeticNode.Left.(*arithmetic.UnaryNode)
-	right := arithmeticNode.Right.(*arithmetic.UnaryNode)
-	assert.Equal(t, left.Value, "a")
-	assert.Equal(t, left.DataType, constant.STRING)
-	assert.Equal(t, right.Value, "b")
-	assert.Equal(t, right.DataType, constant.STRING)
+	left := arithmeticNode.Left.(*arithmetic.FieldNode)
+	right := arithmeticNode.Right.(*arithmetic.FieldNode)
+	assert.Equal(t, left.Field, "a")
+	assert.Equal(t, right.Field, "b")
 	assert.Equal(t, arithmeticNode.Operator, constant.ADD)
 }
 
@@ -373,7 +339,7 @@ func TestArithmeticFunction(t *testing.T) {
 }
 
 func TestArithmeticFunctionWithSubstitution(t *testing.T) {
-	res, _ := parser.Parse("min(abc)")
+	res, _ := parser.Parse("min('abc')")
 	assert.Equal(t, res.GetNodeType(), constant.ARITHMETIC_FUNCTION)
 	arithmeticFunctionNode := res.(*arithmetic.ArithmeticFunctionNode)
 	assert.Equal(t, arithmeticFunctionNode.FunctionType, constant.MIN)
@@ -386,4 +352,21 @@ func TestArithmeticFunctionWithError(t *testing.T) {
 	res, err := parser.Parse("min abc")
 	assert.Nil(t, res)
 	assert.NotNil(t, err)
+}
+
+func testComparisonToken(t *testing.T, node logical.Node, field string, operator constant.Operator) {
+	assert.Equal(t, node.GetNodeType(), constant.COMPARISON_NODE)
+	assert.Equal(t, node.(logical.ComparisonNode).Field, field)
+	assert.Equal(t, node.(logical.ComparisonNode).Operator, operator)
+}
+
+func testUnaryToken(t *testing.T, node logical.Node, value interface{}, dataType constant.DataType) {
+	assert.Equal(t, node.GetNodeType(), constant.UNARY_NODE)
+	assert.Equal(t, node.(*arithmetic.UnaryNode).Value, value)
+	assert.Equal(t, node.(*arithmetic.UnaryNode).DataType, dataType)
+}
+
+func testFieldToken(t *testing.T, node logical.Node, field string) {
+	assert.Equal(t, node.GetNodeType(), constant.FIELD_NODE)
+	assert.Equal(t, node.(*arithmetic.FieldNode).Field, field)
 }

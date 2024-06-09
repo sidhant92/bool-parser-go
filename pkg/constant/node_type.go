@@ -9,6 +9,7 @@ const (
 	IN_NODE             NodeType = "IN_NODE"
 	ARRAY_NODE          NodeType = "ARRAY_NODE"
 	UNARY_NODE          NodeType = "UNARY_NODE"
+	FIELD_NODE          NodeType = "FIELD_NODE"
 	ARITHMETIC          NodeType = "ARITHMETIC"
 	ARITHMETIC_FUNCTION NodeType = "ARITHMETIC_FUNCTION"
 )

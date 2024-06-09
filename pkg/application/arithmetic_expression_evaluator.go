@@ -9,6 +9,7 @@ import (
 	"github.com/sidhant92/bool-parser-go/pkg/domain"
 	"github.com/sidhant92/bool-parser-go/pkg/domain/arithmetic"
 	"github.com/sidhant92/bool-parser-go/pkg/domain/logical"
+	errors2 "github.com/sidhant92/bool-parser-go/pkg/error"
 	"github.com/sidhant92/bool-parser-go/pkg/parser"
 	"reflect"
 )
@@ -36,18 +37,22 @@ func (b *ArithmeticExpressionEvaluator) evaluateNode(node logical.Node, data map
 		return b.evaluateArithmeticFunctionNode(node.(*arithmetic.ArithmeticFunctionNode), data)
 	case constant.UNARY_NODE:
 		return b.evaluateUnaryNode(node.(*arithmetic.UnaryNode), data)
+	case constant.FIELD_NODE:
+		return b.evaluateFieldNode(node.(*arithmetic.FieldNode), data)
 	default:
 		return nil, errors.New("unknown node")
 	}
 }
 
-func (b *ArithmeticExpressionEvaluator) evaluateUnaryNode(node *arithmetic.UnaryNode, data map[string]interface{}) (interface{}, error) {
-	if node.DataType == constant.STRING {
-		fieldData := util.GetValueFromMap(node.Value.(string), data)
-		if fieldData != nil {
-			return fieldData, nil
-		}
+func (b *ArithmeticExpressionEvaluator) evaluateFieldNode(node *arithmetic.FieldNode, data map[string]interface{}) (interface{}, error) {
+	fieldData := util.GetValueFromMap(node.Field, data)
+	if fieldData != nil {
+		return fieldData, nil
 	}
+	return nil, errors2.KEY_DATA_NOT_PRESENT
+}
+
+func (b *ArithmeticExpressionEvaluator) evaluateUnaryNode(node *arithmetic.UnaryNode, data map[string]interface{}) (interface{}, error) {
 	return node.Value, nil
 }
 
