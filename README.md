@@ -4,7 +4,7 @@ An Expression Parser for Go
 The library can help parse complex and nested boolean and arithmetic expressions.
 The expressions are in SQL-like syntax, where you can use boolean operators and parentheses to combine individual expressions.
 
-An expression can be as simple as `name = Sidhant`.
+An expression can be as simple as `name = 'Sidhant'`.
 A Complex expression is formed by combining these small expressions by logical operators and giving precedence using parenthesis
 
 ### Examples
@@ -45,6 +45,8 @@ Individual filters can be combined via boolean operators. The following operator
 Parentheses, `(` and `)`, can be used for grouping.
 
 #### Usage Notes
+* String must be enclosed either in single or double quotes.
+* Variables substitution is supported by passing the name of the variable without the quotes.
 * Phrases that includes quotes, like `content = "It's a wonderful day"`
 * Phrases that includes quotes, like `attribute = 'She said "Hello World"'`
 * For nested keys in data map you can use the dot notation, like `person.age`
@@ -113,7 +115,7 @@ data := map[string]interface{}{
 	"age":  25,
 	"name": "sid",
 }
-res, err := evaluator.Evaluate("name = sid AND age = 25", data)
+res, err := evaluator.Evaluate("name = 'sid' AND age = 25", data)
 assert.Nil(t, err)
 assert.True(t, res)
 ```
@@ -124,7 +126,7 @@ data := map[string]interface{}{
 	"name": "sid",
 	"num":  45,
 }
-res, err := evaluator.Evaluate("name = sid AND (age = 25 OR num = 44)", data)
+res, err := evaluator.Evaluate("name = 'sid' AND (age = 25 OR num = 44)", data)
 assert.Nil(t, err)
 assert.True(t, res)
 ```
@@ -163,6 +165,22 @@ The following Operators are supported:
 5. Modulus (%)
 6. Exponent (^)
 
+The following functions are supported:
+1. Minimum (min)
+2. Maximum (max)
+3. Average (avg)
+4. Sum (sum)
+5. Mean (mean)
+6. Mode (mode)
+7. Median (median)
+8. Integer (int) - converts the input to integer
+9. Length (len) - Returns length of the give array
+
+Syntax For using functions
+Format: `${FunctionIdentifier} (item1, item2...)`
+
+Example: `min (1,2,3)` or with variable substitution `min (a,b,c)`
+
 Usage examples:
 
 Simple Addition Operation
@@ -185,6 +203,16 @@ data := map[string]interface{}{
 res, err := evaluator.Evaluate("((5 * 2) + a) * 2 + (1 + 3 * (a / 2))", data)
 assert.Nil(t, err)
 assert.Equal(t, res, 56)
+```
+Function Usage
+```
+var evaluator = NewArithmeticExpressionEvaluator(parser.New())
+data := map[string]interface{}{
+		"a": 10,
+	}
+res, err := evaluator.Evaluate("min (1,2,3)", data)
+assert.Nil(t, err)
+assert.Equal(t, res, 1)
 ```
 
 [For a complete list of examples please check out the test file](pkg/application/arithmetic_expression_evaluator_test.go)
