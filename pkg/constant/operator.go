@@ -22,3 +22,5 @@ const (
 	CONTAINS_ANY Operator = "CONTAINS_ANY"
 	CONTAINS_ALL Operator = "CONTAINS_ALL"
 )
+
+var EqualityOperators = []Operator {EQUALS, NOT_EQUAL}

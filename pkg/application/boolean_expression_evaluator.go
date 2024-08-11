@@ -46,16 +46,39 @@ func (b *BooleanExpressionEvaluator) evaluateNode(node logical.Node, data map[st
 	}
 }
 
+func comparisonNodeNullCheck(node logical.ComparisonNode) bool  {
+	return node.IsNullCheck() && node.Value.(*arithmetic.FieldNode).IsNull()
+}
+
+func checkForNullValues(fieldData interface{}, node logical.ComparisonNode) (interface{}, error) {
+	if comparisonNodeNullCheck(node) {
+		if fieldData == nil {
+			return "null", nil
+		} else {
+			return fieldData, nil
+		}
+	} else {
+		if fieldData == nil {
+			return nil, errors2.KEY_DATA_NOT_PRESENT
+		} else {
+			return fieldData, nil
+		}
+	}
+}
+
 func (b *BooleanExpressionEvaluator) evaluateComparisonNode(node logical.ComparisonNode, data map[string]interface{}) (bool, error) {
-	fieldData := util.GetValueFromMap(node.Field, data)
-	if fieldData == nil {
-		return false, errors2.KEY_DATA_NOT_PRESENT
+	fieldDataOptional := util.GetValueFromMap(node.Field, data)
+	fieldData, err := checkForNullValues(fieldDataOptional, node)
+	if err != nil {
+		return false, err
 	}
 	var value interface{}
 	value = node.Value
 	var dataType = node.DataType
 	arithmeticType := reflect.TypeOf(new(arithmetic.ArithmeticBaseNode)).Elem()
-	if reflect.TypeOf(node.Value).Implements(arithmeticType) {
+	if comparisonNodeNullCheck(node) {
+		value = "null"
+	} else if reflect.TypeOf(node.Value).Implements(arithmeticType) {
 		res, _ := b.ArithmeticExpressionEvaluator.evaluateNode(value.(logical.Node), data)
 		value = res
 		dataType = util.GetDataType(value)

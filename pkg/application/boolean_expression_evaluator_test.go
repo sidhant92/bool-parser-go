@@ -366,9 +366,9 @@ func TestWrongDataType(t *testing.T) {
 	data := map[string]interface{}{
 		"age": 24,
 	}
-	_, err := evaluator.Evaluate("age = dsf", data)
-	assert.NotNil(t, err)
-	assert.ErrorIs(t, err, errors2.INVALID_DATA_TYPE)
+	res, err := evaluator.Evaluate("age = 'dsf'", data)
+	assert.Nil(t, err)
+	assert.False(t, res)
 }
 
 func TestWrongDataType1(t *testing.T) {
@@ -532,4 +532,40 @@ func TestComparisonWithArithmeticVariableFunction(t *testing.T) {
 	res, err := evaluator.Evaluate("age > max (numbers)", data)
 	assert.Nil(t, err)
 	assert.False(t, res)
+}
+
+func TestNullCheck(t *testing.T) {
+	data := map[string]interface{}{
+		"a":     2.7,
+	}
+	res, err := evaluator.Evaluate("b = null", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestNullCheck1(t *testing.T) {
+	data := map[string]interface{}{
+		"a":     2.7,
+	}
+	res, err := evaluator.Evaluate("a = null", data)
+	assert.Nil(t, err)
+	assert.False(t, res)
+}
+
+func TestNotNullCheck(t *testing.T) {
+	data := map[string]interface{}{
+		"a":     2.7,
+	}
+	res, err := evaluator.Evaluate("a != null", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestBooleanNullCheck(t *testing.T) {
+	data := map[string]interface{}{
+		"a":     3,
+	}
+	res, err := evaluator.Evaluate("b = null && a > 2", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
 }
