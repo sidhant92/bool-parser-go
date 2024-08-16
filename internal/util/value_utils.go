@@ -79,6 +79,8 @@ func GetDataType(value interface{}) constant.DataType {
 		return constant.INTEGER
 	case bool:
 		return constant.BOOLEAN
+	case *version.Version:
+		return constant.VERSION
 	default:
 		return constant.STRING
 	}

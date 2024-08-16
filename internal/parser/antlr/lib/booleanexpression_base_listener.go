@@ -1,4 +1,4 @@
-// Code generated from /Users/sid/Desktop/filter1/BooleanExpression.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /Users/sid/Desktop/filter2/BooleanExpression.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package lib // BooleanExpression
 
@@ -65,6 +65,14 @@ func (s *BaseBooleanExpressionListener) EnterToExpression(ctx *ToExpressionConte
 // ExitToExpression is called when production toExpression is exited.
 func (s *BaseBooleanExpressionListener) ExitToExpression(ctx *ToExpressionContext) {}
 
+// EnterArithmeticFunctionExpression is called when production arithmeticFunctionExpression is entered.
+func (s *BaseBooleanExpressionListener) EnterArithmeticFunctionExpression(ctx *ArithmeticFunctionExpressionContext) {
+}
+
+// ExitArithmeticFunctionExpression is called when production arithmeticFunctionExpression is exited.
+func (s *BaseBooleanExpressionListener) ExitArithmeticFunctionExpression(ctx *ArithmeticFunctionExpressionContext) {
+}
+
 // EnterNotExpression is called when production notExpression is entered.
 func (s *BaseBooleanExpressionListener) EnterNotExpression(ctx *NotExpressionContext) {}
 
@@ -100,6 +108,12 @@ func (s *BaseBooleanExpressionListener) EnterArithmeticOperator(ctx *ArithmeticO
 
 // ExitArithmeticOperator is called when production arithmeticOperator is exited.
 func (s *BaseBooleanExpressionListener) ExitArithmeticOperator(ctx *ArithmeticOperatorContext) {}
+
+// EnterArithmeticFunction is called when production arithmeticFunction is entered.
+func (s *BaseBooleanExpressionListener) EnterArithmeticFunction(ctx *ArithmeticFunctionContext) {}
+
+// ExitArithmeticFunction is called when production arithmeticFunction is exited.
+func (s *BaseBooleanExpressionListener) ExitArithmeticFunction(ctx *ArithmeticFunctionContext) {}
 
 // EnterWordlist is called when production wordlist is entered.
 func (s *BaseBooleanExpressionListener) EnterWordlist(ctx *WordlistContext) {}

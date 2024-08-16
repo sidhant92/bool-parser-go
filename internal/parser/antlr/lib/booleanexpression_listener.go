@@ -1,4 +1,4 @@
-// Code generated from /Users/sid/Desktop/filter1/BooleanExpression.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /Users/sid/Desktop/filter2/BooleanExpression.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package lib // BooleanExpression
 
@@ -29,6 +29,9 @@ type BooleanExpressionListener interface {
 	// EnterToExpression is called when entering the toExpression production.
 	EnterToExpression(c *ToExpressionContext)
 
+	// EnterArithmeticFunctionExpression is called when entering the arithmeticFunctionExpression production.
+	EnterArithmeticFunctionExpression(c *ArithmeticFunctionExpressionContext)
+
 	// EnterNotExpression is called when entering the notExpression production.
 	EnterNotExpression(c *NotExpressionContext)
 
@@ -46,6 +49,9 @@ type BooleanExpressionListener interface {
 
 	// EnterArithmeticOperator is called when entering the arithmeticOperator production.
 	EnterArithmeticOperator(c *ArithmeticOperatorContext)
+
+	// EnterArithmeticFunction is called when entering the arithmeticFunction production.
+	EnterArithmeticFunction(c *ArithmeticFunctionContext)
 
 	// EnterWordlist is called when entering the wordlist production.
 	EnterWordlist(c *WordlistContext)
@@ -86,6 +92,9 @@ type BooleanExpressionListener interface {
 	// ExitToExpression is called when exiting the toExpression production.
 	ExitToExpression(c *ToExpressionContext)
 
+	// ExitArithmeticFunctionExpression is called when exiting the arithmeticFunctionExpression production.
+	ExitArithmeticFunctionExpression(c *ArithmeticFunctionExpressionContext)
+
 	// ExitNotExpression is called when exiting the notExpression production.
 	ExitNotExpression(c *NotExpressionContext)
 
@@ -103,6 +112,9 @@ type BooleanExpressionListener interface {
 
 	// ExitArithmeticOperator is called when exiting the arithmeticOperator production.
 	ExitArithmeticOperator(c *ArithmeticOperatorContext)
+
+	// ExitArithmeticFunction is called when exiting the arithmeticFunction production.
+	ExitArithmeticFunction(c *ArithmeticFunctionContext)
 
 	// ExitWordlist is called when exiting the wordlist production.
 	ExitWordlist(c *WordlistContext)

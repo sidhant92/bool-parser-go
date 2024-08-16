@@ -1,9 +1,9 @@
 package arithmetic
 
 import (
-	"github.com/sidhant92/bool-parser-go/pkg/domain"
+	"github.com/sidhant92/bool-parser-go/pkg/domain/logical"
 )
 
 type ArithmeticBaseNode interface {
-	domain.Node
+	logical.Node
 }

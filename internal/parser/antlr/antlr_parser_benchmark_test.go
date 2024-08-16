@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/sidhant92/bool-parser-go/pkg/domain"
+	"github.com/sidhant92/bool-parser-go/pkg/domain/logical"
 	"testing"
 )
 
@@ -11,7 +11,7 @@ func BenchmarkParse(b *testing.B) {
 	}
 }
 
-func expression1() domain.Node {
+func expression1() logical.Node {
 	res, _ := parser.Parse("b>0 AND z IN ('c1', 'c2')")
 	return res
 }

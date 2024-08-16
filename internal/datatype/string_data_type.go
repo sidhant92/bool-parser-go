@@ -15,11 +15,7 @@ func (s *StringDataType) GetDataType() constant.DataType {
 }
 
 func (s *StringDataType) IsValid(value interface{}) bool {
-	_, ok := value.(string)
-	if ok {
-		return true
-	}
-	return false
+	return true
 }
 
 func (s *StringDataType) GetValue(value interface{}) interface{} {

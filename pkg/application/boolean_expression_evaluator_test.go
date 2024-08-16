@@ -40,7 +40,7 @@ func TestSimpleTrueCorrectExpression(t *testing.T) {
 	data := map[string]interface{}{
 		"name": "abc",
 	}
-	res, err := evaluator.Evaluate("name = abc", data)
+	res, err := evaluator.Evaluate("name = 'abc'", data)
 	assert.Nil(t, err)
 	assert.True(t, res)
 }
@@ -67,7 +67,7 @@ func TestSimpleFalseIncorrectExpression(t *testing.T) {
 	data := map[string]interface{}{
 		"name": "def",
 	}
-	res, err := evaluator.Evaluate("name = abc", data)
+	res, err := evaluator.Evaluate("name = 'abc'", data)
 	assert.Nil(t, err)
 	assert.False(t, res)
 }
@@ -95,6 +95,16 @@ func TestNumericGreaterThanCorrectExpression(t *testing.T) {
 		"age": 24,
 	}
 	res, err := evaluator.Evaluate("age > 20", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestNumericGreaterThanCorrectExpressionField(t *testing.T) {
+	data := map[string]interface{}{
+		"age": 24,
+		"b":   20,
+	}
+	res, err := evaluator.Evaluate("age > b", data)
 	assert.Nil(t, err)
 	assert.True(t, res)
 }
@@ -201,7 +211,7 @@ func TestSimpleNotStringExpression(t *testing.T) {
 	data := map[string]interface{}{
 		"name": "abc",
 	}
-	res, err := evaluator.Evaluate("NOT (name = abc)", data)
+	res, err := evaluator.Evaluate("NOT (name = 'abc')", data)
 	assert.Nil(t, err)
 	assert.False(t, res)
 }
@@ -220,7 +230,7 @@ func TestComplexAndCorrectExpression(t *testing.T) {
 		"age":  25,
 		"name": "sid",
 	}
-	res, err := evaluator.Evaluate("name = sid AND age = 25", data)
+	res, err := evaluator.Evaluate("name = 'sid' AND age = 25", data)
 	assert.Nil(t, err)
 	assert.True(t, res)
 }
@@ -230,7 +240,7 @@ func TestComplexAndIncorrectExpression(t *testing.T) {
 		"age":  25,
 		"name": "sid",
 	}
-	res, err := evaluator.Evaluate("name = sid AND age = 23", data)
+	res, err := evaluator.Evaluate("name = 'sid' AND age = 23", data)
 	assert.Nil(t, err)
 	assert.False(t, res)
 }
@@ -240,7 +250,7 @@ func TestComplexORCorrectExpression(t *testing.T) {
 		"age":  25,
 		"name": "sid",
 	}
-	res, err := evaluator.Evaluate("name = sid OR age = 23", data)
+	res, err := evaluator.Evaluate("name = 'sid' OR age = 23", data)
 	assert.Nil(t, err)
 	assert.True(t, res)
 }
@@ -250,7 +260,7 @@ func TestComplexORIncorrectExpression(t *testing.T) {
 		"age":  25,
 		"name": "sidh",
 	}
-	res, err := evaluator.Evaluate("name = sid OR age = 23", data)
+	res, err := evaluator.Evaluate("name = 'sid' OR age = 23", data)
 	assert.Nil(t, err)
 	assert.False(t, res)
 }
@@ -261,7 +271,7 @@ func TestCorrectComplexExpressionWithParenthesis(t *testing.T) {
 		"name": "sid",
 		"num":  45,
 	}
-	res, err := evaluator.Evaluate("name = sid AND (age = 25 OR num = 44)", data)
+	res, err := evaluator.Evaluate("name = 'sid' AND (age = 25 OR num = 44)", data)
 	assert.Nil(t, err)
 	assert.True(t, res)
 }
@@ -280,6 +290,16 @@ func TestPositiveInClauseForIntegers(t *testing.T) {
 		"age": 25,
 	}
 	res, err := evaluator.Evaluate("age in (26.2,25,34)", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestPositiveInClauseForIntegersField(t *testing.T) {
+	data := map[string]interface{}{
+		"age": 25,
+		"b":   25,
+	}
+	res, err := evaluator.Evaluate("age in (26.2,27,34,b)", data)
 	assert.Nil(t, err)
 	assert.True(t, res)
 }
@@ -306,7 +326,7 @@ func TestNegativeInClauseForStrings(t *testing.T) {
 	data := map[string]interface{}{
 		"name": "test",
 	}
-	res, err := evaluator.Evaluate("name in (tes, abc)", data)
+	res, err := evaluator.Evaluate("name in ('tes', 'abc')", data)
 	assert.Nil(t, err)
 	assert.False(t, res)
 }
@@ -315,7 +335,7 @@ func TestPositiveInClauseForStrings(t *testing.T) {
 	data := map[string]interface{}{
 		"name": "test",
 	}
-	res, err := evaluator.Evaluate("name in (abc, test)", data)
+	res, err := evaluator.Evaluate("name in ('abc', 'test')", data)
 	assert.Nil(t, err)
 	assert.True(t, res)
 }
@@ -326,7 +346,7 @@ func TestCorrectComplexExpressionWithParenthesis1(t *testing.T) {
 		"name": "sid",
 		"num":  45,
 	}
-	res, err := evaluator.Evaluate("name = sidh OR (age = 25 AND num = 45)", data)
+	res, err := evaluator.Evaluate("name = 'sidh' OR (age = 25 AND num = 45)", data)
 	assert.Nil(t, err)
 	assert.True(t, res)
 }
@@ -337,7 +357,7 @@ func TestIncorrectComplexExpressionWithParenthesis(t *testing.T) {
 		"name": "sid",
 		"num":  45,
 	}
-	res, err := evaluator.Evaluate("name = sid AND (age = 23 OR num = 44)", data)
+	res, err := evaluator.Evaluate("name = 'sid' AND (age = 23 OR num = 44)", data)
 	assert.Nil(t, err)
 	assert.False(t, res)
 }
@@ -346,9 +366,9 @@ func TestWrongDataType(t *testing.T) {
 	data := map[string]interface{}{
 		"age": 24,
 	}
-	_, err := evaluator.Evaluate("age = dsf", data)
-	assert.NotNil(t, err)
-	assert.ErrorIs(t, err, errors2.INVALID_DATA_TYPE)
+	res, err := evaluator.Evaluate("age = 'dsf'", data)
+	assert.Nil(t, err)
+	assert.False(t, res)
 }
 
 func TestWrongDataType1(t *testing.T) {
@@ -493,4 +513,59 @@ func TestContainsAllFailureCondition(t *testing.T) {
 	_, err := evaluator.Evaluate("age contains_all (2,5)", data)
 	assert.NotNil(t, err)
 	assert.ErrorIs(t, err, errors2.INVALID_DATA_TYPE)
+}
+
+func TestComparisonWithArithmeticFunction(t *testing.T) {
+	data := map[string]interface{}{
+		"age": 20,
+	}
+	res, err := evaluator.Evaluate("age > min (18, 25, 30)", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestComparisonWithArithmeticVariableFunction(t *testing.T) {
+	data := map[string]interface{}{
+		"age":     20,
+		"numbers": []int{1, 1, 2, 30},
+	}
+	res, err := evaluator.Evaluate("age > max (numbers)", data)
+	assert.Nil(t, err)
+	assert.False(t, res)
+}
+
+func TestNullCheck(t *testing.T) {
+	data := map[string]interface{}{
+		"a":     2.7,
+	}
+	res, err := evaluator.Evaluate("b = null", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestNullCheck1(t *testing.T) {
+	data := map[string]interface{}{
+		"a":     2.7,
+	}
+	res, err := evaluator.Evaluate("a = null", data)
+	assert.Nil(t, err)
+	assert.False(t, res)
+}
+
+func TestNotNullCheck(t *testing.T) {
+	data := map[string]interface{}{
+		"a":     2.7,
+	}
+	res, err := evaluator.Evaluate("a != null", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestBooleanNullCheck(t *testing.T) {
+	data := map[string]interface{}{
+		"a":     3,
+	}
+	res, err := evaluator.Evaluate("b = null && a > 2", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
 }
