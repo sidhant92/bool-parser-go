@@ -30,6 +30,10 @@ func Cached(size int) *ANTLRParser {
 }
 
 func (p *ANTLRParser) Parse(input string, defaultField ...string) (res logical.Node, err error) {
+	cacheKey := input
+	if len(defaultField) > 0 {
+		cacheKey = cacheKey + "_" + defaultField[0]
+	}
 	defer func() {
 		if r := recover(); r != nil {
 			log.Println("panic occurred:", r)
@@ -46,7 +50,7 @@ func (p *ANTLRParser) Parse(input string, defaultField ...string) (res logical.N
 	}()
 
 	if p.UseCache {
-		val, ok := p.cache.Get(input)
+		val, ok := p.cache.Get(cacheKey)
 		if ok {
 			return val, nil
 		}
@@ -70,7 +74,7 @@ func (p *ANTLRParser) Parse(input string, defaultField ...string) (res logical.N
 	antlr.ParseTreeWalkerDefault.Walk(listener, parseResult)
 
 	if p.UseCache {
-		p.cache.Add(input, listener.GetResult())
+		p.cache.Add(cacheKey, listener.GetResult())
 	}
 	return listener.GetResult(), nil
 }
