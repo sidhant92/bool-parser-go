@@ -10,6 +10,17 @@ const (
 	LESS_THAN_EQUAL    Operator = "LESS_THAN_EQUAL"
 	NOT_EQUAL          Operator = "NOT_EQUAL"
 	IN                 Operator = "IN"
-	CONTAINS_ANY       Operator = "CONTAINS_ANY"
-	CONTAINS_ALL       Operator = "CONTAINS_ALL"
+
+	ADD      Operator = "ADD"
+	SUBTRACT Operator = "SUBTRACT"
+	MULTIPLY Operator = "MULTIPLY"
+	DIVIDE   Operator = "DIVIDE"
+	MODULUS  Operator = "MODULUS"
+	EXPONENT Operator = "EXPONENT"
+	UNARY    Operator = "UNARY"
+
+	CONTAINS_ANY Operator = "CONTAINS_ANY"
+	CONTAINS_ALL Operator = "CONTAINS_ALL"
 )
+
+var EqualityOperators = []Operator {EQUALS, NOT_EQUAL}

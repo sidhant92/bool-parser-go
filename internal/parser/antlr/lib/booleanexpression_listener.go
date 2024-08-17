@@ -1,4 +1,4 @@
-// Code generated from /Users/sid/Desktop/filter1/BooleanExpression.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /Users/sid/Desktop/filter2/BooleanExpression.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package lib // BooleanExpression
 
@@ -10,6 +10,9 @@ type BooleanExpressionListener interface {
 
 	// EnterParse is called when entering the parse production.
 	EnterParse(c *ParseContext)
+
+	// EnterUnaryArithmeticExpression is called when entering the unaryArithmeticExpression production.
+	EnterUnaryArithmeticExpression(c *UnaryArithmeticExpressionContext)
 
 	// EnterBinaryExpression is called when entering the binaryExpression production.
 	EnterBinaryExpression(c *BinaryExpressionContext)
@@ -26,8 +29,14 @@ type BooleanExpressionListener interface {
 	// EnterToExpression is called when entering the toExpression production.
 	EnterToExpression(c *ToExpressionContext)
 
+	// EnterArithmeticFunctionExpression is called when entering the arithmeticFunctionExpression production.
+	EnterArithmeticFunctionExpression(c *ArithmeticFunctionExpressionContext)
+
 	// EnterNotExpression is called when entering the notExpression production.
 	EnterNotExpression(c *NotExpressionContext)
+
+	// EnterArithmeticExpression is called when entering the arithmeticExpression production.
+	EnterArithmeticExpression(c *ArithmeticExpressionContext)
 
 	// EnterComparatorExpression is called when entering the comparatorExpression production.
 	EnterComparatorExpression(c *ComparatorExpressionContext)
@@ -37,6 +46,12 @@ type BooleanExpressionListener interface {
 
 	// EnterComparator is called when entering the comparator production.
 	EnterComparator(c *ComparatorContext)
+
+	// EnterArithmeticOperator is called when entering the arithmeticOperator production.
+	EnterArithmeticOperator(c *ArithmeticOperatorContext)
+
+	// EnterArithmeticFunction is called when entering the arithmeticFunction production.
+	EnterArithmeticFunction(c *ArithmeticFunctionContext)
 
 	// EnterWordlist is called when entering the wordlist production.
 	EnterWordlist(c *WordlistContext)
@@ -59,6 +74,9 @@ type BooleanExpressionListener interface {
 	// ExitParse is called when exiting the parse production.
 	ExitParse(c *ParseContext)
 
+	// ExitUnaryArithmeticExpression is called when exiting the unaryArithmeticExpression production.
+	ExitUnaryArithmeticExpression(c *UnaryArithmeticExpressionContext)
+
 	// ExitBinaryExpression is called when exiting the binaryExpression production.
 	ExitBinaryExpression(c *BinaryExpressionContext)
 
@@ -74,8 +92,14 @@ type BooleanExpressionListener interface {
 	// ExitToExpression is called when exiting the toExpression production.
 	ExitToExpression(c *ToExpressionContext)
 
+	// ExitArithmeticFunctionExpression is called when exiting the arithmeticFunctionExpression production.
+	ExitArithmeticFunctionExpression(c *ArithmeticFunctionExpressionContext)
+
 	// ExitNotExpression is called when exiting the notExpression production.
 	ExitNotExpression(c *NotExpressionContext)
+
+	// ExitArithmeticExpression is called when exiting the arithmeticExpression production.
+	ExitArithmeticExpression(c *ArithmeticExpressionContext)
 
 	// ExitComparatorExpression is called when exiting the comparatorExpression production.
 	ExitComparatorExpression(c *ComparatorExpressionContext)
@@ -85,6 +109,12 @@ type BooleanExpressionListener interface {
 
 	// ExitComparator is called when exiting the comparator production.
 	ExitComparator(c *ComparatorContext)
+
+	// ExitArithmeticOperator is called when exiting the arithmeticOperator production.
+	ExitArithmeticOperator(c *ArithmeticOperatorContext)
+
+	// ExitArithmeticFunction is called when exiting the arithmeticFunction production.
+	ExitArithmeticFunction(c *ArithmeticFunctionContext)
 
 	// ExitWordlist is called when exiting the wordlist production.
 	ExitWordlist(c *WordlistContext)

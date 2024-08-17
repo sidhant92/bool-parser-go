@@ -1,11 +1,11 @@
-package domain
+package logical
 
 import "github.com/sidhant92/bool-parser-go/pkg/constant"
 
 type ArrayNode struct {
 	Field    string
 	Operator constant.Operator
-	Items    []Pair
+	Items    []interface{}
 }
 
 func (c ArrayNode) GetNodeType() constant.NodeType {
