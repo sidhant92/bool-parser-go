@@ -470,6 +470,15 @@ func TestDefaultFieldFalse(t *testing.T) {
 	assert.False(t, res)
 }
 
+func TestNegativeComparison(t *testing.T) {
+	data := map[string]interface{}{
+		"a": -6,
+	}
+	res, err := evaluator.Evaluate("a > -10 AND a < -2", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
 func TestContainsAnyTrueCondition(t *testing.T) {
 	data := map[string]interface{}{
 		"age": []int32{1, 2, 3},
