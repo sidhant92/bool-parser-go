@@ -154,7 +154,7 @@ func (l *CustomListener) ExitComparatorExpression(ctx *lib.ComparatorExpressionC
 
 func (l *CustomListener) ExitUnaryArithmeticExpression(ctx *lib.UnaryArithmeticExpressionContext) {
 	var leafNode logical.Node
-	if len(l.Nodes) > 0 {
+	if len(l.Nodes) > 0 && reflect.TypeOf(l.Nodes[0]) == reflect.TypeOf(&arithmetic.ArithmeticNode{}) {
 		leafNode = l.pop()
 	} else {
 		leafNode = l.mapTypesExpressionContext(ctx.GetExp().(*lib.TypesExpressionContext))
