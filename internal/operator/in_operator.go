@@ -2,14 +2,15 @@ package operator
 
 import (
 	"github.com/sidhant92/bool-parser-go/pkg/constant"
+	"github.com/sidhant92/bool-parser-go/pkg/domain"
 )
 
 type InOperator struct {
 }
 
-func (e *InOperator) Evaluate(containerDataType constant.ContainerDataType, dataType constant.DataType, validated bool, left interface{}, right ...interface{}) (bool, error) {
-	for _, value := range right {
-		res, err := GetOperator(constant.EQUALS).Evaluate(containerDataType, dataType, validated, left, value)
+func (e *InOperator) Evaluate(containerDataType constant.ContainerDataType, leftOperand interface{}, leftOperandDataType constant.DataType, rightOperands []domain.EvaluatedNode) (bool, error) {
+	for _, value := range rightOperands {
+		res, err := GetOperator(constant.EQUALS).Evaluate(containerDataType, leftOperand, leftOperandDataType, []domain.EvaluatedNode{value})
 		if err != nil {
 			return false, err
 		}

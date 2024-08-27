@@ -11,3 +11,5 @@ var INVALID_UNARY_OPERAND = errors.New("invalid unary operand")
 var KEY_DATA_NOT_PRESENT = errors.New("key data not present")
 
 var INVALID_EXPRESSION = errors.New("invalid expression")
+
+var INCOMPATIBLE_DATA_TYPE = errors.New("incompatible data type")
