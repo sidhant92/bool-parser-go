@@ -60,7 +60,7 @@ func TestInvalidDataType(t *testing.T) {
 	}
 	_, err := evaluator.Evaluate("name > 123", data)
 	assert.NotNil(t, err)
-	assert.ErrorIs(t, err, errors2.INVALID_DATA_TYPE)
+	assert.ErrorIs(t, err, errors2.INCOMPATIBLE_DATA_TYPE)
 }
 
 func TestSimpleFalseIncorrectExpression(t *testing.T) {
@@ -187,6 +187,24 @@ func TestNumericLessThanEqualIncorrectExpression(t *testing.T) {
 	res, err := evaluator.Evaluate("age <= 20", data)
 	assert.Nil(t, err)
 	assert.False(t, res)
+}
+
+func TestDifferentDataTypeComparison(t *testing.T) {
+	data := map[string]interface{}{
+		"age": 26.3,
+	}
+	res, err := evaluator.Evaluate("age > 20", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
+}
+
+func TestDifferentDataTypeComparison1(t *testing.T) {
+	data := map[string]interface{}{
+		"age": 26,
+	}
+	res, err := evaluator.Evaluate("age > 20.6", data)
+	assert.Nil(t, err)
+	assert.True(t, res)
 }
 
 func TestNumericNotEqualCorrectExpression(t *testing.T) {
@@ -375,9 +393,9 @@ func TestWrongDataType1(t *testing.T) {
 	data := map[string]interface{}{
 		"age": "sf",
 	}
-	_, err := evaluator.Evaluate("age = 24", data)
-	assert.NotNil(t, err)
-	assert.ErrorIs(t, err, errors2.INVALID_DATA_TYPE)
+	res, err := evaluator.Evaluate("age = 24", data)
+	assert.Nil(t, err)
+	assert.False(t, res)
 }
 
 func TestKeyMissing(t *testing.T) {

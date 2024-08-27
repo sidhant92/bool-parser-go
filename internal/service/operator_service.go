@@ -4,6 +4,7 @@ import (
 	"github.com/sidhant92/bool-parser-go/internal/containerdatatype"
 	op "github.com/sidhant92/bool-parser-go/internal/operator"
 	"github.com/sidhant92/bool-parser-go/pkg/constant"
+	"github.com/sidhant92/bool-parser-go/pkg/domain"
 	errors2 "github.com/sidhant92/bool-parser-go/pkg/error"
 	"log"
 	"slices"
@@ -21,21 +22,21 @@ func (o *OperatorService) GetOperatorFromSymbol(symbol string) constant.Operator
 	panic("Unknown Operator " + symbol)
 }
 
-func (o *OperatorService) Evaluate(operator constant.Operator, containerDataType constant.ContainerDataType, dataType constant.DataType, leftOperand interface{}, rightOperand ...interface{}) (bool, error) {
+func (o *OperatorService) Evaluate(operator constant.Operator, containerDataType constant.ContainerDataType, leftOperand interface{}, leftOperandDataType constant.DataType, rightOperands []domain.EvaluatedNode) (bool, error) {
 	var abstractOperator = op.GetOperator(operator)
 	if !slices.Contains(abstractOperator.GetAllowedContainerTypes(), containerDataType) {
 		log.Printf("Invalid container type %s for the the operator %s", containerDataType, operator)
 		return false, errors2.INVALID_CONTAINER_DATA_TYPE
 	}
-	if !slices.Contains(abstractOperator.GetAllowedDataTypes(), dataType) {
-		log.Printf("Invalid data type %s for the the operator %s", dataType, operator)
+	if !slices.Contains(abstractOperator.GetAllowedDataTypes(), leftOperandDataType) {
+		log.Printf("Invalid data type %s for the the operator %s for the operand %v", leftOperandDataType, operator, leftOperand)
 		return false, errors2.INVALID_DATA_TYPE
 	}
-	if !containerdatatype.GetContainerDataType(containerDataType).IsValid(dataType, leftOperand) {
-		log.Printf("validation failed for the operator %s for the the operand %v", operator, leftOperand)
+	if !containerdatatype.GetContainerDataType(containerDataType).IsValid(leftOperandDataType, leftOperand) {
+		log.Printf("validation failed for the operator %s for the the operand %v for data type %s", operator, leftOperand, leftOperandDataType)
 		return false, errors2.INVALID_DATA_TYPE
 	}
-	res, err := abstractOperator.Evaluate(containerDataType, dataType, true, leftOperand, rightOperand...)
+	res, err := abstractOperator.Evaluate(containerDataType, leftOperand, leftOperandDataType, rightOperands)
 	if err != nil {
 		return false, err
 	}

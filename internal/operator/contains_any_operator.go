@@ -2,22 +2,26 @@ package operator
 
 import (
 	"github.com/sidhant92/bool-parser-go/pkg/constant"
+	"github.com/sidhant92/bool-parser-go/pkg/domain"
 	"reflect"
 )
 
 type ContainsAnyOperator struct {
 }
 
-func (e *ContainsAnyOperator) Evaluate(containerDataType constant.ContainerDataType, dataType constant.DataType, validated bool, left interface{}, right ...interface{}) (bool, error) {
-	var leftArray []interface{}
-	rv := reflect.ValueOf(left)
+func (e *ContainsAnyOperator) Evaluate(containerDataType constant.ContainerDataType, leftOperand interface{}, leftOperandDataType constant.DataType, rightOperands []domain.EvaluatedNode) (bool, error) {
+	var leftArray []domain.EvaluatedNode
+	rv := reflect.ValueOf(leftOperand)
 	if rv.Kind() == reflect.Slice {
 		for i := 0; i < rv.Len(); i++ {
-			leftArray = append(leftArray, rv.Index(i).Interface())
+			leftArray = append(leftArray, domain.EvaluatedNode{
+				Value:    rv.Index(i).Interface(),
+				DataType: leftOperandDataType,
+			})
 		}
 	}
-	for _, value := range right {
-		res, err := GetOperator(constant.IN).Evaluate(constant.PRIMITIVE, dataType, validated, value, leftArray...)
+	for _, rightOperand := range rightOperands {
+		res, err := GetOperator(constant.IN).Evaluate(constant.PRIMITIVE, rightOperand.Value, rightOperand.DataType, leftArray)
 		if err != nil {
 			return false, err
 		}

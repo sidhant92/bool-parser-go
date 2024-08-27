@@ -1,9 +1,12 @@
 package operator
 
-import "github.com/sidhant92/bool-parser-go/pkg/constant"
+import (
+	"github.com/sidhant92/bool-parser-go/pkg/constant"
+	"github.com/sidhant92/bool-parser-go/pkg/domain"
+)
 
 type AbstractOperator interface {
-	Evaluate(containerDataType constant.ContainerDataType, dataType constant.DataType, validated bool, left interface{}, right ...interface{}) (bool, error)
+	Evaluate(containerDataType constant.ContainerDataType, leftOperand interface{}, leftOperandDataType constant.DataType, rightOperands []domain.EvaluatedNode) (bool, error)
 
 	GetSymbol() string
 

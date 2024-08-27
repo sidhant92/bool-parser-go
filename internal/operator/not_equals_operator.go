@@ -2,14 +2,15 @@ package operator
 
 import (
 	"github.com/sidhant92/bool-parser-go/pkg/constant"
+	"github.com/sidhant92/bool-parser-go/pkg/domain"
 )
 
 type NotEqualsOperator struct {
 }
 
-func (e *NotEqualsOperator) Evaluate(containerDataType constant.ContainerDataType, dataType constant.DataType, validated bool, left interface{}, right ...interface{}) (bool, error) {
+func (e *NotEqualsOperator) Evaluate(containerDataType constant.ContainerDataType, leftOperand interface{}, leftOperandDataType constant.DataType, rightOperands []domain.EvaluatedNode) (bool, error) {
 	eq := GetOperator(constant.EQUALS)
-	res, err := eq.Evaluate(containerDataType, dataType, validated, left, right[0])
+	res, err := eq.Evaluate(containerDataType, leftOperand, leftOperandDataType, rightOperands)
 	if err != nil {
 		return false, err
 	}
